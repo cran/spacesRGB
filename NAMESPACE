@@ -1,0 +1,19 @@
+
+
+# functions by Glenn Davis
+export( installRGB,        
+        uninstallRGB,
+        getRGB,
+        summaryRGB,
+        XYZfromRGB,
+        RGBfromXYZ,
+        DisplayRGBfromLinearRGB,
+        LinearRGBfromDisplayRGB
+        )
+        
+#export( DisplayFromLinear_sRGB,
+#        LinearFromDisplay_sRGB,
+#        DisplayFromLinear_ProPhotoRGB,
+#        LinearFromDisplay_ProPhotoRGB
+#        )
+

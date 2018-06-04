@@ -1,0 +1,16 @@
+6c831afb606bd32d2348f4ee4ccfb41b *DESCRIPTION
+c70fc700bb55fe01c281ff7ed76f8bd7 *NAMESPACE
+cf0e1bb2fb3dbc68529e36892970f2ad *NEWS.md
+e08ff6cbcbe3441b61264f031fc42aac *R/conversion.R
+5e4563a8ee8b04818a10eb154eb56481 *R/datasets.R
+fab7dec856a7c6f1502cbbe568c934ad *R/hooks.R
+e561ad95c420997866c6ce52e0439d13 *R/installation.R
+b484ee063f8e2fb94520700757fee189 *R/logging.R
+b3d0c151a33eab6f3e461f3d470c2a60 *R/sysdata.rda
+2aef88066bcbdeeb98200f5893a2af31 *R/utils.R
+5483e0987a39398ceee5c4441c6e3c78 *man/RGBfromXYZ.Rd
+e6725f37f2413e0141ff8cf653fbf0a5 *man/RGBspaces.Rd
+127f0e798f07a91d482ca4ba2a23d9d5 *man/XYZfromRGB.Rd
+945bbd358d89b124aab0198adda9503d *man/spacesRGB-package.Rd
+dd8ae766bc721340653c8aa2c9f57440 *tests/test-conversions.R
+a8310541073c1b49919984152d9514c1 *tests/test-installation.R
