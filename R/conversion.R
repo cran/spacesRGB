@@ -4,15 +4,19 @@
 
 #   RGB         n x 3 matrix
 #   space       RGB space, e.g. 'sRGB', 'AdobeRGB', ...
-#   gamma       if not NULL, custom gamma to override the gamma of space.  If gamma is 1, input RGB is linear
-#   maxValue    1, 255, 1023, etc.
+#   which       which linear RGB, 'scene' or 'display'
+#   TF          transfer function, or numeric gamma  
+#   maxSignal   1, 255, 1023, etc.
 #
+#   returns a data.frame with 2 columns
+#           XYZ         either scene XYZ or display XYZ
+#           OutOfGamut  logical
 #   the returned XYZ is for viewing under the white-point of the RGB space (usually D65)
-#   and when RGB are all maxValue, then Y=100
 
-XYZfromRGB <- function( RGB, space='sRGB', gamma=NULL, maxValue=1 )
+
+XYZfromRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
     {
-    out = LinearRGBfromDisplayRGB( RGB, space=space, gamma=gamma, maxValue=maxValue )
+    out = LinearRGBfromSignalRGB( RGB, space=space, which=which, TF=TF, maxSignal=maxSignal )
     
     if( is.null(out) )  return(NULL)
                 
@@ -31,13 +35,14 @@ XYZfromRGB <- function( RGB, space='sRGB', gamma=NULL, maxValue=1 )
 
 #   XYZ         for viewing under the white-point of the RGB space (usually D65), with Y=100 for white
 #   space       RGB space, e.g. 'sRGB', 'AdobeRGB', ...
-#   gamma       if not NULL, custom gamma to override the gamma of space.  If gamma is 1, output RGB is linear.
-#   maxValue    for the device.  1023 is also common
+#   which       which linear RGB, 'scene' or 'display'
+#   TF          transfer function, or numeric gamma 
+#   maxSignal   of SignalRGB
 #
 #   returns a data.frame with 2 columns
-#           RGB             for the device.  clamped to apropriate cube, unless gamma=1
-#           OutOfGamutFlag  logical
-RGBfromXYZ <- function( XYZ, space='sRGB', gamma=NULL, maxValue=1 )
+#           RGB         signal RGB for the device.  clamped to apropriate cube, unless gamma=1
+#           OutOfGamut  logical
+RGBfromXYZ <- function( XYZ, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
     {
     # verify XYZ
     XYZ = prepareNxM(XYZ)
@@ -49,23 +54,26 @@ RGBfromXYZ <- function( XYZ, space='sRGB', gamma=NULL, maxValue=1 )
 
     RGB = tcrossprod( XYZ, p.ListRGB[[idx]]$XYZ2RGB )   # t(M %*% t(XYZ))    # print( RGB[1, ] - 1 )
 
-    return( DisplayRGBfromLinearRGB( RGB, space=space, gamma=gamma, maxValue=maxValue ) )
+    return( SignalRGBfromLinearRGB( RGB, space=space, which=which, TF=TF, maxSignal=maxSignal ) )
     }
 
 
 
-#   RGB     linear RGB any sort of array
-#           it is OK if val is a matrix, and then the return value is a matrix of the same shape
-#   space   name of color space
-#
-#   gamma   transfer function, or numeric gamma of the display, so output is (linear)^(1/gamma)
-#
-#   maxValue    of DisplayRGB
+#   RGB         linear RGB any sort of array
+#               it is OK if val is a matrix, and then the return value is a matrix of the same shape
+#   space       name of color space
+#   which       which linear RGB, 'scene' or 'display'
+#   TF          transfer function, or numeric gamma of the display, so output is (linear)^(1/gamma)
+#   maxSignal   of SignalRGB
 #
 #   return  first clips to [0,1], and then maps [0,1] to [0,1].
 #           in case of ERROR it logs a message and returns the clipped values only
 #
-DisplayRGBfromLinearRGB <- function( RGB, space='sRGB', gamma=NULL, maxValue=1 )
+#   returns a data.frame with 2 columns
+#           RGB         signal RGB for the device.  clamped to apropriate cube, unless gamma=1
+#           OutOfGamut  logical, TRUE if clamping actually performed
+
+SignalRGBfromLinearRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
     {
     # verify RGB
     RGB = prepareNxM(RGB)
@@ -79,7 +87,7 @@ DisplayRGBfromLinearRGB <- function( RGB, space='sRGB', gamma=NULL, maxValue=1 )
     OutOfGamut  = (RGB[ ,1] < lo  |  RGB[ ,1] > hi  |  RGB[ ,2] < lo  |  RGB[ ,2] > hi  |  RGB[ ,3] < lo  |  RGB[ ,3] > hi)
 
     
-    if( is.null(gamma) )
+    if( is.null(TF) )
         {
         # verify space 
         idx = spaceIndex( space )
@@ -87,43 +95,47 @@ DisplayRGBfromLinearRGB <- function( RGB, space='sRGB', gamma=NULL, maxValue=1 )
             
         theSpace   = p.ListRGB[[idx]]
     
-        if( is.list(theSpace$gamma) )
-            gamma = theSpace$gamma[[2]]     # a function
+        if( which == 'scene' )
+            TF  = theSpace$OETF         # forward to signal
+        else if( which == 'display' )
+            TF  = theSpace$EOTFinv      # backward to signal
         else
-            gamma = theSpace$gamma          # a number
+            {
+            log.string( ERROR, "which='%s' is invalid.", which )
+            return(NULL)
+            }
         }
 
-    # convert from linear to display
-    if( is.function( gamma ) )
+    # convert from linear to signal
+    if( is.function(TF) )
         {
         #   clamp RGB to the unit cube  
         RGB[ RGB<0 ] = 0
         RGB[ RGB>1 ] = 1 
         
-        RGBdisplay  =  gamma( RGB )    
+        RGBsignal  =  TF( RGB )    
         }
-    else if( is.numeric(gamma) &&  length(gamma)==1  &&  0 < gamma )
+    else if( is.numeric(TF)  &&  length(TF)==1  &&  0 < TF )
         {
-        if( gamma == 1 )
-            RGBdisplay  = RGB   # no clamping
+        if( TF == 1 )
+            RGBsignal   = RGB   # no clamping, identity transfer
         else
             {
             #   clamp RGB to the unit cube  
-            RGB[ RGB<0 ] <- 0
-            RGB[ RGB>1 ] <- 1
-            
-            RGBdisplay  = RGB ^ (1/gamma)
+            RGB[ RGB<0 ] = 0
+            RGB[ RGB>1 ] = 1
+            RGBsignal    = RGB ^ (1/TF)
             }
         }
     else
         {
-        log.string( ERROR, "gamma is invalid."  )
+        log.string( ERROR, "TF is invalid."  )
         return(NULL)
         }
 
-    RGBdisplay = maxValue * RGBdisplay
+    RGBsignal = maxSignal * RGBsignal
 
-    colnames(RGBdisplay) = c('R','G','B')
+    colnames(RGBsignal) = c('R','G','B')
 
     rnames  = rownames(RGB)
     if( is.null(rnames)  ||  0<anyDuplicated(rnames)  )
@@ -131,34 +143,38 @@ DisplayRGBfromLinearRGB <- function( RGB, space='sRGB', gamma=NULL, maxValue=1 )
         rnames = 1:nrow(RGB)
 
     out = data.frame( row.names=rnames )
-    out$RGB             = RGBdisplay
+    out$RGB             = RGBsignal
     out$OutOfGamut      = OutOfGamut 
 
     return( out )
     }
     
     
-LinearRGBfromDisplayRGB <- function( RGB, space='sRGB', gamma=NULL, maxValue=1 )
+#   returns a data.frame with 2 columns
+#           RGB         linear RGB, either 'scene' or 'display'.  clamped to apropriate cube, unless gamma=1
+#           OutOfGamut  logical, TRUE if clamping actually performed
+    
+LinearRGBfromSignalRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
     {
     # verify RGB
     RGB = prepareNxM(RGB)
     if( is.null(RGB) )  return(NULL)
     
-    # verify maxValue
-    ok  = is.numeric(maxValue)  &&  length(maxValue)==1  &&  0<maxValue
+    # verify maxSignal
+    ok  = is.numeric(maxSignal)  &&  length(maxSignal)==1  &&  0<maxSignal
     if( ! ok )
         {
-        log.string( ERROR, "maxValue='%s' is not a positive number.", as.character(maxValue) )
+        log.string( ERROR, "maxSignal='%s' is not a positive number.", as.character(maxSignal) )
         return(NULL)
         }    
                          
-    RGB = RGB/maxValue
+    RGB = RGB/maxSignal
     
     lo  = 0
     hi  = 1
     OutOfGamut  = (RGB[ ,1] < lo  |  RGB[ ,1] > hi  |  RGB[ ,2] < lo  |  RGB[ ,2] > hi  |  RGB[ ,3] < lo  |  RGB[ ,3] > hi)
     
-    if( is.null(gamma) )
+    if( is.null(TF) )
         {
         # verify space 
         idx = spaceIndex( space )
@@ -166,36 +182,41 @@ LinearRGBfromDisplayRGB <- function( RGB, space='sRGB', gamma=NULL, maxValue=1 )
 
         theSpace   = p.ListRGB[[idx]]
 
-        if( is.list(theSpace$gamma) )
-            gamma = theSpace$gamma[[1]]     # a function
+        if( which == 'scene' )
+            TF  = theSpace$OETFinv      # backwards to scene
+        else if( which == 'display' )
+            TF  = theSpace$EOTF         # forwards to display
         else
-            gamma = theSpace$gamma          # a number
+            {
+            log.string( ERROR, "which='%s' is invalid.", as.character(which) )
+            return(NULL)
+            }            
         }
 
-    if( is.function( gamma ) )
+    if( is.function( TF ) )
         {
         #   clamp RGB to the unit cube (inside gamut)
         RGB[ RGB<0 ]    = 0
         RGB[ RGB>1 ]    = 1         
         
-        RGBlin  = gamma( RGB ) 
+        RGBlin  = TF( RGB ) 
         }
-    else if( is.numeric(gamma) &&  length(gamma)==1  &&  0 < gamma )
+    else if( is.numeric(TF) &&  length(TF)==1  &&  0 < TF )
         {
-        if( gamma == 1 )
-            RGBlin = RGB
+        if( TF == 1 )
+            RGBlin = RGB        # identity, so copy without clamping
         else
             {
             #   clamp RGB to the unit cube (inside gamut)
             RGB[ RGB<0 ]    = 0
             RGB[ RGB>1 ]    = 1
             
-            RGBlin  = RGB ^ gamma
+            RGBlin  = RGB ^ TF
             }
         }
     else
         {
-        log.string( ERROR, "argument gamma is invalid."  )
+        log.string( ERROR, "argument TF is invalid."  )
         return(NULL)
         }
     
@@ -214,32 +235,4 @@ LinearRGBfromDisplayRGB <- function( RGB, space='sRGB', gamma=NULL, maxValue=1 )
     }
     
 
-#   space           name of the space
-#   return value    index in p.ListRGB, partial matching and case-insensitive
-#                   if no match, then NA_integer_
-spaceIndex <- function( space )
-    {
-    ok  = is.character(space)  &&  length(space)==1
-    if( ! ok )
-        {
-        log.string( ERROR, "space is not a character vector of length 1." )
-        return(NA_integer_)
-        }
-        
-    theNames    = names(p.ListRGB)
-    if( is.null(theNames)  ||  length(theNames)==0 )
-        {
-        log.string( ERROR, "ERROR internal.  There are no installed RGB spaces." )
-        return(NA_integer_)
-        }
 
-    idx = pmatch( toupper(space), toupper(theNames) )
-    if( is.na(idx) )
-        {
-        log.string( ERROR, "space='%s' matches no installed spaces, or multiple spaces.", space )
-        return(NA_integer_)
-        }
-
-    return(idx)
-    }
-    

@@ -1,53 +1,57 @@
 \name{Linear RGB and XYZ Calculation}
 \alias{XYZfromRGB}
-\alias{LinearRGBfromDisplayRGB}
-\title{Convert Display RGB coordinates to XYZ, or Linear RGB}
+\alias{LinearRGBfromSignalRGB}
+\title{Convert Signal RGB coordinates to XYZ, or Linear RGB}
 
-\description{Convert Display RGB coordinates to XYZ, or linear RGB}
+\description{Convert signal RGB coordinates to XYZ, or to linear RGB}
 
 \usage{
-XYZfromRGB( RGB, space='sRGB', gamma=NULL, maxValue=1 ) 
+XYZfromRGB( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 ) 
 
-LinearRGBfromDisplayRGB( RGB, space='sRGB', gamma=NULL, maxValue=1 ) 
+LinearRGBfromSignalRGB( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 ) 
 }
 
 
 \arguments{
-\item{RGB}{ a numeric Nx3 matrix with non-linear display RGB coordinates in the rows, or a vector that can be converted to such a matrix, by row.
-These should be in the appropriate cube \eqn{[0,maxValue]^3}.
+\item{RGB}{ a numeric Nx3 matrix with non-linear signal RGB coordinates in the rows, or a vector that can be converted to such a matrix, by row.
+These should be in the appropriate cube \code{[0,maxSignal]}\eqn{^3}.
 }
 
 \item{space}{the name of an installed RGB space.
-The name matching is partial and case-insensitive.
-Spaces \code{'sRGB'} and \code{'AdobeRGB'} and \code{'ProPhotoRGB'}  are pre-installed,
-and others can be installed with \code{\link{installRGB}()}.}
+The name matching is partial and case-insensitive.}
 
-\item{gamma}{if not NULL, \code{gamma} overrides the gamma of \code{space}.
-\code{gamma} can be a positive number, or function that takes the interval [0,1] to itself.
-Such a function is an Electro-Optical Conversion Function, or EOCF.
-If \code{gamma=1}, the input RGB values taken to be linear. }
+\item{which}{the output XYZ or linear RGB - either \code{'scene'} or \code{'display'}.
+Usually the OOTF for the space is the identity and so these two are the same.
+}
 
-\item{maxValue}{maximum value of non-linear \code{RGB}.
+\item{TF}{if not NULL, \code{TF} overrides the appropriate transfer function of \code{space}.
+\code{TF} can be a positive number \eqn{\gamma}, or a transfer function that takes the interval [0,1] to itself.
+If \code{TF=1}, the input RGB values taken to be linear and not clamped (see \bold{Value}). 
+If \code{TF} is not \code{NULL} in \code{LinearRGBfromSignalRGB()},
+then \code{space} and \code{which} are ignored.
+}
+
+\item{maxSignal}{maximum value of the input signal \code{RGB}.
 Other common values are 100, 255, 1023, 4095, and 65535.
-Even when 1, they are still taken to be non-linear display values.}
+Even when 1, they are still taken to be non-linear signal values.}
 }
 
 \value{
 \code{XYZfromRGB()} returns a \code{data.frame} with N rows and these columns:
 \item{XYZ}{the calculated XYZ vectors.
-These are for viewing under the white point (with Y=1) of the given RGB space.}
+These are for viewing under the white point of the given RGB space.}
 
-\item{OutOfGamut}{a logical vector. TRUE means the input display RGB is outside the cube \eqn{[0,maxValue]^3}.
-If \code{gamma} is not 1, then the display RGBs are clamped to the cube before further calculations.}
+\item{OutOfGamut}{a logical vector. TRUE means the input signal RGB is outside the cube \code{[0,maxSignal]}\eqn{^3}.
+If \code{TF} is not 1, then the input signal RGBs are clamped to the cube before further calculations.}
 
 
-\code{LinearRGBfromDisplayRGB()} returns a \code{data.frame} with N rows and these columns:
+\code{LinearRGBfromSignalRGB()} returns a \code{data.frame} with N rows and these columns:
 \item{RGB}{the calculated linear RGB vectors. These are normalized to the unit cube.}
 
-\item{OutOfGamut}{a logical vector. TRUE means the input display RGB is outside the cube \eqn{[0,maxValue]^3}.
-If \code{gamma} is not 1, then the display RGBs are clamped to the cube before linearizing.}
+\item{OutOfGamut}{a logical vector. TRUE means the input signal RGB is outside the cube \code{[0,maxSignal]}\eqn{^3}.
+If \code{TF} is not 1, then the signal RGBs are clamped to the cube before linearizing.}
 
-In case of error, the functions return NULL.
+In case of error, both functions return NULL.
 }
 
 \references{
@@ -58,7 +62,7 @@ Wikipedia. \bold{RGB color space}.
 
 \seealso{
 \code{\link{RGBfromXYZ}()},
-\code{\link{DisplayRGBfromLinearRGB}()},
+\code{\link{SignalRGBfromLinearRGB}()},
 \code{\link{installRGB}()}
 }
 

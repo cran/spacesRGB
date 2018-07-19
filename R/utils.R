@@ -70,4 +70,26 @@ prepareNxM  <-  function( A, M=3 )
         
     return( A )
     }
+    
+    
+    
+    
+#   .pattern    a character vector of patterns
+#   .string     a vector of strings
+#
+#   return value: a matrix of logicals
+#   a row for each pattern and a column for each string 
+#   value of each entry is whether the corresponding string matches the corresponding pattern            
+multiPatternMatch <- function( .pattern, .string, .ignore=FALSE )
+    {
+    out = matrix( FALSE, length(.pattern), length(.string) )
+    
+    for( i in 1:length(.pattern) )
+        out[i, ]    = grepl( .pattern[i], .string, ignore.case=.ignore )
+    
+    rownames(out)   = .pattern
+    colnames(out)   = .string
+    
+    return(out)
+    }    
         

@@ -2,7 +2,22 @@
 p.ListRGB           = list()    
 
 
-installRGB  <-  function( space, primaries, white, gamma, peakRGB=1, overwrite=FALSE )
+#   each RGB spaces is a list with these items:
+#       space           the name of the space
+#       primaries       4x2 matrix, with chromaticities of RGB and W
+#       whiteXYZ        XYZ of the whitepoint
+#       RGB2XYZ         3x3 matrix taking RGB to XYZ
+#       XYZ2RGB         3x3 matrix taking XYZ to RGB
+#       OETF            a number (the gamma) or a transfer function
+#       OETFinv         a number (the same gamma) or a transfer function which is the inverse of OETF
+#       OETFinv.fitted  present when OETFinv is a function; it is the gamma that gives the best fit to OETFinv
+#       EOTF            a number (the gamma) or a transfer function
+#       EOTFinv         a number (the same gamma) or a transfer function which is the inverse of EOTF
+#       EOTF.fitted     present when EOTF is a function; it is the gamma that gives the best fit to EOTF
+#       OOTF            a character string that describes gamma of the OOTF (system gamma), with 2 decimal places
+
+
+installRGB  <-  function( space, primaries, white, OETF, EOTF=NULL, overwrite=FALSE )
     {
     #---   verify space ----#
     valid   = is.character(space)  &&  length(space)==1
@@ -48,27 +63,12 @@ installRGB  <-  function( space, primaries, white, gamma, peakRGB=1, overwrite=F
         }
     else
         {
-        if( white[2] != 1 )
-            {
-            log.string( ERROR, "The white Y = %g != 1.", white[2] )
-            return(FALSE)
-            }
         white.xy    = XYZ2xyY( white )[1:2]
         white.XYZ   = white
         }
         
     dim(white.XYZ)  = NULL
         
-    #----   verify peakRGB    ----#
-    valid   = is.numeric(peakRGB)  &&  length(peakRGB)==1  &&  all( 0<peakRGB  &  peakRGB<=1 )
-    if( ! valid )
-        {
-        log.string( ERROR, "peakRGB='%s' is not a number, or is not in the interval (0,1].", as.character(peakRGB[1]) )
-        return(FALSE)
-        }
-        
-    peakRGB = rep( peakRGB, 3 )
-    names(peakRGB)  = c('R','G','B')
 
     primaries   = rbind( primaries, white.xy )
     
@@ -87,10 +87,9 @@ installRGB  <-  function( space, primaries, white, gamma, peakRGB=1, overwrite=F
     names(white.XYZ)    = c('X','Y','Z')
     theSpace$whiteXYZ   = white.XYZ    
     
-    theSpace$peakRGB    = peakRGB
     
     primary     = primary[1:3,1:3]
-    RGB2XYZ     = projectiveMatrix( t(primary), white.XYZ/peakRGB )
+    RGB2XYZ     = projectiveMatrix( t(primary), white.XYZ )
     if( is.null(RGB2XYZ) )
         {
         log.string( ERROR, "primaries is not full-rank. Please check for non-degenerate triangle with white point in interior." )
@@ -103,59 +102,210 @@ installRGB  <-  function( space, primaries, white, gamma, peakRGB=1, overwrite=F
     theSpace$RGB2XYZ    = RGB2XYZ    
     theSpace$XYZ2RGB    = solve(RGB2XYZ) 
     
-    #----   verify gamma    ----#    
-    if( is.numeric(gamma)  &&  length(gamma)==1  &&  0<gamma )
+    
+    
+    #----   verify OETF    ----#        
+    if( is.numeric(OETF)  &&  length(OETF)==1  &&  0<OETF )
         {
-        theSpace$gamma = gamma
+        theSpace$OETF       = OETF
+        theSpace$OETFinv    = OETF        
         }
-    else if( is.list(gamma) &&  length(gamma)==2  &&  is.function(gamma[[1]])  &&  is.function(gamma[[2]]) )
+    else if( is.function(OETF)  )
         {
-        #   check that 0->0 and 1->1
-        endpoint    = c(0,1)
-        for( k in 1:2 )
-            {
-            ok  = all( gamma[[k]](endpoint) == endpoint )
-            if( ! ok )
-                {
-                log.string( ERROR, "gamma transfer function %d does not map 0->0 and 1->1.", k )
-                return(FALSE)
-                }
-                
-            #   check that functions preserve matrix dimensions                
-            ok  = all( dim(gamma[[k]](primaries)) == dim(primaries) )
-            if( ! ok )
-                {
-                log.string( ERROR, "gamma transfer function %d does not preserve matrix dimensions.", k )
-                return(FALSE)
-                }
-            }
-
-        theSpace$gamma = gamma
+        theSpace$OETF       = OETF
         }
-    else if( is.character(gamma)  &&  length(gamma)==1 )
+    else if( is.list(OETF)  &&  length(OETF)==2  &&  is.function(OETF[[1]])  &&  is.function(OETF[[2]]) )
         {
-        if( gamma == 'sRGB' )
-            #   install the special sRGB functions.  No need to check them.
-            theSpace$gamma = list( LinearFromDisplay_sRGB, DisplayFromLinear_sRGB )
-        else if( gamma == 'ProPhotoRGB' )
-            #   install the special ProPhotoRGB functions.  No need to check them.
-            theSpace$gamma = list( LinearFromDisplay_ProPhotoRGB, DisplayFromLinear_ProPhotoRGB )
-        else
-            {
-            log.string( ERROR, "gamma='%s' is invalid.", gamma )
-            return(FALSE)
-            }            
+        theSpace$OETF       = OETF[[1]]
+        theSpace$OETFinv    = OETF[[2]]
+        }
+    else if( is.character(OETF)  &&  length(OETF)==1 )
+        {
+        theList = functionPairFromString(OETF)
+        if( is.null(theList) )  return(FALSE)
+        
+        theSpace$OETF       = theList$OETF
+        theSpace$OETFinv    = theList$OETFinv
         }
     else
         {
-        log.string( ERROR, "gamma must be a positive number, or a pair of valid transfer functions, or one of the strings 'sRGB' or 'ProPhotoRGB'." )
+        log.string( ERROR, "OETF must be a positive number, or a transfer function, or a pair of transfer functions (inverses), or one of the strings 'sRGB' etc." )
         return(FALSE)
         }
 
+    if( is.function(theSpace$OETF)  )
+        {
+        #   validate OETF
+        if( ! validTF(theSpace$OETF) )
+            {
+            log.string( ERROR, "OETF is not a valid Transfer Function" )
+            return(FALSE)
+            }
+            
+        if( is.null(theSpace$OETFinv) )
+            {
+            theSpace$OETFinv = makeInverseTF( theSpace$OETF )
+            if( is.null(theSpace$OETFinv) ) return(FALSE)
+            }
+            
+        #   validate OETFinv
+        if( ! validTF(theSpace$OETFinv) )
+            {
+            log.string( ERROR, "OETFinv is not a valid Transfer Function" )
+            return(FALSE)
+            }
+
+        #   validate the pair
+        if( ! validTF_pair(theSpace$OETF,theSpace$OETFinv) )
+            {
+            log.string( ERROR, "OETF and OETFinv are valid Transfer Functions, but not inverses of each other." )
+            return(FALSE)
+            }
+            
+        theSpace$OETFinv.fitted    = fittedGammaL1( theSpace$OETFinv )
+        }
+
+
+    #----   verify EOTF    ----#        
+    if( is.null(EOTF) )
+        {
+        #   use the 2 functions, or numbers, that have already been validated
+        if( is.numeric(theSpace$OETF) )
+            {
+            theSpace$EOTF       = theSpace$OETF 
+            theSpace$EOTFinv    = theSpace$OETF
+            }
+        else
+            {
+            theSpace$EOTF       = theSpace$OETFinv  # function
+            theSpace$EOTFinv    = theSpace$OETF
+            }
+        }
+    else if( is.numeric(EOTF)  &&  length(EOTF)==1  &&  0<EOTF )
+        {
+        theSpace$EOTF       = EOTF
+        theSpace$EOTFinv    = EOTF        
+        }
+    else if( is.function(EOTF) )
+        {
+        theSpace$EOTF       = EOTF
+        }
+    else if( is.list(EOTF)  &&  length(EOTF)==2  &&  is.function(EOTF[[1]])  &&  is.function(EOTF[[2]]) )
+        {
+        theSpace$EOTF       = EOTF[[1]]
+        theSpace$EOTFinv    = EOTF[[2]]
+        }
+    else if( is.character(EOTF)  &&  length(EOTF)==1 )
+        {
+        theList = functionPairFromString(EOTF)
+        if( is.null(theList) )  return(FALSE)
+        
+        theSpace$EOTF       = theList$OETFinv
+        theSpace$EOTFinv    = theList$OETF
+        }
+    else
+        {
+        log.string( ERROR, "EOTF must be a positive number, or a transfer function, or a pair of transfer functions (inverses), or one of the strings 'sRGB' etc." )
+        return(FALSE)
+        }
+    
+    if( is.function(theSpace$EOTF) )
+        {
+        #   validate EOTF
+        if( ! validTF(theSpace$EOTF) )
+            {
+            log.string( ERROR, "EOTF is not a valid Transfer Function" )
+            return(FALSE)
+            }
+            
+        if( is.null(theSpace$EOTFinv) )
+            {
+            theSpace$EOTFinv = makeInverseTF( theSpace$EOTF )
+            if( is.null(theSpace$EOTFinv) ) return(FALSE)
+            }
+            
+        #   validate EOTFinv
+        if( ! validTF(theSpace$EOTFinv) )
+            {
+            log.string( ERROR, "EOTFinv is not a valid Transfer Function" )
+            return(FALSE)
+            }
+
+        #   validate the pair
+        if( ! validTF_pair(theSpace$EOTF,theSpace$EOTFinv) )
+            {
+            log.string( ERROR, "EOTF and EOTFinv area Transfer Functions, but not inverses of each other." )
+            return(FALSE)
+            }
+            
+        theSpace$EOTF.fitted    = fittedGammaL1( theSpace$EOTF )            
+        }
+        
+        
+    #   OOTF is always a character string, which is simply printed in summaryRGB()
+    if( is.null(EOTF) )
+        ootf    = '1'  # 'identity'
+    else
+        {
+        g1  = ifelse( is.numeric(theSpace$OETFinv), theSpace$OETFinv, theSpace$OETFinv.fitted )
+
+        g2  = ifelse( is.numeric(theSpace$EOTF), theSpace$EOTF, theSpace$EOTF.fitted )
+        
+        ootf = sprintf( "%.2f", g2 / g1 )
+        
+        if( ! is.numeric(theSpace$OETFinv)  ||  ! is.numeric(theSpace$EOTF) )
+            #  prepend a '~' which means the best-fit gamma
+            ootf    = paste( '~', ootf, sep='' )
+        }
+    theSpace$OOTF   = ootf
+        
+        
     #   finally OK to install the RGB space
     p.ListRGB[[ space ]] <<- theSpace
     
-    return(TRUE)
+    return( invisible(TRUE) )
+    }
+    
+    
+#   return list with 2 items
+#       OETF
+#       OETFinv  
+functionPairFromString  <-  function( space )
+    {
+    out = list()
+    
+    if( space == 'sRGB' )
+        {
+        out$OETF       = OETF_sRGB
+        out$OETFinv    = OETFinv_sRGB
+        }
+    else if( space == 'BT.709' )
+        {
+        out$OETF       = OETF_BT.709
+        out$OETFinv    = OETFinv_BT.709
+        }            
+    else if( space == 'BT.2020' )
+        {
+        out$OETF       = OETF_BT.2020
+        out$OETFinv    = OETFinv_BT.2020
+        }                        
+    else if( space == '240M' )
+        {
+        out$OETF       = OETF_240M
+        out$OETFinv    = OETFinv_240M
+        }                                    
+    else if( space == 'ProPhotoRGB' )
+        {
+        out$OETF       = OETF_ProPhotoRGB
+        out$OETFinv    = OETFinv_ProPhotoRGB
+        }
+    else
+        {
+        log.string( ERROR, "space='%s' is unknown.", space )
+        return(NULL)
+        }            
+
+    return(out)
     }
     
     
@@ -184,28 +334,43 @@ uninstallRGB  <-  function( space )
     }
     
     
-getRGB  <-  function( space )
+getRGB  <-  function( space, full=TRUE )
     {   
     idx = spaceIndex(space)
     if( is.na(idx) )    return(NULL)
 
-    #if( short )
-    #    return( list( space=p.ListRGB[[idx]]$space, primaries=p.ListRGB[[idx]]$primaries  ) )
+    if( ! full )
+        {
+        #   just the first 5 items, and no transfer functions
+        return( p.ListRGB[[idx]][ 1:5 ] )
+        }
+
 
     out    = p.ListRGB[[idx]]
     
-    if( is.numeric(p.ListRGB[[idx]]$gamma) )
-        {
-        out$EOCF    = function( x ) { x^(p.ListRGB[[idx]]$gamma) }        
-        out$OECF    = function( x ) { x^(1/p.ListRGB[[idx]]$gamma) }
-        }
+    if( is.numeric(p.ListRGB[[idx]]$OETF) )
+        out$OETF    = function( x ) { x^(1/p.ListRGB[[idx]]$OETF) } 
     else
-        {
-        out$EOCF    = p.ListRGB[[idx]]$gamma[[1]]        
-        out$OECF    = p.ListRGB[[idx]]$gamma[[2]]
-        }
+        out$OETF    = p.ListRGB[[idx]]$OETF
 
-    out$gamma = NULL
+    if( is.numeric(p.ListRGB[[idx]]$EOTF) )
+        out$EOTF    = function( x ) { x^(p.ListRGB[[idx]]$EOTF) } 
+    else
+        out$EOTF    = p.ListRGB[[idx]]$EOTF
+        
+    # for OOTF, replace character string by a function
+    if( out$OOTF == '1' )
+        out$OOTF    = function(x) { x }     # identity
+    else        
+        out$OOTF    = function(x) { out$EOTF(out$OETF(x)) } # not identity
+
+
+    #   erase ones we don't want
+    out$OETFinv         = NULL
+    out$EOTFinv         = NULL
+    out$OETFinv.fitted  = NULL
+    out$EOTF.fitted     = NULL
+
 
     return( out )
     }
@@ -243,10 +408,70 @@ summaryRGB  <-  function( verbosity=1 )
     rownames(mat) = c('X','Y','Z')
     out$white   = t(mat)
     
-    out$gamma   = sapply( p.ListRGB, function(s) { ifelse( is.numeric(s$gamma),as.character(s$gamma),'function-pair') } )
+    #   add column for OETF
+    myfun <- function( s )
+        {
+        if( is.numeric(s$OETFinv) )
+            out = sprintf( "1/%.2f", s$OETFinv )
+        else
+            out = sprintf( "1/~%.2f", s$OETFinv.fitted )
+        return( out )
+        }
+    out$OETF   = sapply( p.ListRGB, myfun )
     
+    
+    #   add column for EOTF
+    myfun <- function( s )
+        {
+        if( is.numeric(s$EOTF) )
+            out = sprintf( "%.2f", s$EOTF )
+        else
+            out = sprintf( "~%.2f", s$EOTF.fitted )
+        return( out )
+        }
+    out$EOTF   = sapply( p.ListRGB, myfun )
+
+    
+    #   add column for OOTF
+    myfun <- function( s )
+        {
+        return( s$OOTF )
+        }
+    out$OOTF   = sapply( p.ListRGB, myfun )
+
     return(out)
     }
+    
+    
+#   space           name of the space
+#   return value    index in p.ListRGB, partial matching and case-insensitive
+#                   if no match, then NA_integer_
+spaceIndex <- function( space )
+    {
+    ok  = is.character(space)  &&  length(space)==1
+    if( ! ok )
+        {
+        log.string( ERROR, "space is not a character vector of length 1." )
+        return(NA_integer_)
+        }
+        
+    theNames    = names(p.ListRGB)
+    if( is.null(theNames)  ||  length(theNames)==0 )
+        {
+        log.string( ERROR, "ERROR internal.  There are no installed RGB spaces." )
+        return(NA_integer_)
+        }
+
+    idx = pmatch( toupper(space), toupper(theNames) )
+    if( is.na(idx) )
+        {
+        log.string( ERROR, "space='%s' matches no installed spaces, or multiple spaces.", space )
+        return(NA_integer_)
+        }
+
+    return(idx)
+    }
+        
 
     
 #############     sRGB  EOCF and OECF [0,1]  <-->  [0,1]   ###############    

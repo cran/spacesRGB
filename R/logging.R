@@ -18,7 +18,7 @@ log.string <- function( level, msg, ... )
     
     if( ! is.integer(level) )
         {
-        cat( "log.string(). level is not an integer.\n" )
+        cat( "spacesRGB::log.string(). level is not an integer.\n" )
         return( invisible(FALSE) )
         }
         
@@ -34,6 +34,9 @@ log.string <- function( level, msg, ... )
         namefun = tryCatch( deparse(sys.call(where)[[1L]]), error=function(e) "[console]" )
     else
         namefun = "[??]"
+        
+    if( ! grepl( "^spacesRGB", namefun ) )
+        namefun = paste0( "spacesRGB::", namefun, collapse='' )
 
     mess    = paste0( namefun, "(). ", names(level), ".  ", msg, collapse='' )
 

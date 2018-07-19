@@ -45,9 +45,7 @@ testXYZ <- function()
         space   = rownames(data.space)[k]
         
         time_start      = gettime()               
-        
-        
-        
+
         XYZ             = XYZfromRGB( RGB, space=space, max=255 )$XYZ    
         RGB.back        = RGBfromXYZ( XYZ, space=space, max=255 )$RGB      #; print( 'RGB OK' )
         time_elapsed    = gettime() - time_start
@@ -57,9 +55,9 @@ testXYZ <- function()
         printf( "%s -> XYZ -> %s    max(delta)=%g   %d samples at %g sec/sample", 
                             space, space, max(delta), count, time_elapsed/count )
          
-        gamma   = data.space$gamma[k]
+        OETF   = data.space$OETF[k]
         
-        tol = ifelse( gamma=='function-pair', 5.e-12, 5.e-8 )    # pure gamma gives problems near 0 !
+        tol = ifelse( grepl('~',OETF), 5.e-12, 5.e-8 )    # pure gamma gives problems near 0 !
         
         failures = sum( tol < delta )   
         if( 0 < failures )
@@ -69,7 +67,7 @@ testXYZ <- function()
                         failures, space, space, delta[idx] )
 
             df  = data.frame( row.names=1 )
-            df$sRGB         = RGB[idx, ,drop=FALSE]
+            df$RGB          = RGB[idx, ,drop=FALSE]
             df$XYZ          = XYZ[idx, ,drop=FALSE]
             df$RGB.back     = RGB.back[idx, ,drop=FALSE]        
             print( df )
