@@ -17,20 +17,25 @@ The XYZ are assumed to be viewed under the white-point of the given RGB \code{sp
 
 \item{RGB}{a numeric Nx3 matrix with linear RGB coordinates in the rows,
 or a vector that can be converted to such a matrix, by row.
-The RGB are assumed normalized to the unit cube, but are allowed to be outside it.}
+The RGB may be outside the corresponding domain box (either scene or display), see \bold{Details}.
+}
 
 \item{space}{the name of an installed RGB space.
 The name matching is partial and case-insensitive.}
 
 \item{which}{the input linear RGB - either \code{'scene'} or \code{'display'}.
-Usually the OOTF for the space is the identity and so these two are the same.
+% Usually the OOTF for the space is the identity and so these two are the same.
 }
 
-\item{TF}{if not \code{NULL}, \code{TF} overrides the appropriate transfer function of \code{space}.
-\code{TF} can be a positive number, or function that takes the interval [0,1] to itself.
-If \code{TF=1}, the output RGB values are actually linear, and not clamped (see \bold{Value}).
-If \code{TF}  is not \code{NULL} in \code{SignalRGBfromLinearRGB()},
-then \code{space} and \code{which} are ignored.
+\item{TF}{if not \code{NULL}, \code{TF} is a \code{TransferFunction}
+that overrides the appropriate transfer function of \code{space}.
+\code{TF} can also be a positive number.
+If \code{TF=1}, then \code{TF} is set to \code{identity.TF},
+so the returned RGB values are actually linear, and they are not clamped to the appropriate domain box
+(see \bold{Value}).
+If \code{TF!=1} it is used to create either
+\code{power.EOTF()} or \code{power.OETF()} as approriate.
+If \code{TF} is not \code{NULL} in \code{SignalRGBfromLinearRGB()}, then \code{space} is ignored.
 }
 
 \item{maxSignal}{maximum value of non-linear \code{RGB}.
@@ -41,11 +46,11 @@ Even when 1, they are still taken to be non-linear Signal values.}
 \value{
 a \code{data.frame} with N rows and these columns
 \item{RGB}{signal RGB.
-If \code{TF} is not 1, all input linear RGB values are clamped to the unit cube,
-which implies that the signal RGBs are \emph{inside} the cube \code{[0,maxSignal]}^\eqn{3}.
+If \code{TF} is not the identity, all input linear RGB values are clamped to the appropriate domain box,
+which implies that the signal RGBs are inside the cube \code{[0,maxSignal]}^\eqn{3}.
 Values are not rounded.}
 
-\item{OutOfGamut}{logical vector, TRUE means the input linear RGB was outside the unit cube before clamping it}
+\item{OutOfGamut}{logical vector, TRUE means the input linear RGB was outside the domain box before clamping it.}
 
 In case of error, the functions return NULL.
 }
@@ -60,14 +65,15 @@ Wikipedia. \bold{RGB color space}.
 \seealso{
 \code{\link{XYZfromRGB}()},
 \code{\link{LinearRGBfromSignalRGB}()},
-\code{\link{installRGB}()}
+\code{\link{installRGB}()},
+\code{\link{identity.TF}}
 }
 
 \examples{
 RGBfromXYZ( c(80.310897,90.306510,84.613450, 100,100,100)/100, max=255 )
-##       RGB.R    RGB.G    RGB.B     OutOfGamut
-##  1 230.1514 249.4148 225.2711          FALSE
-##  2 255.0000 249.1150 244.4963           TRUE
+##       RGB.R    RGB.G    RGB.B OutOfGamut
+##  1 230.1676 249.4122 225.2472      FALSE
+##  2 255.0000 249.1125 244.4704       TRUE
 }
 
 \keyword{RGB}

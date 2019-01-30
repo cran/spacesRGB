@@ -18,9 +18,17 @@ log.string <- function( level, msg, ... )
     
     if( ! is.integer(level) )
         {
-        cat( "spacesRGB::log.string(). level is not an integer.\n" )
+        cat( "log.string(). level is not an integer.\n", file=conn )
         return( invisible(FALSE) )
         }
+        
+    generation  = 1L
+    if( 2 <= length(level) )
+        {
+        #   hack to get higher generation parents !!
+        generation  = level[2]
+        level       = level[1]  # this preserves names(level[1])
+        }          
         
     msg = sprintf( msg[1], ... )    # should this really be msg[1] ?
 
@@ -28,16 +36,16 @@ log.string <- function( level, msg, ... )
     #print( "log.string" )
     # print( sys.status() )
         
-    where   = sys.parent(1)  # ; print(where)
+    where   = sys.parent(generation)  # ; print(where)
   
     if( 0 < where )
         namefun = tryCatch( deparse(sys.call(where)[[1L]]), error=function(e) "[console]" )
     else
         namefun = "[??]"
-        
+
     if( ! grepl( "^spacesRGB", namefun ) )
         namefun = paste0( "spacesRGB::", namefun, collapse='' )
-
+        
     mess    = paste0( namefun, "(). ", names(level), ".  ", msg, collapse='' )
 
     if( level <= FATAL )

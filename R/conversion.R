@@ -23,15 +23,23 @@ XYZfromRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
     # verify space                          
     idx = spaceIndex( space )
     if( is.na(idx) )    return(NULL)
+    
+    # verify which
+    w   = endIndex(which)
+    if( is.na(w) )      return(NULL)
 
-    out$XYZ = tcrossprod( out$RGB, p.ListRGB[[idx]]$RGB2XYZ )
+    if( w == 1 )
+        RGB2XYZ = p.ListRGB[[idx]]$scene$RGB2XYZ
+    else
+        RGB2XYZ = p.ListRGB[[idx]]$display$RGB2XYZ
+    
+    out$XYZ = tcrossprod( out$RGB, RGB2XYZ )
     #   colnames(out$XYZ) = c('X','Y','Z')
     
     out$RGB = NULL
     
     return( out )
     }
-
 
 #   XYZ         for viewing under the white-point of the RGB space (usually D65), with Y=100 for white
 #   space       RGB space, e.g. 'sRGB', 'AdobeRGB', ...
@@ -51,8 +59,17 @@ RGBfromXYZ <- function( XYZ, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
     # verify space 
     idx = spaceIndex( space )
     if( is.na(idx) )    return(NULL)
+    
+    # verify which
+    w   = endIndex(which)
+    if( is.na(w) )      return(NULL)
 
-    RGB = tcrossprod( XYZ, p.ListRGB[[idx]]$XYZ2RGB )   # t(M %*% t(XYZ))    # print( RGB[1, ] - 1 )
+    if( w == 1 )
+        XYZ2RGB = p.ListRGB[[idx]]$scene$XYZ2RGB
+    else
+        XYZ2RGB = p.ListRGB[[idx]]$display$XYZ2RGB    
+
+    RGB = tcrossprod( XYZ, XYZ2RGB )   # t(M %*% t(XYZ))    # print( RGB[1, ] - 1 )
 
     return( SignalRGBfromLinearRGB( RGB, space=space, which=which, TF=TF, maxSignal=maxSignal ) )
     }
@@ -79,68 +96,117 @@ SignalRGBfromLinearRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
     RGB = prepareNxM(RGB)
     if( is.null(RGB) )  return(NULL)
 
-    # The out-of-gamut flag is a column vector of Boolean true/false values.  Each
-    # entry corresponds to one row of the input matrix XYZ.
-    # There is numerical tolerance here, designed for points in XYZ that should map to vertices of the RGB cube
-    lo  = -1.e-7
-    hi  = 1 + 1.e-7
-    OutOfGamut  = (RGB[ ,1] < lo  |  RGB[ ,1] > hi  |  RGB[ ,2] < lo  |  RGB[ ,2] > hi  |  RGB[ ,3] < lo  |  RGB[ ,3] > hi)
-
+    # verify which
+    w   = endIndex(which)
+    if( is.na(w) )      return(NULL)    
     
+
     if( is.null(TF) )
         {
         # verify space 
         idx = spaceIndex( space )
         if( is.na(idx) )    return(NULL)
-            
+
         theSpace   = p.ListRGB[[idx]]
     
-        if( which == 'scene' )
-            TF  = theSpace$OETF         # forward to signal
-        else if( which == 'display' )
-            TF  = theSpace$EOTFinv      # backward to signal
-        else
+        if( w == 1 )
+            TF  = theSpace$OETF         # forwards from scene to signal
+        else if( is.invertible(theSpace$EOTF) )
+            TF  = (theSpace$EOTF)^-1    # backwards from display to signal
+        else 
             {
-            log.string( ERROR, "which='%s' is invalid.", which )
+            log.string( ERROR, "For RGB space='%s', the EOTF is not invertible.", space )
             return(NULL)
-            }
-        }
-
-    # convert from linear to signal
-    if( is.function(TF) )
-        {
-        #   clamp RGB to the unit cube  
-        RGB[ RGB<0 ] = 0
-        RGB[ RGB>1 ] = 1 
-        
-        RGBsignal  =  TF( RGB )    
+            }    
         }
     else if( is.numeric(TF)  &&  length(TF)==1  &&  0 < TF )
         {
         if( TF == 1 )
-            RGBsignal   = RGB   # no clamping, identity transfer
+            TF  = identity.TF           # no clamping
+        else if( w == 1 )
+            TF  = power.OETF(TF)        # forward from scene to signal
         else
-            {
-            #   clamp RGB to the unit cube  
-            RGB[ RGB<0 ] = 0
-            RGB[ RGB>1 ] = 1
-            RGBsignal    = RGB ^ (1/TF)
-            }
+            TF  = power.EOTF(TF)^-1     # backward from display  to signal
         }
-    else
+        
+    if( ! is.TransferFunction(TF) )        
         {
-        log.string( ERROR, "TF is invalid."  )
+        log.string( ERROR, "argument TF is invalid."  )
         return(NULL)
-        }
-
-    RGBsignal = maxSignal * RGBsignal
-
-    colnames(RGBsignal) = c('R','G','B')
-
+        }        
+        
     rnames  = rownames(RGB)
     if( is.null(rnames)  ||  0<anyDuplicated(rnames)  )
         #   rnames is no good !  Use trivial names instead.
         rnames = 1:nrow(RGB)
+
+        
+        
+        
+        
+        
+    #   get the domain of TF and set lo and hi from that domain        
+    if( is.identity(TF) )
+        {
+        #    no domain available, use unit cube
+        lo  = 0
+        hi  = 1       
+        tol = 1.e-7
+        OutOfGamut  = (RGB[ ,1] < lo-tol  |  RGB[ ,1] > hi+tol  |  RGB[ ,2] < lo-tol  |  RGB[ ,2] > hi+tol  |  RGB[ ,3] < lo-tol  |  RGB[ ,3] > hi+tol)
+
+        #   no clamping
+        RGBsignal   = RGB
+
+        #   OutOfGamut  = FALSE     # logical( nrow(RGB) )
+        }
+    else
+        {
+        # convert from linear to signal        
+        domain  = domain(TF)    # TF$element[[1]]$domain
+
+        lo      = domain[1, ]       #lo  = -1.e-7
+        hi      = domain[2, ]       #hi  = 1 + 1.e-7        
+        
+        if( length(lo) == 1 )
+            {
+            lo = rep(lo,3)
+            hi = rep(hi,3)
+            }
+            
+        # The out-of-gamut flag is a column vector of Boolean true/false values.  Each
+        # entry corresponds to one row of the input matrix RGB.
+        # There is numerical tolerance here, designed for points in XYZ that should map to vertices of the RGB cube
+        tol = 1.e-7
+        OutOfGamut  = (RGB[ ,1] < lo[1]-tol  |  RGB[ ,1] > hi[1]+tol  |  RGB[ ,2] < lo[2]-tol  |  RGB[ ,2] > hi[2]+tol  |  RGB[ ,3] < lo[3]-tol  |  RGB[ ,3] > hi[3]+tol)
+
+        #   clamp RGB to domain
+        lo      = domain[1, ]       #lo  = -1.e-7
+        hi      = domain[2, ]       #hi  = 1 + 1.e-7        
+
+        if( length(lo) == 1 )
+            {
+            #   make this quick
+            RGB[ RGB<lo ] = lo
+            RGB[ RGB>hi ] = hi
+            }
+        else
+            {
+            #   make 2 big matrices, much slower
+            n   = nrow(RGB)
+            
+            lo  = matrix( lo, n, 3, byrow=TRUE )
+            hi  = matrix( hi, n, 3, byrow=TRUE )
+            
+            RGB = pmin( pmax(RGB,lo), hi )
+            }
+
+        RGBsignal  =  transfer( TF, RGB )
+        }
+
+
+    RGBsignal = maxSignal * RGBsignal
+
+    colnames(RGBsignal) = c('R','G','B')
 
     out = data.frame( row.names=rnames )
     out$RGB             = RGBsignal
@@ -160,6 +226,10 @@ LinearRGBfromSignalRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
     RGB = prepareNxM(RGB)
     if( is.null(RGB) )  return(NULL)
     
+    # verify which
+    w   = endIndex(which)
+    if( is.na(w) )      return(NULL)            
+    
     # verify maxSignal
     ok  = is.numeric(maxSignal)  &&  length(maxSignal)==1  &&  0<maxSignal
     if( ! ok )
@@ -167,13 +237,15 @@ LinearRGBfromSignalRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
         log.string( ERROR, "maxSignal='%s' is not a positive number.", as.character(maxSignal) )
         return(NULL)
         }    
+        
+    rnames  = rownames(RGB)
+    if( is.null(rnames)  ||  0<anyDuplicated(rnames)  )
+        #   rnames is no good !  Use trivial names instead.
+        rnames = 1:nrow(RGB)        
                          
     RGB = RGB/maxSignal
     
-    lo  = 0
-    hi  = 1
-    OutOfGamut  = (RGB[ ,1] < lo  |  RGB[ ,1] > hi  |  RGB[ ,2] < lo  |  RGB[ ,2] > hi  |  RGB[ ,3] < lo  |  RGB[ ,3] > hi)
-    
+
     if( is.null(TF) )
         {
         # verify space 
@@ -182,50 +254,53 @@ LinearRGBfromSignalRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
 
         theSpace   = p.ListRGB[[idx]]
 
-        if( which == 'scene' )
-            TF  = theSpace$OETFinv      # backwards to scene
-        else if( which == 'display' )
+        if( w == 2 )
             TF  = theSpace$EOTF         # forwards to display
-        else
+        else if( is.invertible(theSpace$OETF) )
+            TF  = (theSpace$OETF)^-1    # backwards to scene
+        else 
             {
-            log.string( ERROR, "which='%s' is invalid.", as.character(which) )
+            log.string( ERROR, "For RGB space='%s', the OETF is not invertible.", space )
             return(NULL)
-            }            
-        }
-
-    if( is.function( TF ) )
-        {
-        #   clamp RGB to the unit cube (inside gamut)
-        RGB[ RGB<0 ]    = 0
-        RGB[ RGB>1 ]    = 1         
-        
-        RGBlin  = TF( RGB ) 
+            }    
         }
     else if( is.numeric(TF) &&  length(TF)==1  &&  0 < TF )
         {
         if( TF == 1 )
-            RGBlin = RGB        # identity, so copy without clamping
+            TF  = identity.TF           # no clamping
+        else if( w == 1 )
+            TF  = power.OETF(TF)^-1     # backward to scene
         else
-            {
-            #   clamp RGB to the unit cube (inside gamut)
-            RGB[ RGB<0 ]    = 0
-            RGB[ RGB>1 ]    = 1
-            
-            RGBlin  = RGB ^ TF
-            }
+            TF  = power.EOTF(TF)        # forward to display
         }
-    else
+
+    if( ! is.TransferFunction( TF ) )
         {
         log.string( ERROR, "argument TF is invalid."  )
         return(NULL)
+        }        
+
+
+    #  perhaps TODO ? -- get the domain of TF and set lo and hi from that domain
+    lo  = 0
+    hi  = 1
+    OutOfGamut  = (RGB[ ,1] < lo  |  RGB[ ,1] > hi  |  RGB[ ,2] < lo  |  RGB[ ,2] > hi  |  RGB[ ,3] < lo  |  RGB[ ,3] > hi)
+    
+    if( is.identity( TF ) )
+        {
+        RGBlin = RGB        # TF is the identity, so copy without clamping        
         }
+    else
+        {
+        #   clamp RGB to the unit cube (inside the normalized signal RGB gamut)
+        RGB[ RGB<0 ]    = 0
+        RGB[ RGB>1 ]    = 1
+        
+        RGBlin  = transfer( TF, RGB )   #; print( rownames(RGBlin) )        
+        }
+        
     
     colnames(RGBlin) = c('R','G','B')
-    
-    rnames  = rownames(RGB)
-    if( is.null(rnames)  ||  0<anyDuplicated(rnames)  )
-        #   rnames is no good !  Use trivial names instead.
-        rnames = 1:nrow(RGB)
 
     out = data.frame( row.names=rnames )
     out$RGB             = RGBlin
@@ -233,6 +308,20 @@ LinearRGBfromSignalRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
     
     return( out )
     }
+    
+
+endIndex <- function( which )
+    {
+    w   = pmatch( tolower(which), c('scene','display') )
+    if( is.na(w) )
+        {
+        log.string( ERROR, "which='%s' is invalid.", which )
+        return(NA_integer_)
+        }
+
+    return( w )
+    }
+    
     
 
 

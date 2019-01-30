@@ -63,7 +63,7 @@ testInstallation <- function()
     prim    = matrix( c(0.60,0.30,  0.31,0.61,  0.11,0.11 ), 3, 2, byrow=T )
     white   = c( 95, 100, 205 )     # note Y=100 instead of the usual 1
 
-    if( ! installRGB( space, prim, white, OETF=2, over=TRUE ) )
+    if( ! installRGB( space, scene=list(primaries=prim,white=white), OETF=2, over=TRUE ) )
         {
         printf( "Cannot install space='%s'.", space )
         return(FALSE)
@@ -75,7 +75,7 @@ testInstallation <- function()
     prim    = rbind( prim, XYZ2xyY( white )[1:2] )  
 
         
-    XYZ = XYZfromRGB( RGB, space='dummy' )$XYZ
+    XYZ = XYZfromRGB( RGB, space=space )$XYZ
     xy  = XYZ2xyY( XYZ )[ , 1:2 ]
     
     delta   = rowSums( abs(xy - prim) )  #; print(max(delta))
@@ -99,12 +99,12 @@ testInstallation <- function()
         
     #   now go from white to RGB
     theSpace    = getRGB(space)
-    XYZ.white   = theSpace$whiteXYZ   # xyY2XYZ( c(white,1) )
+    XYZ.white   = getWhiteXYZ( space, which='scene' )   #theSpace$whiteXYZ   # xyY2XYZ( c(white,1) )
     RGB.peak    = c(1,1,1)
     
-    RGB.white = RGBfromXYZ( XYZ.white, 'dummy', TF=1 )$RGB  #; print( RGB.white )
-    delta   =  abs(RGB.white - RGB.peak)  ; cat( 'delta=', delta, '\n' )
-    failures = sum( tol < delta )   
+    RGB.white   = RGBfromXYZ( XYZ.white, space, TF=1 )$RGB  ; print( RGB.white )
+    delta       =  abs(RGB.white - RGB.peak)  ; cat( 'delta=', delta, '\n' )
+    failures    = sum( tol < delta )   
     if( 0 < failures )
         {
         idx = which.max(delta)        

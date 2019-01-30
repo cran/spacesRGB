@@ -1,23 +1,116 @@
 
 
-# functions by Glenn Davis
+exportClasses(TransferFunction)
+
+## methods for class TransferFunction
+S3method(is.identity,TransferFunction)
+S3method(is.invertible,TransferFunction)
+S3method(dimension,TransferFunction)
+S3method(orientation,TransferFunction)
+S3method(domain,TransferFunction)
+S3method(inverse,TransferFunction)
+S3method(transfer,TransferFunction)
+S3method(composition,TransferFunction)
+S3method(metadata,TransferFunction)
+S3method("metadata<-",TransferFunction)
+S3method(validate,TransferFunction)
+S3method("^",TransferFunction)
+S3method("*",TransferFunction)
+S3method("%;%",TransferFunction)
+S3method("%X%",TransferFunction)
+S3method("%O%",TransferFunction)
+S3method(plot,TransferFunction)
+S3method(print,TransferFunction)
+
+export( is.identity,
+        is.invertible,
+        dimension,
+        orientation,
+        domain,
+        inverse,
+        transfer,
+        composition,
+        validate,
+        metadata,
+        "metadata<-",
+        "%;%",
+        "%X%",
+        "%O%"
+        )
+
+export( TransferFunction,
+        is.TransferFunction 
+        )
+
+export( identity.TF
+        )
+        
+#   functions that are already generic, for S3 classes    
+export( print.TransferFunction,
+        plot.TransferFunction
+        )        
+        
+
+        
+#   basic un-parameterized TransferFunctions        
+export( sRGB.EOTF,
+        BT.709.EOTF,
+        BT.2020.EOTF,
+        ProPhotoRGB.EOTF,
+        SMPTE.240M.EOTF
+        )
+        
+#   basic parameterized TransferFunctions        
+export( power.OETF,
+        power.EOTF,
+        power.OOTF,
+        affine.TF,        
+        BT.1886.EOTF,
+        XYZfromRGB.TF
+        )        
+        
+#   ACES-related TransferFunctions
+export( RRT.TF,         # not parameterized
+        general.RRT,    # parameterized
+        general.OOTF,
+        general.PODT,
+        HLG.OOTF,
+        HLG.OETF,
+        PQ.EOTF,
+        DCDM.EOTF,
+        FullRangeToSMPTE.TF
+        )        
+
+        
+        
+        
+# plain functions 
 export( installRGB,        
         uninstallRGB,
         getRGB,
+        getWhiteXYZ,        
         summaryRGB,
         XYZfromRGB,
         RGBfromXYZ,
         SignalRGBfromLinearRGB,
-        LinearRGBfromSignalRGB,
-        plotPatchesRGB
+        LinearRGBfromSignalRGB
         )
         
-#export( DisplayFromLinear_sRGB,
-#        LinearFromDisplay_sRGB,
-#        DisplayFromLinear_ProPhotoRGB,
-#        LinearFromDisplay_ProPhotoRGB
-#        )
+export( plotPatchesRGB
+        )
+        
+export( AP0_PRI,    #   ACES Primaries from SMPTE ST2065-1
+        AP1_PRI,    #   Working space and rendering primaries for ACES 1.0
+        REC709_PRI,
+        REC2020_PRI,
+        P3D60_PRI,
+        P3D65_PRI,
+        P3DCI_PRI
+        )
+        
+        
 
-importFrom( stats, splinefun, optimize )
+importFrom( stats, splinefun, optimize, uniroot )
 importFrom( grDevices, rgb )
-importFrom( graphics, par, plot.new, plot.window, polygon, rect, text )
+importFrom( graphics, par, plot.new, plot.window, polygon, rect, text, abline, lines, plot, title )
+importFrom( utils, modifyList )

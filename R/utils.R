@@ -9,6 +9,141 @@ gettime <- function()
         return( as.double( base::Sys.time() ) )
     }
     
+    
+#   primaries   a 3x2 matrix with RGB xy's, OR a 4x2 matrix with RGBW xy's
+#   white       white xy or XYZ if primaries is 3x2, or just Y if primaries is 2x4
+#
+#   returns a list with 3 items:
+#       primaries   4x2 matrix with all 4 chromaticities and names
+#       whiteXYZ    3-vector with all names
+#       RGB2XYZ     3x3 matrix
+#       XYZ2RGB     3x3 matrix
+#   returns NULL in case of error
+
+calculateDataXYZ <- function( primaries, white )
+    {
+    #----   verify primaries    ----#
+    primaries   = prepareNxM( primaries, 2 )
+    if( is.null(primaries) )
+        {
+        log.string( ERROR, "primaries is not a 3x2 or 4x2 numeric matrix." )
+        return(NULL)
+        }
+        
+    if( nrow(primaries) == 3 )
+        {
+        #----   verify white    ----#
+        valid   = is.numeric(white)  &&  length(white) %in% (2:3)
+        if( ! valid )
+            {
+            log.string( ERROR, "white is not a numeric 2-vector or 3-vector." )
+            return(NULL)
+            }
+            
+        if( length(white) == 2 )
+            {
+            white.xy    = white
+            white.XYZ   = xyY2XYZ( c(white,1) )
+            }
+        else
+            {
+            white.xy    = XYZ2xyY( white )[1:2]
+            white.XYZ   = white
+            }
+
+        primaries   = rbind( primaries, white.xy )  #   now 4x2
+        }
+    else if( nrow(primaries) == 4 )
+        {
+        #----   verify white    ----#
+        valid   = is.numeric(white)  &&  length(white)==1  &&  0<white
+        if( ! valid )
+            {
+            log.string( ERROR, "white is not a positive number." )
+            return(NULL)
+            }
+            
+        white.XYZ   = xyY2XYZ( c(primaries[4, ],white) )    #; print( white.XYZ )
+        }
+    else
+        {
+        log.string( ERROR, "primaries is not a 3x2 or 4x2 numeric matrix." )
+        return(NULL)
+        }
+        
+    #   primaries is now 4x2
+    
+    prim    = cbind( primaries, 1 - rowSums(primaries) )
+    #valid   = all( 0 <= prim )
+    #if( ! valid )
+    #    {
+    #    log.string( ERROR, "primaries does not contain 4 valid chromaticies." )
+    #    print(prim)
+    #    return(NULL)
+    #    }
+    
+    dim(white.XYZ)  = NULL
+
+    out = list()
+        
+    out$primaries = primaries    
+    rownames(out$primaries)   = c('R','G','B','W')
+    colnames(out$primaries)   = c('x','y')
+          
+    names(white.XYZ)    = c('X','Y','Z')
+    out$whiteXYZ        = white.XYZ    
+    
+    prim        = prim[1:3,1:3] 
+    out$RGB2XYZ = projectiveMatrix( t(prim), white.XYZ )    
+    
+    if( is.null(out$RGB2XYZ) )
+        {
+        log.string( ERROR, "The 4 chromaticies are degenerate. Please check for non-degenerate triangle with white point in interior." )
+        return(NULL)
+        }
+        
+    colnames(out$RGB2XYZ)   = c('R','G','B')
+    rownames(out$RGB2XYZ)   = c('X','Y','Z')
+            
+        
+    out$XYZ2RGB = solve(out$RGB2XYZ)
+    
+    return(out)
+    }
+    
+    
+    
+# transfer function wrapper for calculateDataXYZ()
+
+XYZfromRGB.TF   <-  function( primaries, white )
+    {
+    dataXYZ = calculateDataXYZ( primaries, white )    
+    if( is.null(dataXYZ) )  return(NULL)
+    
+    fun     <- function( RGB )  { as.numeric( tcrossprod( RGB, dataXYZ$RGB2XYZ ) ) }
+    
+    funinv  <- function( XYZ )  { as.numeric( tcrossprod( XYZ, dataXYZ$XYZ2RGB ) ) }
+    
+    rgbinterval = c(-65504, 65504)
+    
+    cnames  = sprintf( "linear.%s", c('R','G','B') )
+    domain  = matrix( rgbinterval, 2, 3, dimnames=list(NULL,cnames) )
+    
+    #   make all vertices of cube, in 8x3 matrix
+    mat     = as.matrix( expand.grid( rgbinterval, rgbinterval, rgbinterval ) )
+    for( i in 1:nrow(mat) )
+        mat[i, ] = fun( mat[i, ] )
+    
+    orange              = apply( mat, 2, range ) #; print(orange)
+    colnames(orange)    = sprintf( "linear.%s", c('X','Y','Z') )
+    
+    out = spacesRGB::TransferFunction( fun, funinv, domain, orange, id=sigfunction() )    
+
+    metadata(out)   = list( primaries=dataXYZ$primaries, white=dataXYZ$whiteXYZ[2] )
+    
+    return( out )
+    }
+    
 
 #   projectiveMatrix()
 #    
@@ -29,7 +164,7 @@ gettime <- function()
 
 projectiveMatrix  <-  function( .matrix, .unit )
     {
-    a   = try( solve( .matrix, .unit ), silent=TRUE )
+    a   = try( solve( .matrix, .unit ), silent=TRUE ) 
     
     if( ! is.numeric(a) ) return(NULL)
     
@@ -41,34 +176,65 @@ projectiveMatrix  <-  function( .matrix, .unit )
     }
     
     
+
+    
+    
 ###########     argument processing     ##############
 #
 #   A   a non-empty numeric NxM matrix, or something that can be converted to be one
 #
 #   returns such a matrix, or NULL in case of error
 #
+#   This is intended to check user-supplied A, so there is a lot of checking.
+#
 prepareNxM  <-  function( A, M=3 )
-    {
-    ok  = is.numeric(A)  &&  ((length(A) %% M)==0)  &&  0<length(A)
+    {    
+    ok  = is.numeric(A) &&  0<length(A)  &&  (length(dim(A))<=2)
+    
+    ok  = ok  &&  ifelse( is.matrix(A), ncol(A)==M, ((length(A) %% M)==0)  )
+    
     if( ! ok )
         {
-        #print( "prepareNx3" )
-        #print( sys.frames() )
-        mess    = substr( as.character(A)[1], 1, 10 )
-        #arglist = list( ERROR, "A must be a non-empty numeric Nx3 matrix (with N>0). A='%s...'", mess )
-        #do.call( log.string, arglist, envir=parent.frame(n=3) )
-        #myfun   = log.string
-        #environment(myfun) = parent.frame(3)
-        log.string( ERROR, "Argument A must be a non-empty numeric Nx%d matrix (with N>0). A='%s...'", M, mess )
+        mess    = substr( as.character(A)[1], 1, 20 )
+        
+        Aname = deparse(substitute(A))        
+        
+        #   notice hack to make log.string() print name of parent function        
+        log.string( c(ERROR,2L), "Argument '%s' must be a non-empty numeric Nx%d matrix (with N>0). %s='%s...'", 
+                                    Aname, M, Aname, mess )
         return(NULL)
         }
     
-    if( is.null(dim(A)) )
+    if( ! is.matrix(A) )
         A = matrix( A, ncol=M, byrow=TRUE )
-    else if( ncol(A) != M )
-        A = t(A)
         
     return( A )
+    }
+    
+    
+#   parent  generation of parent to return
+#
+#   returns a character string, with the function name and its arguments    
+sigfunction <- function( parent=0 )
+    {
+    where   = sys.parent( parent+1 )    # add 1 because parent is relative to the calling function, and not to me.   ; print(where)
+  
+    if( where == 0 )    return( "[?]" )
+
+    out = tryCatch( deparse( sys.call(where) ), error=function(e) "[console]" )
+    
+    #   print( str( sys.call(where) )  )
+    
+    out = paste0( out, collapse='' )
+    
+    #   change spaces to Glenn style
+    #   out = gsub( ' = ', '=', out )
+    out = gsub( ' ', '', out )
+    out = gsub( ',', ', ', out )
+    out = gsub( "\\(", "( ", out )
+    out = gsub( "\\)", " )", out )
+    
+    return( out )
     }
     
     
