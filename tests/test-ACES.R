@@ -3,10 +3,13 @@
 if( 1 )
 {
 library( spacesRGB )
+#   ls(2)
 }
+options( width=128 )
 
-
-path = system.file( "CGATS.R", package='spacesRGB' )
+cat( 'getwd=', getwd(), '\n' )
+path = "CGATS.RR"       # system.file( "CGATS.R", package='spacesRGB' )
+file.info( path )
 source( path )
 
 

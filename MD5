@@ -1,6 +1,6 @@
-bf2d1e077edde692af996e29bafa8912 *DESCRIPTION
+eddf24142c71628061b00ff406cef4c6 *DESCRIPTION
 d2afa7766abeea0363a48d1bb6fb0c00 *NAMESPACE
-a9f97fe113f77b8fe1cf1e1b30312f63 *NEWS.md
+58307a392b1a716234895fefb8d84b7b *NEWS.md
 868ce3665aab59b43166e08cd89bd73e *R/ACES.R
 afe3cf3f875223424c0709b1f38af32d *R/DCDM.R
 f5ae050b5e862b456844620fcdb0eb6a *R/HLG.R
@@ -21,10 +21,11 @@ aeb310df68c8d49ac8a5d3443eafde6f *R/elemTransferFunction.R
 e776297045eb706402b2a9382c3c964e *R/sysdata.rda
 5f92f0b611fbfc3bb1d061552ca0b0d8 *R/tonescales.R
 0ba262e021aa290b0145172ad6b0e45e *R/utils.R
-bb8f7b560bfa02080fc1a027f29a2529 *build/vignette.rds
+f24a7a63e935a91b0f5c4932114b9826 *build/vignette.rds
 1e0eba898023913e61f1b0b31267b6b7 *inst/CGATS.R
+ee436108c39032216646361d7a98c3d5 *inst/doc/spacesRGB-guide.R
 442e127ab5d0bc159d2f69d5afccc0dd *inst/doc/spacesRGB-guide.Rmd
-5664f45ab56c256b4c318ae6caec13bc *inst/doc/spacesRGB-guide.html
+78681c2430b996e20928a2c8f479bcd1 *inst/doc/spacesRGB-guide.html
 c5453ed0fb36d585e58517c762cfef12 *man/DCDM.Rd
 22ae3bc2fac2e496ac73454e2a5c5443 *man/HLG.Rd
 bb2e3ebcfebcdaf3aa920c48fa6d7014 *man/OOTF.Rd
@@ -50,8 +51,9 @@ b1d2b22d7692761874fba4f67c83445d *man/primaries.Rd
 cbe0483c81010493e8260fdafd4ae131 *man/print.Rd
 d71abf34b85f84956bb36f6531c394b5 *man/transfer.Rd
 8a10a69dd5a1873381a81072f801b170 *man/validate.Rd
-5a77270b320ff243e5c79acbb3e3ba8f *tests/test-ACES.R
-24a302ff831d69c4382762dc809481ee *tests/test-conversions.R
+1e0eba898023913e61f1b0b31267b6b7 *tests/CGATS.RR
+4dd8a5537cd42d2c3fea0decf86ee6e3 *tests/test-ACES.R
+ddbb9aa6819bcd2a55827bb7cd1980b4 *tests/test-conversions.R
 183050c2efde7090b8be309f55abb283 *tests/test-installation.R
 49064c72ac0ea5ccfa5a671fe5e809cc *tests/test-plots.R
 c75ee59a5ef4062f199c483686b8315b *tests/test_values.txt

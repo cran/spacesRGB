@@ -2,9 +2,9 @@ Package: spacesRGB
 Type: Package
 Title: Standard and User-Defined RGB Color Spaces, with Conversion
         Between RGB and CIE XYZ
-Version: 1.2-2
+Version: 1.3-0
 Encoding: UTF-8
-Date: 2019-01-30
+Date: 2019-12-10
 Author: Glenn Davis [aut,cre]
 Maintainer: Glenn Davis <gdavis@gluonics.com>
 Description: Standard RGB spaces included are sRGB, 'Adobe' RGB, 'ProPhoto' RGB, BT.709, and others.  User-defined RGB spaces are also possible.  There is partial support for ACES Color workflows.
@@ -17,5 +17,5 @@ Repository: CRAN
 NeedsCompilation: no
 VignetteBuilder: knitr
 BuildVignettes: yes
-Packaged: 2019-01-30 15:18:02 UTC; Glenn
-Date/Publication: 2019-01-30 17:40:02 UTC
+Packaged: 2019-12-11 03:41:55 UTC; Glenn
+Date/Publication: 2019-12-11 16:40:02 UTC

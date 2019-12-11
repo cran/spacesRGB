@@ -1,5 +1,9 @@
 # NEWS for **spacesRGB** package
 
+### Version 1.3-0  [2019-12-10]
+
+* fixed tolerance for ATLAS alternative BLAS/LAPACK implementation
+
 ### Version 1.2-2  [2019-01-30]
 
 * added partial support for ACES Color workflows

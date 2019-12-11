@@ -77,12 +77,12 @@ testRGB <- function()
             if( which == 'scene' )
                 {
                 OETF   = data.space$OETF[k]
-                tol = ifelse( grepl('~',OETF), 5.e-12, 5.e-7 )    # pure gamma gives problems near 0 !
+                tol = ifelse( grepl('~',OETF), 5.e-12, 5.e-6 )    # pure gamma gives problems near 0 !  If not ATLAS, then 5.e-7 is OK
                 }
             else
                 {
                 EOTF   = data.space$EOTF[k]
-                tol = ifelse( grepl('~',EOTF), 5.e-12, 5.e-7 )    # pure gamma gives problems near 0 !
+                tol = ifelse( grepl('~',EOTF), 5.e-12, 5.e-6 )    # pure gamma gives problems near 0 !  If not ATLAS, then 5.e-7 is OK
                 }
             
             failures = sum( tol < delta )   
