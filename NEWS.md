@@ -1,5 +1,10 @@
 # NEWS for **spacesRGB** package
 
+### Version 1.4-0  [2021-12-06]
+
+* fixed `bibliography.bib` to be compatible with `pandoc` v. 2.16.2
+* fixed some stale URLs in `bibliography.bib` and man pages
+
 ### Version 1.3-0  [2019-12-10]
 
 * fixed tolerance for ATLAS alternative BLAS/LAPACK implementation

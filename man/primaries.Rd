@@ -48,7 +48,7 @@ D-Cinema Quality - Reference Projector and Environment for the Display of DCDM i
 2011.
 
 Wikipedia. \bold{DCI-P3}.
-\url{http://en.wikipedia.org/wiki/DCI-P3}.
+\url{https://en.wikipedia.org/wiki/DCI-P3}.
 
 
 

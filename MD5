@@ -1,6 +1,6 @@
-eddf24142c71628061b00ff406cef4c6 *DESCRIPTION
+89987095bfe8b437987a9b4153aa644f *DESCRIPTION
 d2afa7766abeea0363a48d1bb6fb0c00 *NAMESPACE
-58307a392b1a716234895fefb8d84b7b *NEWS.md
+bd0ef5afcd3e1e63c1f12006fc09bc7f *NEWS.md
 868ce3665aab59b43166e08cd89bd73e *R/ACES.R
 afe3cf3f875223424c0709b1f38af32d *R/DCDM.R
 f5ae050b5e862b456844620fcdb0eb6a *R/HLG.R
@@ -21,11 +21,11 @@ aeb310df68c8d49ac8a5d3443eafde6f *R/elemTransferFunction.R
 e776297045eb706402b2a9382c3c964e *R/sysdata.rda
 5f92f0b611fbfc3bb1d061552ca0b0d8 *R/tonescales.R
 0ba262e021aa290b0145172ad6b0e45e *R/utils.R
-f24a7a63e935a91b0f5c4932114b9826 *build/vignette.rds
+f6e9a324b4361d4d6250c34311b1befd *build/vignette.rds
 1e0eba898023913e61f1b0b31267b6b7 *inst/CGATS.R
 ee436108c39032216646361d7a98c3d5 *inst/doc/spacesRGB-guide.R
 442e127ab5d0bc159d2f69d5afccc0dd *inst/doc/spacesRGB-guide.Rmd
-78681c2430b996e20928a2c8f479bcd1 *inst/doc/spacesRGB-guide.html
+1b0bda5bb51fe8cdc2234ffcb5edfdef *inst/doc/spacesRGB-guide.html
 c5453ed0fb36d585e58517c762cfef12 *man/DCDM.Rd
 22ae3bc2fac2e496ac73454e2a5c5443 *man/HLG.Rd
 bb2e3ebcfebcdaf3aa920c48fa6d7014 *man/OOTF.Rd
@@ -38,7 +38,7 @@ d72ae6372327cb80e1b0ee23017b22cc *man/SMPTE.Rd
 5d67ebd08139e938e736621d46ca14b9 *man/TransferFunction.Rd
 5e22bf1778400e93b3d98e682c8aeea3 *man/XYZfromRGB.Rd
 1df016e60c09ca7ba972bbf235e4ff4e *man/basic-paramTF.Rd
-2e8400edb5ed808122f746442c3f73b7 *man/basicTF.Rd
+e7d986f05bcc55b8bd0f0a24553fb99c *man/basicTF.Rd
 d9e9cbe7a8139527ff251d646f920616 *man/composition.Rd
 04f90c4ec2e64075e8abe99cd980ad0c *man/installRGB.Rd
 b021234e072c1c30e3e3dd65d042003a *man/inverse.Rd
@@ -47,7 +47,7 @@ b021234e072c1c30e3e3dd65d042003a *man/inverse.Rd
 fb1893a2495c8e00679b3fa9d5000189 *man/miscTF.Rd
 ad9e940a808b9c2be6ce1a15a72f86b3 *man/plot.Rd
 15430745767badd61640a4fbd0470771 *man/plotPatchesRGB.Rd
-b1d2b22d7692761874fba4f67c83445d *man/primaries.Rd
+1c3a016b003505b5faed93e70d4bf86e *man/primaries.Rd
 cbe0483c81010493e8260fdafd4ae131 *man/print.Rd
 d71abf34b85f84956bb36f6531c394b5 *man/transfer.Rd
 8a10a69dd5a1873381a81072f801b170 *man/validate.Rd
@@ -57,7 +57,7 @@ ddbb9aa6819bcd2a55827bb7cd1980b4 *tests/test-conversions.R
 183050c2efde7090b8be309f55abb283 *tests/test-installation.R
 49064c72ac0ea5ccfa5a671fe5e809cc *tests/test-plots.R
 c75ee59a5ef4062f199c483686b8315b *tests/test_values.txt
-3171cb6b01c7118ff2378df1cb168505 *vignettes/bibliography.bib
+4600c77350d1d067a2d1e1e69666f582 *vignettes/bibliography.bib
 2b9536fa85d8ef23f37870fb46a770c3 *vignettes/diagram1.odt
 a62dbefd5c9323006603f087caf5422c *vignettes/diagram1.png
 1656eab98c3921eed141afeaa3e80522 *vignettes/diagram2.odt

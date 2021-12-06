@@ -35,7 +35,7 @@ All are easily inverted.
 
 \references{
 Wikipedia. \bold{sRGB}.
-\url{http://en.wikipedia.org/wiki/SRGB}.
+\url{https://en.wikipedia.org/wiki/SRGB}.
 
 BT.709.
 Parameter values for the HDTV standards for production and international programme exchange.
@@ -46,7 +46,7 @@ Parameter values for ultra-high definition television systems for production and
 October 2015.
 
 Wikipedia. \bold{ProPhoto RGB}.
-\url{http://en.wikipedia.org/wiki/ProPhoto_RGB_color_space}.
+\url{https://en.wikipedia.org/wiki/ProPhoto_RGB_color_space}.
 
 
 ANSI/SMPTE 240M-1995.
