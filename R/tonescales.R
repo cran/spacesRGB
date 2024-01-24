@@ -205,7 +205,7 @@ segmented_spline.TF <- function( PARAMS )
     ok  = is.list(PARAMS)  &&  !is.null( PARAMS$minPoint)  &&  !is.null(PARAMS$midPoint)  &&  !is.null(PARAMS$maxPoint)
     if( ! ok )
         {
-        log.string( ERROR, "PARAMS='%s' is invalid.", as.character(PARAMS)[1] )
+        log_string( ERROR, "PARAMS='%s' is invalid.", as.character(PARAMS)[1] )
         return(NULL)        
         }
     

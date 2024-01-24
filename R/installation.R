@@ -26,7 +26,7 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
     valid   = is.character(space)  &&  length(space)==1
     if( ! valid )
         {
-        log.string( ERROR, "space is not a character vector of length 1." )
+        log_string( ERROR, "space is not a character vector of length 1." )
         return(FALSE)
         }
     
@@ -34,27 +34,27 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
     
     if( is.finite(idx)  &&  ! overwrite )
         {
-        log.string( ERROR, "RGB space '%s' is already taken (at position %d), and overwrite is FALSE.", space, idx )
+        log_string( ERROR, "RGB space '%s' is already taken (at position %d), and overwrite is FALSE.", space, idx )
         return(FALSE)
         }
         
     ok  = is.null(scene)  ||  ( is.list(scene)  &&  length(scene)==2 )  || ( is.numeric(scene)  &&  length(scene)==8 )
     if( ! ok )
         {
-        log.string( ERROR, "Argument 'scene' is not a list of length 2, or a numeric of length 8." )
+        log_string( ERROR, "Argument 'scene' is not a list of length 2, or a numeric of length 8." )
         return(FALSE)
         }        
         
     ok  = is.null(display)  ||   ( is.list(display)  &&  length(display)==2 )  ||   ( is.numeric(display)  &&  length(display)==8 )
     if( ! ok )
         {
-        log.string( ERROR, "Argument 'display' is not a list of length 2, or a numeric of length 8." )
+        log_string( ERROR, "Argument 'display' is not a list of length 2, or a numeric of length 8." )
         return(FALSE)
         }
 
     if( is.null(scene)  &&  is.null(display) )
         {
-        log.string( ERROR, "Arguments 'scene' and 'display' cannot both be NULL." )
+        log_string( ERROR, "Arguments 'scene' and 'display' cannot both be NULL." )
         return(FALSE)
         }
         
@@ -91,7 +91,7 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
     
     if( ! is.null(OETF)  &&  ! is.null(EOTF)  &&  ! is.null(OOTF) )
         {
-        log.string( ERROR, "All 3 transfer functions cannot be specified." )
+        log_string( ERROR, "All 3 transfer functions cannot be specified." )
         return(FALSE)
         }
 
@@ -129,13 +129,13 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
         
         if( ! is.TransferFunction(tf)  )
             {
-            log.string( ERROR, "'%s' is not a valid TransferFunction.", names(listTF)[k] )
+            log_string( ERROR, "'%s' is not a valid TransferFunction.", names(listTF)[k] )
             return(FALSE)
             }
         
         if( ! (dimension(tf) %in% c(1,3))  )
             {
-            log.string( ERROR, "TransferFunction '%s' is invalid, because its dimension is %d.", 
+            log_string( ERROR, "TransferFunction '%s' is invalid, because its dimension is %d.", 
                             names(listTF)[k], dimension(tf) )
             return(FALSE)
             }
@@ -180,7 +180,7 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
         }
     else if( ! is.null(OOTF) )
         {
-        log.string( ERROR, "The OOTF cannot be specified alone." )
+        log_string( ERROR, "The OOTF cannot be specified alone." )
         return(FALSE)
         }
     else
@@ -240,7 +240,7 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
                 
                 if( length(white) != 3 )
                     {
-                    log.string( ERROR, "metadata white = %s is invalid.", nicevector(white) )
+                    log_string( ERROR, "metadata white = %s is invalid.", nicevector(white) )
                     return(FALSE)
                     }
                     
@@ -264,13 +264,13 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
 
     if( is.null(theSpace$scene) )
         {
-        log.string( ERROR, "Cannot assign scene primaries and white." )
+        log_string( ERROR, "Cannot assign scene primaries and white." )
         return(FALSE)        
         }
     
     if( is.null(theSpace$display) )
         {
-        log.string( ERROR, "Cannot assign display primaries and white." )
+        log_string( ERROR, "Cannot assign display primaries and white." )
         return(FALSE)        
         }
         
@@ -290,7 +290,7 @@ uninstallRGB  <-  function( space )
     valid   = is.character(space)  &&  length(space)==1
     if( ! valid )
         {
-        log.string( ERROR, "space is not a character vector of length 1." )
+        log_string( ERROR, "space is not a character vector of length 1." )
         return(FALSE)
         }
     
@@ -298,7 +298,7 @@ uninstallRGB  <-  function( space )
     
     if( is.na(idx)  )
         {
-        log.string( ERROR, "RGB space '%s' does not exist.", space )
+        log_string( ERROR, "RGB space '%s' does not exist.", space )
         return(FALSE)
         }    
     
@@ -352,7 +352,7 @@ getWhiteXYZ <- function( space, which='scene' )
 summaryRGB  <-  function( verbosity=1 )
     {
     if( length(p.ListRGB) == 0 )
-        log.string( WARN, "There are no installed RGB spaces !" )        
+        log_string( WARN, "There are no installed RGB spaces !" )        
         
     if( verbosity <= 0 )    return( names(p.ListRGB) )
     
@@ -439,21 +439,21 @@ spaceIndex <- function( space )
     ok  = is.character(space)  &&  length(space)==1
     if( ! ok )
         {
-        log.string( ERROR, "space is not a character vector of length 1." )
+        log_string( ERROR, "space is not a character vector of length 1." )
         return(NA_integer_)
         }
         
     theNames    = names(p.ListRGB)
     if( is.null(theNames)  ||  length(theNames)==0 )
         {
-        log.string( ERROR, "ERROR internal.  There are no installed RGB spaces." )
+        log_string( ERROR, "ERROR internal.  There are no installed RGB spaces." )
         return(NA_integer_)
         }
 
     idx = pmatch( toupper(space), toupper(theNames) )
     if( is.na(idx) )
         {
-        log.string( ERROR, "space='%s' matches no installed spaces, or multiple spaces.", space )
+        log_string( ERROR, "space='%s' matches no installed spaces, or multiple spaces.", space )
         return(NA_integer_)
         }
 
@@ -547,7 +547,7 @@ functionPairFromString  <-  function( space )
         }
     else
         {
-        log.string( ERROR, "space='%s' is unknown.", space )
+        log_string( ERROR, "space='%s' is unknown.", space )
         return(NULL)
         }            
 

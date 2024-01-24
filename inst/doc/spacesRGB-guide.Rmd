@@ -38,6 +38,8 @@ Without qualification, the non-linear _signal RGB_ is usually meant.
 This is the case for `grDevices::rgb()`,
 `grDevices::hsv()`,
 `grDevices::convertColor()`, etc.
+In this package, and in the functions `RGBfromXYZ()` and `XYZfromRGB()`,
+_signal RGB_ is meant.
 <!-- Sometimes we call "_signal RGB_"  _"display signal RGB"_ for emphasis. -->
 
 
@@ -166,7 +168,10 @@ To summarize, the RGB spaces in this section all have these simplifying properti
 <li>The scene primaries and whitepoint are the same as the display primaries and whitepoint.  These are expressed in CIE xy (or possibly XYZ for the whitepoint).
 This is equivalent to the fact that the 2 3x3 matrices in Figure 1.1 are inverses of each other.</li>
 <li>All transfer functions are univariate, with domain and range the interval [0,1], and operate in the same way on all 3 channels.</li>
-<li>The OOTF is the identity, or equivalently, the scene RGB and display RGB vectors are equal.
+<li>
+The OOTF is the identity, or equivalently, scene RGB is equal to display RGB.
+By property 1., this implies that scene XYZ is equal to display XYZ.
+</li>
 </ol>
 
 These 3 properties are enjoyed by all 16 working RGB spaces at Lindbloom @lindbloom.
@@ -219,10 +224,14 @@ for the OOTF $\gamma \approx 1.21$ (both are approximate).
 
 To summarize, this advanced RGB space has a non-trivial OOTF, but it still has these 2 simplifying properties:
 <ol>
-<li>The scene primaries and whitepoint are the same as the display primaries and whitepoint.  These are expressed in CIE xy (or possibly XYZ for the whitepoint).</li>
+<li>
+The scene primaries and whitepoint are the same as the display primaries and whitepoint.  
+These are expressed in CIE xy (or possibly XYZ for the whitepoint).
+This is equivalent to the fact that the 2 3x3 matrices in Figure 1.1 are inverses of each other.
+</li>
 <li>All transfer functions are univariate, with domain and range the interval [0,1], and operate in the same way on all 3 channels.</li>
 </ol>
-In section 4 we discuss ACES Color, which satisfies neither of these.
+In section 4 we will discuss ACES Color, which satisfies neither of these.
 But first, it is useful to discuss the transfer function implementation in more detail.
 <br><br><br>
 

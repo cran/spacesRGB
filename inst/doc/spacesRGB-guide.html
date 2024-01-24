@@ -12,10 +12,23 @@
 
 <meta name="author" content="Glenn Davis" />
 
-<meta name="date" content="2021-12-05" />
+<meta name="date" content="2024-01-23" />
 
 <title>spacesRGB User Guide</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -27,6 +40,7 @@
     </style>
 
 
+
 <style type="text/css">
   code {
     white-space: pre;
@@ -36,41 +50,69 @@
   }
 </style>
 <style type="text/css" data-origin="pandoc">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 
 </style>
 <script>
@@ -80,13 +122,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -97,8 +146,210 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -112,7 +363,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">spacesRGB User Guide</h1>
 <h4 class="author">Glenn Davis</h4>
-<h4 class="date">2021-12-05</h4>
+<h4 class="date">2024-01-23</h4>
 
 
 <div id="TOC">
@@ -120,12 +371,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#desktop-graphics-and-basic-broadcast-television"><span class="toc-section-number">1</span> Desktop Graphics and Basic Broadcast Television</a></li>
 <li><a href="#advanced-broadcast-television"><span class="toc-section-number">2</span> Advanced Broadcast Television</a></li>
 <li><a href="#the-transferfunction-s3-class"><span class="toc-section-number">3</span> The <code>TransferFunction</code> S3 Class</a></li>
-<li><a href="#aces-color---the-output-side"><span class="toc-section-number">4</span> ACES Color - The Output Side</a><ul>
+<li><a href="#aces-color---the-output-side"><span class="toc-section-number">4</span> ACES Color - The Output Side</a>
+<ul>
 <li><a href="#acknowledgements"><span class="toc-section-number">4.1</span> Acknowledgements</a></li>
 </ul></li>
 <li><a href="#references"><span class="toc-section-number">5</span> References</a></li>
 <li><a href="#appendix-a---built-in-rgb-spaces"><span class="toc-section-number">6</span> Appendix A - Built-in RGB Spaces</a></li>
-<li><a href="#appendix-b---sample-odts-and-output-transforms-for-aces"><span class="toc-section-number">7</span> Appendix B - Sample ODTs and Output Transforms for ACES</a><ul>
+<li><a href="#appendix-b---sample-odts-and-output-transforms-for-aces"><span class="toc-section-number">7</span> Appendix B - Sample ODTs and Output Transforms for ACES</a>
+<ul>
 <li><a href="#output-transforms-with-given-oetf-and-eotf"><span class="toc-section-number">7.1</span> Output Transforms with given OETF and EOTF</a></li>
 <li><a href="#output-transforms-with-given-ootf-and-eotf"><span class="toc-section-number">7.2</span> Output Transforms with given OOTF and EOTF</a></li>
 </ul></li>
@@ -145,7 +398,7 @@ non-linear <em>signal RGB</em> encoded from scene RGB; this is electrical in nat
 linear <em>display RGB</em> that represents light emitted from a display; this is optical in nature
 </li>
 </ul>
-<p>Without qualification, the non-linear <em>signal RGB</em> is usually meant. This is the case for <code>grDevices::rgb()</code>, <code>grDevices::hsv()</code>, <code>grDevices::convertColor()</code>, etc. <!-- Sometimes we call "_signal RGB_"  _"display signal RGB"_ for emphasis. --></p>
+<p>Without qualification, the non-linear <em>signal RGB</em> is usually meant. This is the case for <code>grDevices::rgb()</code>, <code>grDevices::hsv()</code>, <code>grDevices::convertColor()</code>, etc. In this package, and in the functions <code>RGBfromXYZ()</code> and <code>XYZfromRGB()</code>, <em>signal RGB</em> is meant. <!-- Sometimes we call "_signal RGB_"  _"display signal RGB"_ for emphasis. --></p>
 <p>There are no strong package dependencies, but these packages are suggested:</p>
 <ul>
 <li>
@@ -161,7 +414,7 @@ linear <em>display RGB</em> that represents light emitted from a display; this i
 <p>Similar packages: Package <strong>colorspace</strong> <span class="citation">[4]</span> has similar functionality, and is much faster because it is written in C; but it only supports one RGB space - sRGB. Package <strong>farver</strong> <span class="citation">[10]</span> is also much faster because it is written in C++. But it only supports one RGB space, which is probably sRGB.</p>
 <p>And speaking of speed, this package is not fast enough to transform millions of RGB pixels. But it is fast enough to transform a thousand RGB patches; the function <code>plotPatchesRGB()</code> is available for that purpose. For the complicated ACES Transforms, it is hoped that this <strong>R</strong> package can be a completely independent check on other implementations.</p>
 <p><br><br></p>
-<div id="desktop-graphics-and-basic-broadcast-television" class="section level1">
+<div id="desktop-graphics-and-basic-broadcast-television" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Desktop Graphics and Basic Broadcast Television</h1>
 <p>The 16 RGB working spaces for desktop graphics at Lindbloom <span class="citation">[5]</span>, and basic broadcast television standards (such as BT.709 and BT.2020), are illustrated in this diagram:</p>
 <center>
@@ -172,15 +425,15 @@ linear <em>display RGB</em> that represents light emitted from a display; this i
 <p>The terminology below is mostly taken from BT.709 <span class="citation">[13]</span>, BT.1886 <span class="citation">[14]</span>, and BT.2100 <span class="citation">[15]</span>.</p>
 <p>In this package, both linear RGB vectors are normalized to the cube [0,1]<span class="math inline">\(^3\)</span>; they are usually thought of as <em>optical</em> in nature. Signal RGB can be thought of as <em>electrical</em> in nature. It is common to think of this signal as an 8-bit number stored in the frame buffer, so the cube [0,255]<span class="math inline">\(^3\)</span> is very commmon for signal RGB. This package allows the user to specify any positive number as the upper limit of the interval. The relevant function argument is <code>maxSignal</code>.</p>
 <p>In the above figure the thin arrows indicate that the transforms are univariate and operate independently on each channel and in the same way. These transforms - OETF, EOTF, and OOTF - are called <em>transfer functions</em>. The thick arrows indicate that the transform is multivariate; in this diagram they are the 3x3 matrix transforms.</p>
-<p>The conversion function from optical scene RGB (linear) to electrical signal RGB (non-linear) is called the <em>Opto-Electronic Transfer Function</em> (OETF). Each primary component (R,G, and B) is transformed independently and has the same OETF. In this section, the OETF is always defined as a map of [0,1] to itself. The classical OETF is the &quot;<span class="math inline">\(1/\gamma\)</span> power law&quot;. For Adobe RGB, the OETF is classical with <span class="math inline">\(\gamma = 563/256 \approx 2.2\)</span>. For the most popular RGB space - sRGB - the OETF is a continuous function defined in 2 pieces. In ICC profiles, the OETF is called a <em>Tone Response Curve</em> (TRC), or <em>shaper curve</em>.</p>
+<p>The conversion function from optical scene RGB (linear) to electrical signal RGB (non-linear) is called the <em>Opto-Electronic Transfer Function</em> (OETF). Each primary component (R,G, and B) is transformed independently and has the same OETF. In this section, the OETF is always defined as a map of [0,1] to itself. The classical OETF is the “<span class="math inline">\(1/\gamma\)</span> power law”. For Adobe RGB, the OETF is classical with <span class="math inline">\(\gamma = 563/256 \approx 2.2\)</span>. For the most popular RGB space - sRGB - the OETF is a continuous function defined in 2 pieces. In ICC profiles, the OETF is called a <em>Tone Response Curve</em> (TRC), or <em>shaper curve</em>.</p>
 <p>All the transfer functions in this section are continuous and strictly increasing functions that take [0,1] to itself. All transfer functions in this section are either power laws, or well-approximated by power laws. The exponent giving the best match is called the <em>effective gamma</em>, the <em>approximate gamma</em>, or the <em>best-fit exponent</em> for the transfer function. The function <code>summaryRGB()</code> displays the <em>best-fit exponent</em> for the transfer functions of all these basic RGB spaces.</p>
-<p>The conversion function from electrical signal RGB (non-linear) to optical display RGB (linear) is called the <em>Electro-Optical Transfer Function</em> (EOTF). Each primary component (R,G, and B) is transformed independently and has the same EOTF. The classical EOTF is the &quot;<span class="math inline">\(\gamma\)</span> power law&quot;. That is <span class="math inline">\(R' = R^\gamma\)</span>, where <span class="math inline">\(R'\)</span> is display Red and <span class="math inline">\(R\)</span> is signal Red. In this section, the EOTF is always the inverse of the OETF; i.e. EOTF=OETF<span class="math inline">\(^{-1}\)</span>.</p>
-<p>The <em>Opto-optical Transfer Function</em> (OOTF) is the OETF followed by the EOTF. This is called their <em>composition</em> and in this User Guide we will write: <span class="math inline">\(\text{OOTF} = \text{OETF} \otimes \text{EOTF}\)</span>, following BT.2100 <span class="citation">[15]</span>. In the <strong>R</strong> code we use the symbols <code>*</code> or <code>%X%</code>. Since EOTF=OETF<span class="math inline">\(^{-1}\)</span>, the OOTF is the identity, i.e. trivial. In some contexts one says that the <em>system gamma</em> is 1, or that the <em>end-to-end exponent</em> is 1. This implies that scene RGB and display RGB are the same, and that scene XYZ and display XYZ are the same. The OOTF is also called the <em>system transfer function</em>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">theSpace =<span class="st"> </span><span class="kw">getRGB</span>(<span class="st">'sRGB'</span>)
-<span class="kw">par</span>( <span class="dt">omi=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="dt">mai=</span><span class="kw">c</span>(<span class="fl">0.6</span>,<span class="fl">0.55</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>) )
-<span class="kw">plot</span>( theSpace<span class="op">$</span>OETF, <span class="dt">main=</span><span class="st">''</span>, <span class="dt">ylab=</span><span class="st">''</span>, <span class="dt">color=</span><span class="st">'red'</span> )
-<span class="kw">plot</span>( theSpace<span class="op">$</span>EOTF, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">color=</span><span class="st">'blue'</span> ) ; <span class="kw">plot</span>( theSpace<span class="op">$</span>OOTF, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">color=</span><span class="st">'black'</span> )
-<span class="kw">legend</span>( <span class="st">'topleft'</span>, <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">'OETF'</span>,<span class="st">'EOTF'</span>,<span class="st">'OOTF'</span>), <span class="dt">bty=</span><span class="st">'n'</span>, <span class="dt">lwd=</span><span class="dv">2</span>, <span class="dt">col=</span><span class="kw">c</span>(<span class="st">'red'</span>,<span class="st">'blue'</span>,<span class="st">'black'</span>) )</code></pre></div>
+<p>The conversion function from electrical signal RGB (non-linear) to optical display RGB (linear) is called the <em>Electro-Optical Transfer Function</em> (EOTF). Each primary component (R,G, and B) is transformed independently and has the same EOTF. The classical EOTF is the “<span class="math inline">\(\gamma\)</span> power law”. That is <span class="math inline">\(R&#39; = R^\gamma\)</span>, where <span class="math inline">\(R&#39;\)</span> is display Red and <span class="math inline">\(R\)</span> is signal Red. In this section, the EOTF is always the inverse of the OETF; i.e. EOTF=OETF<span class="math inline">\(^{-1}\)</span>.</p>
+<p>The <em>Opto-optical Transfer Function</em> (OOTF) is the OETF followed by the EOTF. This is called their <em>composition</em> and in this User Guide we will write: <span class="math inline">\(\text{OOTF} = \text{OETF} \otimes \text{EOTF}\)</span>, following BT.2100 <span class="citation">[15]</span>. In the <strong>R</strong> code we use the symbols <code>*</code> or <code>%X%</code>. Since EOTF=OETF<span class="math inline">\(^{-1}\)</span>, the OOTF is the identity, i.e. trivial. In some contexts one says that the <em>system gamma</em> is 1, or that the <em>end-to-end exponent</em> is 1. This implies that scene RGB and display RGB are the same, and that scene XYZ and display XYZ are the same. The OOTF is also called the <em>system transfer function</em>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>theSpace <span class="ot">=</span> <span class="fu">getRGB</span>(<span class="st">&#39;sRGB&#39;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>( <span class="at">omi=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.6</span>,<span class="fl">0.55</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>) )</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( theSpace<span class="sc">$</span>OETF, <span class="at">main=</span><span class="st">&#39;&#39;</span>, <span class="at">ylab=</span><span class="st">&#39;&#39;</span>, <span class="at">color=</span><span class="st">&#39;red&#39;</span> )</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( theSpace<span class="sc">$</span>EOTF, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">color=</span><span class="st">&#39;blue&#39;</span> ) ; <span class="fu">plot</span>( theSpace<span class="sc">$</span>OOTF, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">color=</span><span class="st">&#39;black&#39;</span> )</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>( <span class="st">&#39;topleft&#39;</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&#39;OETF&#39;</span>,<span class="st">&#39;EOTF&#39;</span>,<span class="st">&#39;OOTF&#39;</span>), <span class="at">bty=</span><span class="st">&#39;n&#39;</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">&#39;red&#39;</span>,<span class="st">&#39;blue&#39;</span>,<span class="st">&#39;black&#39;</span>) )</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="data:image/png;base64,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" alt="Figure 1.2  The 3 Transfer Functions of sRGB" />
 <p class="caption">
@@ -196,24 +449,25 @@ The scene primaries and whitepoint are the same as the display primaries and whi
 All transfer functions are univariate, with domain and range the interval [0,1], and operate in the same way on all 3 channels.
 </li>
 <li>
-The OOTF is the identity, or equivalently, the scene RGB and display RGB vectors are equal.
+The OOTF is the identity, or equivalently, scene RGB is equal to display RGB. By property 1., this implies that scene XYZ is equal to display XYZ.
+</li>
 </ol>
 <p>These 3 properties are enjoyed by all 16 working RGB spaces at Lindbloom <span class="citation">[5]</span>. This package includes three of these working spaces: sRGB, Adobe RGB, and Apple RGB. The others can be easily added by the user using <code>installRGB()</code>, see <strong>Appendix A</strong> for how this works. The 3 properties are also enjoyed by these RGB spaces: ProPhoto RGB, BT.709, BT.2020, and 240M, which are also included.</p>
 <p>There are some close similarities between some of these spaces. BT.709 (created 1990) and sRGB (created 1996) have the same primaries and whitepoint, but different transfer functions. sRGB copied its primaries and whitepoint from BT.709. BT.709 and BT.2020 have very close transfer functions, differing only in precision. HD+2.4 has the same primaries and OETF as BT.709, but a different EOTF.</p>
-<p>Regarding property 3, it turns out that color reproduction for human vision is better when property 3 is <em>not</em> satisfied. In the next section we present an RGB space with a non-trivial OOTF, i.e. where the system gamma is <em>not</em> 1.</p>
+<p>Regarding property 3, it turns out that color reproduction for human vision is better when property 3 is <em>not</em> satisfied. In the next section we present an RGB space with a non-trivial OOTF, i.e. where the system gamma is <em>not</em> 1.</p>
 <p><br><br></p>
 </div>
-<div id="advanced-broadcast-television" class="section level1">
+<div id="advanced-broadcast-television" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Advanced Broadcast Television</h1>
-<p>Due to the <em>Hunt effect</em> and the <em>Stevens effect</em>, color reproduction for human vision is better when the OOTF is <em>not</em> the identity. For an illustration see BT.2390 <span class="citation">[16]</span> Figure 8, and for further discussion see <span class="citation">[7]</span> and <span class="citation">[11]</span>. The recommendation in BT.1886 <span class="citation">[14]</span> is to use the OETF from BT.709 <span class="citation">[13]</span> and for the EOTF use a pure power law with <span class="math inline">\(\gamma=2.4\)</span> (with optional black offset). The resulting RGB space &quot;HD+2.4&quot; is installed like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">prim  =<span class="st"> </span><span class="kw">matrix</span>( <span class="kw">c</span>(<span class="fl">0.64</span>,<span class="fl">0.33</span>,  <span class="fl">0.30</span>,<span class="fl">0.60</span>,  <span class="fl">0.15</span>,<span class="fl">0.06</span>,  <span class="fl">0.3127</span>,<span class="fl">0.3290</span>), <span class="dv">4</span>, <span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">TRUE</span> )
-<span class="kw">installRGB</span>( <span class="st">'HD+2.4'</span>, <span class="dt">scene=</span>prim, <span class="dt">OETF=</span>BT.<span class="fl">709.</span>EOTF<span class="op">^-</span><span class="dv">1</span>, <span class="dt">EOTF=</span><span class="kw">BT.1886.EOTF</span>(), <span class="dt">overwrite=</span><span class="ot">TRUE</span> )  </code></pre></div>
+<p>Due to the <em>Hunt effect</em> and the <em>Stevens effect</em>, color reproduction for human vision is better when the OOTF is <em>not</em> the identity. For an illustration see BT.2390 <span class="citation">[16]</span> Figure 8, and for further discussion see <span class="citation">[7]</span> and <span class="citation">[12]</span>. The recommendation in BT.1886 <span class="citation">[14]</span> is to use the OETF from BT.709 <span class="citation">[13]</span> and for the EOTF use a pure power law with <span class="math inline">\(\gamma=2.4\)</span> (with optional black offset). The resulting RGB space “HD+2.4” is installed like this:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>prim  <span class="ot">=</span> <span class="fu">matrix</span>( <span class="fu">c</span>(<span class="fl">0.64</span>,<span class="fl">0.33</span>,  <span class="fl">0.30</span>,<span class="fl">0.60</span>,  <span class="fl">0.15</span>,<span class="fl">0.06</span>,  <span class="fl">0.3127</span>,<span class="fl">0.3290</span>), <span class="dv">4</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span> )</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">installRGB</span>( <span class="st">&#39;HD+2.4&#39;</span>, <span class="at">scene=</span>prim, <span class="at">OETF=</span>BT.<span class="fl">709.</span>EOTF<span class="sc">^-</span><span class="dv">1</span>, <span class="at">EOTF=</span><span class="fu">BT.1886.EOTF</span>(), <span class="at">overwrite=</span><span class="cn">TRUE</span> )  </span></code></pre></div>
 <p>And the resulting transfer functions look like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">theSpace =<span class="st"> </span><span class="kw">getRGB</span>(<span class="st">'HD+2.4'</span>)
-<span class="kw">par</span>( <span class="dt">omi=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="dt">mai=</span><span class="kw">c</span>(<span class="fl">0.6</span>,<span class="fl">0.55</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>) )
-<span class="kw">plot</span>( theSpace<span class="op">$</span>OETF, <span class="dt">main=</span><span class="st">''</span>, <span class="dt">ylab=</span><span class="st">''</span>, <span class="dt">color=</span><span class="st">'red'</span> )
-<span class="kw">plot</span>( theSpace<span class="op">$</span>EOTF, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">color=</span><span class="st">'blue'</span> ) ; <span class="kw">plot</span>( theSpace<span class="op">$</span>OOTF, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">color=</span><span class="st">'black'</span> )
-<span class="kw">legend</span>( <span class="st">'topleft'</span>, <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">'OETF'</span>,<span class="st">'EOTF'</span>,<span class="st">'OOTF'</span>), <span class="dt">bty=</span><span class="st">'n'</span>, <span class="dt">lwd=</span><span class="dv">2</span>, <span class="dt">col=</span><span class="kw">c</span>(<span class="st">'red'</span>,<span class="st">'blue'</span>,<span class="st">'black'</span>) )</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>theSpace <span class="ot">=</span> <span class="fu">getRGB</span>(<span class="st">&#39;HD+2.4&#39;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>( <span class="at">omi=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.6</span>,<span class="fl">0.55</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>) )</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( theSpace<span class="sc">$</span>OETF, <span class="at">main=</span><span class="st">&#39;&#39;</span>, <span class="at">ylab=</span><span class="st">&#39;&#39;</span>, <span class="at">color=</span><span class="st">&#39;red&#39;</span> )</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( theSpace<span class="sc">$</span>EOTF, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">color=</span><span class="st">&#39;blue&#39;</span> ) ; <span class="fu">plot</span>( theSpace<span class="sc">$</span>OOTF, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">color=</span><span class="st">&#39;black&#39;</span> )</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>( <span class="st">&#39;topleft&#39;</span>, <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&#39;OETF&#39;</span>,<span class="st">&#39;EOTF&#39;</span>,<span class="st">&#39;OOTF&#39;</span>), <span class="at">bty=</span><span class="st">&#39;n&#39;</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">&#39;red&#39;</span>,<span class="st">&#39;blue&#39;</span>,<span class="st">&#39;black&#39;</span>) )</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="data:image/png;base64,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" alt="Figure 2.1  The 3 Transfer Functions of HD+2.4" />
 <p class="caption">
@@ -224,43 +478,44 @@ Figure 2.1 The 3 Transfer Functions of HD+2.4
 To summarize, this advanced RGB space has a non-trivial OOTF, but it still has these 2 simplifying properties:
 <ol>
 <li>
-The scene primaries and whitepoint are the same as the display primaries and whitepoint. These are expressed in CIE xy (or possibly XYZ for the whitepoint).
+The scene primaries and whitepoint are the same as the display primaries and whitepoint.<br />
+These are expressed in CIE xy (or possibly XYZ for the whitepoint). This is equivalent to the fact that the 2 3x3 matrices in Figure 1.1 are inverses of each other.
 </li>
 <li>
 All transfer functions are univariate, with domain and range the interval [0,1], and operate in the same way on all 3 channels.
 </li>
 </ol>
-<p>In section 4 we discuss ACES Color, which satisfies neither of these. But first, it is useful to discuss the transfer function implementation in more detail. <br><br><br></p>
+<p>In section 4 we will discuss ACES Color, which satisfies neither of these. But first, it is useful to discuss the transfer function implementation in more detail. <br><br><br></p>
 </div>
-<div id="the-transferfunction-s3-class" class="section level1">
+<div id="the-transferfunction-s3-class" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> The <code>TransferFunction</code> S3 Class</h1>
-<p>Like most modern languages, <strong>R</strong> treats functions as &quot;first-class citizens&quot;. This allows us to &quot;package&quot; a function and its inverse function in a single object (a list) together with the domain and range of the function. The function must be injective, though this is only checked if the dimension is 1. What we have just described is a so-called <em>elementary transfer function</em> which is not exported and not accessible to the user. The inverse function is actually optional, and if the dimension is 1 an approximate inverse is constructed automatically (using <code>stats::splinefun()</code>). The dimension N is determined by the domain and range, which are 2xN matrices. Each matrix defines a (finite) box in R<span class="math inline">\(^N\)</span>.</p>
+<p>Like most modern languages, <strong>R</strong> treats functions as “first-class citizens”. This allows us to “package” a function and its inverse function in a single object (a list) together with the domain and range of the function. The function must be injective, though this is only checked if the dimension is 1. What we have just described is a so-called <em>elementary transfer function</em> which is not exported and not accessible to the user. The inverse function is actually optional, and if the dimension is 1 an approximate inverse is constructed automatically (using <code>stats::splinefun()</code>). The dimension N is determined by the domain and range, which are 2xN matrices. Each matrix defines a (finite) box in R<span class="math inline">\(^N\)</span>.</p>
 <p>A <code>TransferFunction</code> is a <em>list</em> of elementary transfer functions. The constructor creates a list of length 1, and longer lists are created with <code>composition()</code> or equivalent infix operators: <code>*</code>, <code>%X%</code>, <code>%O%</code>, etc. In this User Guide we use only <code>*</code> and the symbol <span class="math inline">\(\otimes\)</span> (from BT.2100 <span class="citation">[15]</span>).</p>
 <p>The package provides a number of built-in <code>TransferFunction</code> objects that are common in desktop publishing, broadcast television, and cinema. Some of these are <em>parameterized</em>, such as the function <code>power.EOTF()</code> that takes an argument for the power-law exponent <span class="math inline">\(\gamma\)</span>. The functions <code>composition()</code> and <code>inverse()</code> allow building of more complex <code>TransferFunction</code>s from these simpler built-in ones.</p>
 <p>Here is a simple example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create the squaring function on [0,1]</span>
-squaring  =<span class="st"> </span><span class="kw">TransferFunction</span>( <span class="cf">function</span>(x) {x<span class="op">*</span>x}, sqrt, <span class="dt">domain=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">range=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>) )
-<span class="kw">par</span>( <span class="dt">omi=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="dt">mai=</span><span class="kw">c</span>(<span class="fl">0.6</span>,<span class="fl">0.55</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>) )
-<span class="kw">plot</span>( squaring, <span class="dt">main=</span><span class="st">''</span>, <span class="dt">color=</span><span class="st">'red'</span> )
-<span class="kw">plot</span>( <span class="kw">inverse</span>(squaring), <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">color=</span><span class="st">'blue'</span> )  <span class="co"># inverse is sqrt()</span>
-<span class="co">#   in the next line, power.EOTF(2) is also squaring, so comp should be identity</span>
-comp =<span class="st"> </span>squaring <span class="op">*</span><span class="st"> </span><span class="kw">inverse</span>( <span class="kw">power.EOTF</span>(<span class="fl">2.0</span>) )
-<span class="kw">plot</span>( comp, <span class="dt">add=</span><span class="ot">TRUE</span>, <span class="dt">color=</span><span class="st">'black'</span> )    </code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the squaring function on [0,1]</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>squaring  <span class="ot">=</span> <span class="fu">TransferFunction</span>( <span class="cf">function</span>(x) {x<span class="sc">*</span>x}, sqrt, <span class="at">domain=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">range=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>) )</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>( <span class="at">omi=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.6</span>,<span class="fl">0.55</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>) )</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( squaring, <span class="at">main=</span><span class="st">&#39;&#39;</span>, <span class="at">color=</span><span class="st">&#39;red&#39;</span> )</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( <span class="fu">inverse</span>(squaring), <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">color=</span><span class="st">&#39;blue&#39;</span> )  <span class="co"># inverse is sqrt()</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   in the next line, power.EOTF(2) is also squaring, so comp should be identity</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>comp <span class="ot">=</span> squaring <span class="sc">*</span> <span class="fu">inverse</span>( <span class="fu">power.EOTF</span>(<span class="fl">2.0</span>) )</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( comp, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">color=</span><span class="st">&#39;black&#39;</span> )    </span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="data:image/png;base64,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" alt="Figure 3.1  Building TransferFunctions from Simpler Parts" />
 <p class="caption">
 Figure 3.1 Building TransferFunctions from Simpler Parts
 </p>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transfer</span>( comp, <span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dt">length.out=</span><span class="dv">11</span>) )  <span class="co"># verify that comp is the identity</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">transfer</span>( comp, <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length.out=</span><span class="dv">11</span>) )  <span class="co"># verify that comp is the identity</span></span></code></pre></div>
 <pre><code>##  [1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0</code></pre>
-<p>As in the above example, the <code>transfer()</code> method is used to actually transform numbers. Other useful methods are <code>validate()</code> to run a sequence of tests, <code>print()</code> to print basic properties (e.g. dimension, domain, and range) and also perform validation, and <code>metadata()</code> to store user-specific data with the object. There is <code>inverse()</code> which returns the inverse and equivalent postfix operator <code>^-1</code>. See the <strong>man</strong> pages for more <code>TransferFunction</code> methods.</p>
+<p>As in the above example, the <code>transfer()</code> method is used to actually transform numbers. Other useful methods are <code>validate()</code> to run a sequence of tests, <code>print()</code> to print basic properties (e.g. dimension, domain, and range) and also perform validation, and <code>metadata()</code> to store user-specific data with the object. There is <code>inverse()</code> which returns the inverse and equivalent postfix operator <code>^-1</code>. See the <strong>man</strong> pages for more <code>TransferFunction</code> methods.</p>
 <p>All the examples in this section are univariate, but multivariate functions are allowed. The rules for constructing univariate and multivariate <code>TransferFunction</code>s are a little different; again see the <strong>man</strong> pages. For multivariate examples, see the next section.</p>
 <p>If one takes Figure 1.1 and removes the XYZ spaces, the remaining spaces form this commutative triangle:</p>
 <center>
 <img src="data:image/png;base64,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" width="90%"><br> <font size="+1">Figure 3.2 - The Three Basic Transfer Functions</font>
 </center>
-<p>In the function <code>installRGB()</code>, the 3 transfer function arguments - <code>OETF</code>, <code>EOTF</code>, <code>OOTF</code> - can be 'given' or 'not given' (<code>NULL</code>). This yields 8 combinations, but only 6 are valid, as given in this table:</p>
+<p>In the function <code>installRGB()</code>, the 3 transfer function arguments - <code>OETF</code>, <code>EOTF</code>, <code>OOTF</code> - can be ‘given’ or ‘not given’ (<code>NULL</code>). This yields 8 combinations, but only 6 are valid, as given in this table:</p>
 <table>
 <thead>
 <tr class="header">
@@ -324,129 +579,128 @@ Figure 3.1 Building TransferFunctions from Simpler Parts
 <p>In the table <code>NULL</code> is replaced by <code>-</code>. If all 3 are given, it is INVALID because the triangle may not commute. If 2 functions are given, the 3rd is computed from those 2. If only 1 function is given, and it is EOTF or OETF, then it makes sense to make the other one the inverse of the given one, so that the OOTF is the identity. If only the OOTF is given, it is INVALID because there is no well-defined way to define the other two. If none are given, as in the last row, this might be useful for testing direct conversion between signal RGB and XYZ. The table contains a few cases where the inverse is used, but if the corresponding function is not invertible, <code>installRGB()</code> fails.</p>
 <p><br><br><br></p>
 </div>
-<div id="aces-color---the-output-side" class="section level1">
+<div id="aces-color---the-output-side" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> ACES Color - The Output Side</h1>
-<p>The <em>Academy Color Encoding System</em> is designed to seamlessly integrate digital video from any source, such as CGI, digital cinema cameras, and scanned celluloid film. See <em>Academy Color Encoding System</em> <span class="citation">[12]</span> and <em>ACES Output Transform Details</em> <span class="citation">[17]</span>. All the <strong>R</strong> code for this section is based on that in <strong>aces-dev</strong> <span class="citation">[8]</span>; this is ACES v1.1 and subject to revision in the future.</p>
+<p>The <em>Academy Color Encoding System</em> is designed to seamlessly integrate digital video from any source, such as CGI, digital cinema cameras, and scanned celluloid film. See <em>Academy Color Encoding System</em> <span class="citation">[11]</span> and <em>ACES Output Transform Details</em> <span class="citation">[17]</span>. All the <strong>R</strong> code for this section is based on that in <strong>aces-dev</strong> <span class="citation">[8]</span>; this is ACES v1.1 and subject to revision in the future.</p>
 <p>The output side of ACES Color processing, is illustrated in this diagram:</p>
 <center>
 <img src="data:image/png;base64,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3tuBoycIhAAAAKBJK1euTIsXL27qMTFtTCBErxAIAQAAQJOamS6W5dXGTBujFwiEAAAAoEm33XZb049ZvXq1aWP0DIEQAAAANKGV6WKZaWP0CoEQAAAANKGV6WKZaWP0CoEQAAAANKGV6WKZaWP0CoEQAAAANGg008Uy08boBQIhAAAAaFCM8DnjjDNe8/X58+cXYVGtY445Jk2YMGGtr9X+H8aCQAgAAAAatM022xS3Wv/0T/9UNxD6/Oc/nyZOnOjA0XMEQgAAAAAlIxACAAAAKBmBEAAAAEDJCIQAAAAASkYgBAAAAFAyAiEAAACAkhEIAQAAAJSMQAgAAACgZARCAAAAACUjEAIAAAAoGYEQ6aCDDko333xzcf+UU05J55133oiP+dKXvpTOP//84v6NN96YHnvsscr/r7rqqnTkkUc29NzPPvts2nHHHdPTTz+dNtxww/Tkk0+mjTfeOD344IPpAx/4QEuvZ82aNWv9/4477ki33357uvLKK9t+7Pbee+909913N/Sz2223Xdpiiy3S0UcfnXbdddeGn+Omm25K999/f3r44YfTI488stb2tt9++7T//vunfffdd9T7GfsW25w6dWrxNwEAAMDgEgiRrrjiiiJoiFAmQp199tln2MAiApYc/hx44IFFeDBlypQiVIptnHzyycX/N9988xGf+5JLLikeE7773e8WYVA7zZo1K82bNy/ttddeY36c4xjHLY7TzJkzRwyo4jgfeuih6bnnnht2e/H6Isz5zne+kyZPntzy/sXvIW6xfxFAdSJAAwAAoDcIhChCmGuvvbYyImfGjBlpyZIldcOZFStWFCFFiBAiwqTabUSAEUHMXXfdNezzxiigHCzFyKTqECru1470GUoOffJ2ave3GyJwGu71xn4sXbq02Nc4PrG/Ed4MNZKq+jXFyKkIkGqDujh+N9xwQ/FzEeTsscceadGiRcOGQsPt57Jly9K3v/3t4ncS24znbWS0GAAAAP1HIEQhgoYIUyIMiHBh9uzZxVSlWjnQCDEipTo0qt5GTE+6+uqrh506duyxxxb/xjSl4447rqX9jn3MwUmEHb0aYMRoqbhtueWWRXATx/Ciiy6qe3ziuOXXFMcmApx64Vwc77jFNvI2P/rRj6annnqqpX2MICluObCK32P8Xto9agsAAICxJxCiIsKUe+65pzKt6bDD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AEAjBEJ9rHramOliAAAAQKMEQn0uTxszXQwAAABolECoz+VpY6aLAQAAAI0SCPW5mCb2+c9/3nQxAAAAoGECoQFwxhlnOAgAAEDTpk2blm699VYHooP+6q/+ykFog3HjxqU///nPDkQbCYQGwIQJExwEAACgaU888UR6wxvekF5++WUHg541b968NGvWLAeizToeCL3+9a9Pr776qiNNzzvssMPS/PnzHQi0e4woVnb80Y9+5EBAi4455pj0zDPPpEWLFqU//elP6d/+7d8q31uzZs2Ij4+rxNkb3/jGNH78+LTddtul/+//+/98lgNAo/2WTj9BdIquvPLKNHPmTEebnhUnk0uWLHEg0O4xohiVGVdTgcYcfvjh6d57703/7//9v7XC8gh11l9//bTBBhukPffcs/L1T3ziE2n69OlDbm/BggXp+uuvr/z/n//5n9Pq1auLcCnCpG9+85vF19dZZ5200UYbpV133TUtXLjQLwIAapgyBgBA28Tonxil8+KLLxa1HiL4+Yu/+Iu0/fbbF6NxRxuWR1g0XGAUIjS66qqrios9t912W7EPOYDaY489BEQAkARCAACMUoRA11xzTfrDH/5Q/D9G/UTw8vWvfz1tttlmXd+feqFRFM6NUUQ5IFp33XXTPvvsIxwCoLQEQgAANO3ss89Oc+fOrYRAb3/729PFF1/cs9Nlq4OfGEF0/PHHrxUOHXjggeoPAVAqAiEAABoWI22+973vFfWAej0EGkr1CKIcDn3rW98qbjvuuKOi8QCUgkAIAIARTZ48Of30pz8tRtQMUmhSHQ7lsCte47vf/e50zz33jMmUNwDoBoEQAABDmjRpUvr5z3+eXve616XPfe5z6dJLLx3Y15qnlc2bN6+oi/TOd76zGAX161//2h8CAANHIAQAwGvEcvExher1r399uvLKK/tuWthoxGuNW0wni+MQI4b+9m//Nv3jP/6jPwwABoZACACAighBDjnkkPTKK6+kT37yk6UutJynk0UB7bPOOqsYJXXGGWek008/3R8KAH1PIAQAQOFtb3tb+t3vflfUz1m+fLkD8p8iAIrbhz70oSIQuuiii9Ljjz+uvhAAfU0gBABQcjEq6OMf/3h685vfnH74wx+mXXbZxUGpI08Zi+As6gsNek0lAAabQAgAoMRy0eipU6dWiiozvN/+9rfFNLIzzzwz3XDDDcX/AaDfCIQAAErooYceSrvvvntx36ig5sUUshkzZqStttqqqC108803V5avB4B+IBACACiZWFZ91qxZagWNUtQQevHFF4vaQh/72MdMIQOgrwiEAABK5JhjjkmXXXZZ6ZaS76SoLRQjrnbddde0dOnS9KMf/chBAaDnCYQAAEoiRrL84Ac/MEWsA+J4rly5Mm2++eZp4sSJxX0A6GUCIQCAEoji0U8++WQRVFguvTPiuL7yyitp/Pjxab311iumkwFArxIIAQAMuFgm/fnnn0+vvvqqg9EFL730UnHM3/jGN6aXX37ZAQGgJwmEAAAGWIwMijBIMNFdsRR9TB2L0UIREAFArxEIAQAMqMmTJ6ennnqqmMZE98X0vAkTJhS31atXOyAA9BSBEADAAIoC0o8//nhasWKFgzGGIggSCgHQiwRCAAADJsKg++67rwiDFJAeexEERT2hmL63fPlyBwSAniAQAgAYIPPmzUvf//73i6XlhUG9I2o4rbPOOmnatGlp4cKFDggAY04gBAAwIJ555pk0a9asdNZZZ6VddtnFAekxDz74YHr/+99fhHYzZ850QAAYUwIhAIAB8a53vSu9+93vTqeffrqD0YMipDvssMPS7Nmz03777WcEFwBjSiAEADAAoj5NUKOmt82fPz/de++9acstt0z/+q//6oAAMGYEQgAAfe6YY45J//Iv/1Isc07v+/Wvf51e//rXp5133jn96Ec/ckAAGBMCIQCAPhZ1g/7+7/8+ffaznzUFqY/cf//9RT2hBQsWpOnTpzsgAHSdQAgAoI9tu+226c1vfnO69NJLHYw+EvWE3vOe96SDDjoovfLKKw4IAF0nEAIA6FOxWtXvfve79Mtf/tLB6EPLli1Lr3vd69KHPvSh9I//+I8OCABdJRACAOhTRx99dPrbv/1bU8X62OWXX55mzZpVTP3zewSgmwRCAAB9aPLkyWncuHFGlvS5mTNnptNPPz1ttdVW6cUXX3RAAOgagRAAQJ+J0SQ//elP0y233OJgDIBHH300vfOd71RgGoCuEggBAPSZnXbaKb3pTW8SHgyImCr29re/PR1++OF+pwB0jUAIAKDP/OY3v0mf+9znHIgBsnjxYqOEAOgqgRAAQB/Zeeedi5WpLDM/WIwSgvaKGmthr732Snfddddrvj537tx04okn9sx+9sr+UC4C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ng2EdLQ6b8GCBcW/u+yyizcidFC0AzESOZ+/xPlH9blLnDPFdL2R2qjabV533XXFiM/YZoyuHs1o52j3cju5ZMmSEUdiw0gEQk6M+u7ECIYTHbYDDjigmIpkJJA2CUZjrEKgalFI+Je//KWOVok7WldddVVaZ511vCGhC6qn5L344otrfe/iiy+u3P/KV77S8HlItCUxYjraqccee2xU7VR1u/mzn/1MIMSoCYScGPXdiRHU+/D+xje+UXTcJkyY4IBok6BlEQLF3/pYhkDV3va2t6VVq1bpaJW4o/W///f/tuQ8dMnKlSsr99dbb721vhfnMfk8qJmai+Gee+4p/h1tcfg4P8u23nprvzBGTSDkxKjvToyg3nspVt1Am8Tann322WK6ycKFC4upgbnuU0y723PPPYsQdcqUKSP+Phsp/h3b3GGHHdK0adPS9OnT627zwgsvTCeddFLLr2fu3LnpxBNP7Ogxu/HGG3vqd/g3f/M36Vvf+paOVok7Wr///e+NeIUuiDYgX3iKc5fq846YDp8/Qz/2sY81ve12rRKYP4vjM3fHHXf0S2PUBEJOjPruxAjQJmmTRhbhywUXXFC3+Hd8LYp0xy1OKufMmTNk3ahGxTbjRDVuJ598clH826pwoxe/l29+85s6WiXuaL388svpve99rzcDdLB9ivd/fGZml1122Vo/8/jjj4/pOUjsY/XU/S9+8YumztMWAiEnRn13YlQm7V46vF3b64er/GiTyqy6+Hf8Pk844YRiJFD+XcTve/HixUW9qBi9FVOk4msjreA2UvHvfEIdfy8HH3xw8fXqUCje90O993P7NFIh9LLJhYSPOeaYdOmll+polayj9cwzzxRLzo/V776Z84ZG24pstCMY23ku0srr1Fb1j/jdjhs3ruGfj5GitaOQn3/++cr99ddff0z303k07SQQcmLUVydGDK3ZpcO7vT20Sdqk7qgOg+K9e84557zmeOVC3TG1a/bs2cX7fLQruOVtRicpFxOPUCgKlg+3whwje9Ob3pRuueWWngyEdLQ6K4LA2O/NNttsoP6muz2CEUYSF0IjiPz0pz89qgtZjQSVEfKOxo9//OOitmO7LrhRbgIhJ0Z9dWJUVu1eOny023OVX5ukTepNMZqrOgwaKciNoCimA8YooQiAYwW3ffbZp+lpgdWirfjud7+bPvCBDxT/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sKkWX7v55puLWwQ5c+bMSUceeeSYbBOgFQIhAACAGrNmzUrz5s0r7m+xxRbphBNOKEbtbL755sXXli1blhYvXpwuuuii9PTTT6ejjjqq+NqVV17Z8W3G6J48wqdWHvHT7Cgeo36gfARCAAAAVaqDm5kzZ6ZzzjnnNdO3Jk+eXNymT5+eZs+eXYzqicfEyJ7zzjuvK9sEGA2B0ABYvXq1gwAAAG3w4IMPrhXcDDfiJ0Soc9NNNxUjeh555JF0/vnnp3322SftuuuuHd0m/WOTTTZxEOhJAqEBIBACAID2OPfcc4t/Y1ROjOJpVIzmiWlg4fLLL18rvOnENukf48ePdxDoSQIhAACAf7dixYrKilsHHXRQUyuHRR2gAw88sFIU+oorrige34ltArSDQAgAAODfxRLw2W677db04/fYY48iuAlLlixJ++67b0e2CdAOAiEAAIB/98wzz1Tub7rppk0/fquttqrc/9nPflaEN53YJkA7CIQAAABKLqa1jRs3bsSfe+CBB9QyggEhEAIAAAAoGYEQAABAye21117prrvuciCgRARCA2zChAkOAgAANGizzTar3H/hhReafvzjjz9eub/11lt3bJv0rtWrVzsI9A2B0ADbYIMNHAQAAGjQDjvsULl/++23N13AedGiRZX7O+64Y8e2Se8SCNFPBEIAAAD/bvPNNy+mTkWB5Ztuuimdc845aeONN27osStWrKgsD3/ggQdWHteJbQK0g0AIAADgP5166qlFePPcc8+l2bNnFyFOI2bNmlW5f/TRR3d8mwCjJRACAAD4T7Gk+imnnJLOP//8YnTORhttNOyonmeffTaddtppReAT4rG1y7J3YpsAoyUQAgAAqHLeeecVo3nmzZtX3O655550wgknpClTphRTwMKyZcvS4sWL00UXXZSefvrp4mszZ84sHtutbQKMhkAIAACgxpVXXpkmT56cTj755CKcOeqoo4b82Q033DDNmTMnHXnkkV3fJkCrBEIAAAB1RBgzffr0tGDBgrRw4cK0dOnSYpRP2GKLLdJ2222Xpk6dWozyabTgcye2CdAKgdAAeOmllxwEAADogAhlIsRp50idTmwzu+uuuzr68zRv/PjxDgI9SSA0AFatWuUgAAAA9KBNNtnEQaAnCYQAAAAASkYgBAAAAFAyAiEAAACAkhEIAQAAAJSMQAgAAACgZARCAAAAACUjEBpg48ePdxAAAAC64KWXXnIQ6CsCoQG2ySabOAgAAABdsGrVKgeBviIQAgAAACgZgRAAAABAyQiEAAAAAEpGIAQAAABQMgKhATZ37tw0f/58B4KmTJw4Mb3zne90IGhZFLSfNGmSA4G/IQCAHiYQGmDLly8vbgAAZTJhwoS0zTbbOBCM6m9o8uTJDgRNWb16tYNAXxEIAQAwcJ2y++67z4FgVG699VYHARhoAqEBMGPGjOIWzjzzzHTWWWc5KAAAAGNk9913T4sWLXIg6GkCIQAAAICSEQgBAAAAlIxAaMDElLG40T9+8pOfKEDHqETx+FWrVjkQtOznP/+5vyFGZeXKlcUNAOgfAiEYY1ZBYbRijjoA9DOhIoP2NzRx4kS/FHqeQAgAABjzzrMONEB3CYQAAAAASkYgBAAAAFAyAiEAAACAkhEIAQAAAJSMQAgAAACgZARCAAAAACUjEAIAAAAoGYEQAAAAQMkIhAAAAABKRiAEAAAAUDICIQAAAICSEQgBAAAAlIxACAAAAKBkBEIAAAAAJSMQAgAAACgZgRAAAABAyQiEAAAAAEpGIAQAAABQMv8/UeaJwEv470wAAAAASUVORK5CYII=" width="90%"><br> <font size="+1">Figure 4.1 - ACES Color Output (display)</font>
 </center>
-<p><em>ACES RGB</em> (technically ACES2065-1 color space with AP0 primaries) is linear and scene-referred, with imaginary primaries, see <span class="citation">[12]</span>. The complications of getting from camera signal to <em>ACES RGB</em>, often with a preferred camera &quot;look&quot;, is the input (capture) side of ACES (with IDT, LMT, CLF, ...) and is currently outside the scope of this package. Unlike the RGB spaces in sections 1 and 2, these RGB values often exceed 1.0 for ordinary scenes. A perfect white diffuser in the scene is designed to be encoded with RGB=(1,1,1) and specular highlights can easily exceed this.</p>
+<p><em>ACES RGB</em> (technically ACES2065-1 color space with AP0 primaries) is linear and scene-referred, with imaginary primaries, see <span class="citation">[11]</span>. The complications of getting from camera signal to <em>ACES RGB</em>, often with a preferred camera “look”, is the input (capture) side of ACES (with IDT, LMT, CLF, …) and is currently outside the scope of this package. Unlike the RGB spaces in sections 1 and 2, these RGB values often exceed 1.0 for ordinary scenes. A perfect white diffuser in the scene is designed to be encoded with RGB=(1,1,1) and specular highlights can easily exceed this.</p>
 <p><strong>WARNING</strong>: What we call (non-linear) <strong>signal RGB</strong> is called <strong>Display RGB</strong> in <em>ACES Output Transform Details</em> <span class="citation">[17]</span>. And what we call (linear) <strong>display RGB</strong> does not appear in <span class="citation">[17]</span>.</p>
 <p>In the above figure the thin arrow for EOTF indicates that the transform is univariate and operates independently on each channel and in the same way. Exception: the EOTF in the last transform in <strong>Appendix B</strong> - the hybrid log-gamma - is multivariate. For the other transforms, he thick arrows indicate that they are multivariate and 3D.</p>
 <p>OCES RGB (Output Color Encoding Specification RGB) is display-referred but the display is not real - it is theoretical. This theoretical display has a dynamic range of 100 million to 1 and can reproduce any color. It uses the same imaginary AP0 primaries as ACES RGB.</p>
 The RRT is the <em>Reference Rendering Transform</em> from ACES to OCES; it is <em>fixed</em> and
 <blockquote>
-&quot;... the RRT is intended to account for the perceptual factors required to convert the scene referred ACES images to an output referred encoding associated with an very high dynamic range, extremely wide color gamut device in a dark surround.&quot; - Alex Forsythe <span class="citation">[3]</span>
+“… the RRT is intended to account for the perceptual factors required to convert the scene referred ACES images to an output referred encoding associated with an very high dynamic range, extremely wide color gamut device in a dark surround.” - Alex Forsythe <span class="citation">[3]</span>
 </blockquote>
 <p>The ODT is the <em>Output Device Transform</em> for a real device. It includes the display primaries and whitepoint and other factors. Real world displays will still need calibration to exactly match the ideal color space of each ODT.</p>
 <p>The ODT may be split further using the concept of a <em>Partial Output Device Transform</em> or PODT, which is unique to this package. The split is <span class="math inline">\(\text{ODT} = \text{PODT} \otimes \text{EOTF}^{-1}\)</span> for some standard <span class="math inline">\(\text{EOTF}\)</span>. The function <code>general.PODT()</code> returns a PODT which is used for all of the ODT examples in Section 7.1. In these examples <span class="math inline">\(\text{OETF} = \text{RRT} \otimes \text{ODT} = \text{RRT} \otimes \text{PODT} \otimes \text{EOTF}^{-1}\)</span>. This ODT split is not shown in the above figure.</p>
 <p>In the examples in Section 7.2, the OOTF and EOTF are given and <span class="math inline">\(\text{OETF} := \text{OOTF} \otimes \text{EOTF}^{-1}\)</span>. The function <code>general.OOTF()</code> is used for these examples, and there is no explicit RRT or ODT.</p>
 <p>Since the display primaries and whitepoint are different than those of ACES RGB, the matrices <span class="math inline">\(\text{XYZtoRGB}_\text{scene}\)</span> and <span class="math inline">\(\text{RGBtoXYZ}_\text{display}\)</span> are <strong>not</strong> inverses of each other, as they are in Figure 1.1. Another difference with Figure 1.1 is that ACES <strong>display XYZ</strong> has physical units; the Y coordinate has units of <span class="math inline">\(cd/m^2\)</span> (aka <span class="math inline">\(nit\)</span>).</p>
-<p>Because of the complexity of ACES Color, calling a single instance of ACES an RGB &quot;space&quot; does not really do it justice. A more appropriate name might be an RGB &quot;workflow&quot; or &quot;pipeline&quot;.</p>
-<div id="acknowledgements" class="section level2">
+<p>Because of the complexity of ACES Color, calling a single instance of ACES an RGB “space” does not really do it justice. A more appropriate name might be an RGB “workflow” or “pipeline”.</p>
+<div id="acknowledgements" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Acknowledgements</h2>
-<p>I would like to thank Scott Dyer for supplying the high-precision data in the file <code>test_values.txt</code> in the folder <code>tests</code>, and Alex Forsythe for his encouragement to &quot;dig into&quot; ACES.</p>
+<p>I would like to thank Scott Dyer for supplying the high-precision data in the file <code>test_values.txt</code> in the folder <code>tests</code>, and Alex Forsythe for his encouragement to “dig into” ACES.</p>
 <p><br><br> <br><br></p>
 </div>
 </div>
-<div id="references" class="section level1">
+<div id="references" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> References</h1>
-<div id="refs">
-<div id="ref-rgl">
-<p>[1] DANIEL ADLER, Duncan Murdoch and OTHERS. <em>rgl: 3D visualization using opengl</em> [online]. 2018. Available at: <a href="https://cran.r-project.org/package=rgl" class="uri">https://cran.r-project.org/package=rgl</a></p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-rgl" class="csl-entry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">DANIEL ADLER, Duncan Murdoch and OTHERS. <em><span class="nocase">rgl</span>: 3D visualization using OpenGL</em> [online]. 2018. Available at: <a href="https://cran.r-project.org/package=rgl">https://cran.r-project.org/package=rgl</a></div>
 </div>
-<div id="ref-spacesXYZ">
-<p>[2] DAVIS, Glenn. <em>spacesXYZ: CIE xyz and some of its derived color spaces</em> [online]. 2018. Available at: <a href="https://cran.r-project.org/package=spacesXYZ" class="uri">https://cran.r-project.org/package=spacesXYZ</a></p>
+<div id="ref-spacesXYZ" class="csl-entry">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">DAVIS, Glenn. <em><span class="nocase">spacesXYZ</span>: CIE XYZ and some of its derived color spaces</em> [online]. 2018. Available at: <a href="https://cran.r-project.org/package=spacesXYZ">https://cran.r-project.org/package=spacesXYZ</a></div>
 </div>
-<div id="ref-quoteRRT">
-<p>[3] FORSYTHE, Alex. <em>Color Appearance Models, Interpretation Options, and ODTs</em> [online]. 2017. Available at: <a href="https://community.acescentral.com/t/color-appearance-models-interpretation-options-and-odts/1257/3" class="uri">https://community.acescentral.com/t/color-appearance-models-interpretation-options-and-odts/1257/3</a>. discussion forum</p>
+<div id="ref-quoteRRT" class="csl-entry">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">FORSYTHE, Alex. <em><span class="nocase">Color Appearance Models, Interpretation Options, and ODTs</span></em> [online]. 2017. Available at: <a href="https://community.acescentral.com/t/color-appearance-models-interpretation-options-and-odts/1257/3">https://community.acescentral.com/t/color-appearance-models-interpretation-options-and-odts/1257/3</a>. discussion forum</div>
 </div>
-<div id="ref-colorspace">
-<p>[4] IHAKA, Ross, MURRELL, Paul, HORNIK, Kurt, FISHER, Jason C. and ZEILEIS, Achim. <em>colorspace: Color space manipulation</em> [online]. 2016. Available at: <a href="https://CRAN.R-project.org/package=colorspace" class="uri">https://CRAN.R-project.org/package=colorspace</a></p>
+<div id="ref-colorspace" class="csl-entry">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">IHAKA, Ross, MURRELL, Paul, HORNIK, Kurt, FISHER, Jason C. and ZEILEIS, Achim. <em><span class="nocase">colorspace</span>: Color space manipulation</em> [online]. 2016. Available at: <a href="https://CRAN.R-project.org/package=colorspace">https://CRAN.R-project.org/package=colorspace</a></div>
 </div>
-<div id="ref-lindbloom">
-<p>[5] LINDBLOOM, Bruce. <em>RGB working space information</em> [online]. no date. Available at: <a href="http://brucelindbloom.com/index.html?WorkingSpaceInfo.html" class="uri">http://brucelindbloom.com/index.html?WorkingSpaceInfo.html</a></p>
+<div id="ref-lindbloom" class="csl-entry">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">LINDBLOOM, Bruce. <em>RGB working space information</em> [online]. no date. Available at: <a href="http://brucelindbloom.com/index.html?WorkingSpaceInfo.html">http://brucelindbloom.com/index.html?WorkingSpaceInfo.html</a></div>
 </div>
-<div id="ref-microbenchmark">
-<p>[6] OLAF MERSMANN, Rainer Hurling, Claudia Beleites. <em>microbenchmark: Accurate timing functions</em> [online]. 2018. Available at: <a href="https://cran.r-project.org/package=microbenchmark" class="uri">https://cran.r-project.org/package=microbenchmark</a></p>
+<div id="ref-microbenchmark" class="csl-entry">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">OLAF MERSMANN, Rainer Hurling, Claudia Beleites. <em><span class="nocase">microbenchmark</span>: Accurate timing functions</em> [online]. 2018. Available at: <a href="https://cran.r-project.org/package=microbenchmark">https://cran.r-project.org/package=microbenchmark</a></div>
 </div>
-<div id="ref-poynton">
-<p>[7] POYNTON, Charles A. <em>Digital Video and HD: Algorithms and Interfaces</em>. B.m.: Morgan Kaufmann, 2012. Morgan kaufmann series in computer graphics and geometric modeling. ISBN 9780123919267. </p>
+<div id="ref-poynton" class="csl-entry">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">POYNTON, Charles A. <em><span class="nocase">Digital Video and HD: Algorithms and Interfaces</span></em>. B.m.: Morgan Kaufmann, 2012. Morgan kaufmann series in computer graphics and geometric modeling. ISBN 9780123919267. </div>
 </div>
-<div id="ref-aces-dev">
-<p>[8] SCOTT DYER. <em>Academy color encoding system developer resources</em>. B.m.: <a href="https://github.com/ampas/aces-dev" class="uri">https://github.com/ampas/aces-dev</a>; GitHub. 2018</p>
+<div id="ref-aces-dev" class="csl-entry">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline">SCOTT DYER. <em>Academy color encoding system developer resources</em>. B.m.: <a href="https://github.com/ampas/aces-dev" class="uri">https://github.com/ampas/aces-dev</a>; GitHub. 2018</div>
 </div>
-<div id="ref-semple1952">
-<p>[9] SEMPLE, J.G. and KNEEBONE, G.T. <em>Algebraic Projective Geometry</em>. B.m.: Clarendon Press, 1952. </p>
+<div id="ref-semple1952" class="csl-entry">
+<div class="csl-left-margin">[9] </div><div class="csl-right-inline">SEMPLE, J. G. and KNEEBONE, G. T. <em><span>Algebraic Projective Geometry</span></em>. B.m.: Clarendon Press, 1952. </div>
 </div>
-<div id="ref-farver">
-<p>[10] THOMAS LIN PEDERSEN, Berendea Nicolae and FRANÇOIS, Romain. <em>farver: Vectorised colour conversion and comparison</em> [online]. 2018. Available at: <a href="https://CRAN.R-project.org/package=farver" class="uri">https://CRAN.R-project.org/package=farver</a></p>
+<div id="ref-farver" class="csl-entry">
+<div class="csl-left-margin">[10] </div><div class="csl-right-inline">THOMAS LIN PEDERSEN, Berendea Nicolae and FRANÇOIS, Romain. <em><span class="nocase">farver</span>: Vectorised colour conversion and comparison</em> [online]. 2018. Available at: <a href="https://CRAN.R-project.org/package=farver">https://CRAN.R-project.org/package=farver</a></div>
 </div>
-<div id="ref-wiki-CAM">
-<p>[11] WIKIPEDIA CONTRIBUTORS. <em>Color appearance model — Wikipedia, the free encyclopedia</em> [online]. 2018. Available at: <a href="https://en.wikipedia.org/wiki/Color_appearance_model" class="uri">https://en.wikipedia.org/wiki/Color_appearance_model</a></p>
+<div id="ref-ACES" class="csl-entry">
+<div class="csl-left-margin">[11] </div><div class="csl-right-inline">WIKIPEDIA CONTRIBUTORS. <em>Academy color encoding system — <span>Wikipedia</span><span>,</span> the free encyclopedia</em> [online]. 2018. Available at: <a href="https://en.wikipedia.org/w/index.php?title=Academy_Color_Encoding_System">https://en.wikipedia.org/w/index.php?title=Academy_Color_Encoding_System</a>. [Online; accessed 19-January-2019]</div>
 </div>
-<div id="ref-ACES">
-<p>[12] WIKIPEDIA CONTRIBUTORS. <em>Academy color encoding system — Wikipedia, the free encyclopedia</em> [online]. 2018. Available at: <a href="https://en.wikipedia.org/w/index.php?title=Academy_Color_Encoding_System" class="uri">https://en.wikipedia.org/w/index.php?title=Academy_Color_Encoding_System</a>. [Online; accessed 19-January-2019]</p>
+<div id="ref-wiki-CAM" class="csl-entry">
+<div class="csl-left-margin">[12] </div><div class="csl-right-inline">WIKIPEDIA CONTRIBUTORS. <em>Color appearance model — <span>Wikipedia</span><span>,</span> the free encyclopedia</em> [online]. 2018. Available at: <a href="https://en.wikipedia.org/wiki/Color_appearance_model">https://en.wikipedia.org/wiki/Color_appearance_model</a></div>
 </div>
-<div id="ref-BT.709">
-<p>[13] <em>BT.709. Parameter values for the HDTV standards for production and international programme exchange.</em> Standard. 2015. </p>
+<div id="ref-BT.709" class="csl-entry">
+<div class="csl-left-margin">[13] </div><div class="csl-right-inline"><em><span class="nocase">BT.709. Parameter values for the HDTV standards for production and international programme exchange.</span></em> Standard. 2015. </div>
 </div>
-<div id="ref-BT.1886">
-<p>[14] <em>BT.1886. Reference electro-optical transfer function for flat panel displays used in HDTV studio production.</em> Standard. 2011. </p>
+<div id="ref-BT.1886" class="csl-entry">
+<div class="csl-left-margin">[14] </div><div class="csl-right-inline"><em><span class="nocase">BT.1886. Reference electro-optical transfer function for flat panel displays used in HDTV studio production.</span></em> Standard. 2011. </div>
 </div>
-<div id="ref-BT.2100">
-<p>[15] <em>BT.2100. Image parameter values for high dynamic range television for use in production and international programme exchange.</em> Standard. 2017. </p>
+<div id="ref-BT.2100" class="csl-entry">
+<div class="csl-left-margin">[15] </div><div class="csl-right-inline"><em><span class="nocase">BT.2100. Image parameter values for high dynamic range television for use in production and international programme exchange.</span></em> Standard. 2017. </div>
 </div>
-<div id="ref-BT.2390">
-<p>[16] <em>BT.2390-4. High dynamic range television for production and international programme exchange.</em> Standard. 2018. </p>
+<div id="ref-BT.2390" class="csl-entry">
+<div class="csl-left-margin">[16] </div><div class="csl-right-inline"><em><span class="nocase">BT.2390-4. High dynamic range television for production and international programme exchange.</span></em> Standard. 2018. </div>
 </div>
-<div id="ref-TB-2018-002">
-<p>[17] <em>ACES Output Transform Details - TB-2018-002</em> [online]. DRAFT Standard. 2018. Available at: <a href="https://community.acescentral.com/t/request-for-review-and-comments-on-v0-1-draft-of-aces-output-transform-details/1457" class="uri">https://community.acescentral.com/t/request-for-review-and-comments-on-v0-1-draft-of-aces-output-transform-details/1457</a></p>
+<div id="ref-TB-2018-002" class="csl-entry">
+<div class="csl-left-margin">[17] </div><div class="csl-right-inline"><em><span>ACES Output Transform Details - TB-2018-002</span></em> [online]. DRAFT Standard. 2018. Available at: <a href="https://community.acescentral.com/t/request-for-review-and-comments-on-v0-1-draft-of-aces-output-transform-details/1457">https://community.acescentral.com/t/request-for-review-and-comments-on-v0-1-draft-of-aces-output-transform-details/1457</a></div>
 </div>
 </div>
 <p><br><br></p>
-
 <p><br><br></p>
 </div>
-<div id="appendix-a---built-in-rgb-spaces" class="section level1">
+<div id="appendix-a---built-in-rgb-spaces" class="section level1" number="6">
 <h1><span class="header-section-number">6</span> Appendix A - Built-in RGB Spaces</h1>
 <p>The package comes with a dictionary of 8 built-in RGB spaces; which are loaded from <code>sysdata.rda</code>. The code below shows how they are installed in that dictionary. Note that the argument <code>scene</code> can be a 4x2 matrix, or a list with a 6-vector and a 2-vector. Also note that the argument <code>display</code> is omitted, and the data is copied from <code>scene</code>. For details on this, see the man page for <code>installRGB()</code>.</p>
 <strong>sRGB</strong>
 <pre>
-installRGB( 'sRGB', scene=REC709_PRI, EOTF=sRGB.EOTF )
+installRGB( &#39;sRGB&#39;, scene=REC709_PRI, EOTF=sRGB.EOTF )
 </pre>
 <br> <strong>AdobeRGB</strong>
 <pre>
 prim    = c(0.64,0.33,  0.21,0.71,  0.15,0.06)
 white   = c( 0.3127, 0.3290 )      # D65
-installRGB( 'AdobeRGB', scene=list(prim,white), EOTF=563/256 )
+installRGB( &#39;AdobeRGB&#39;, scene=list(prim,white), EOTF=563/256 )
 </pre>
 <br> <strong>ProPhotoRGB</strong>
 <pre>
 prim    = c(0.7347,0.2653,  0.1596,0.8404,  0.0366,0.0001)
 white   = c( 0.3457,0.3585 )    # D50
-installRGB( 'ProPhotoRGB', scene=list(prim,white), EOTF=ProPhotoRGB.EOTF )
+installRGB( &#39;ProPhotoRGB&#39;, scene=list(prim,white), EOTF=ProPhotoRGB.EOTF )
 </pre>
 <br> <strong>AppleRGB</strong>
 <pre>
 prim    = c(0.625,0.34,  0.28,0.595, 0.155,0.07)
 white   = c( 0.3127, 0.3290 ) 
-installRGB( 'AppleRGB', scene=list(prim,white), EOTF=1.8 )
+installRGB( &#39;AppleRGB&#39;, scene=list(prim,white), EOTF=1.8 )
 </pre>
 <br> <strong>BT.709</strong>
 <pre>
-installRGB( 'BT.709', scene=REC709_PRI, EOTF=BT.709.EOTF )
+installRGB( &#39;BT.709&#39;, scene=REC709_PRI, EOTF=BT.709.EOTF )
 </pre>
 <br> <strong>BT.2020</strong>
 <pre>
-installRGB( 'BT.2020', scene=REC2020_PRI, EOTF=BT.2020.EOTF )
+installRGB( &#39;BT.2020&#39;, scene=REC2020_PRI, EOTF=BT.2020.EOTF )
 </pre>
 <br> <strong>240M</strong>
 <pre>
 prim    = c(0.64,0.34,  0.31,0.595,  0.155,0.07 )
 white   = c( 0.3127, 0.3290 )
-installRGB( '240M', scene=list(prim,white), EOTF=SMPTE.240M.EOTF )
+installRGB( &#39;240M&#39;, scene=list(prim,white), EOTF=SMPTE.240M.EOTF )
 </pre>
 <br> <strong>HD+2.4</strong>
 <pre>
@@ -454,11 +708,11 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </pre>
 <p><br><br></p>
 </div>
-<div id="appendix-b---sample-odts-and-output-transforms-for-aces" class="section level1">
+<div id="appendix-b---sample-odts-and-output-transforms-for-aces" class="section level1" number="7">
 <h1><span class="header-section-number">7</span> Appendix B - Sample ODTs and Output Transforms for ACES</h1>
 <p>This Appendix has <strong>spacesRGB</strong> expressions for the output transforms available as presets to the user in ACES v1.1, see <em>ACES Output Transform Details</em> <span class="citation">[17]</span>. <!-- These 21 transforms are divided into 2 groups depending on how the three basic transforms are defined. --> <!-- Each group defines two of the transforms, and the third one is determined by the other two. --></p>
-<p>For examples of these transforms &quot;in action&quot; see the files <code>test-ACES.R</code> and <code>test_values.txt</code> in the folder <code>tests</code>.</p>
-<div id="output-transforms-with-given-oetf-and-eotf" class="section level2">
+<p>For examples of these transforms “in action” see the files <code>test-ACES.R</code> and <code>test_values.txt</code> in the folder <code>tests</code>.</p>
+<div id="output-transforms-with-given-oetf-and-eotf" class="section level2" number="7.1">
 <h2><span class="header-section-number">7.1</span> Output Transforms with given OETF and EOTF</h2>
 <p>In <span class="citation">[17]</span> Sections 5.1 to 7.2 are 16 Output Transforms whose transfer functions are defined by their OETF and EOTF, and then <span class="math inline">\(\text{OOTF} := \text{OETF} \otimes \text{EOTF}\)</span>. These tables present the OETF and EOTF using the S3 <code>TransferFunction</code> objects available in <strong>spacesRGB</strong>. The display primaries and whitepoints are easily extracted from the expressions for the OETF. Note that in the case of DCDM (Digital Cinema Distribution Master) in sections 5.7-9, which uses XYZ as its primaries, the argument <code>display_pri=NULL</code>.</p>
 <table>
@@ -505,10 +759,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -523,7 +777,7 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 <tr class="even">
 <td>OETF</td>
-<td><code>RRT.TF</code> <code>*</code> <code>general.PODT(P3D65_PRI,Ymax=48,observer=P3D60_PRI['W',]) * power.OETF(2.6)</code></td>
+<td><code>RRT.TF</code> <code>*</code> <code>general.PODT(P3D65_PRI,Ymax=48,observer=P3D60_PRI[&#39;W&#39;,]) * power.OETF(2.6)</code></td>
 </tr>
 <tr class="odd">
 <td>EOTF</td>
@@ -531,10 +785,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -557,10 +811,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -575,7 +829,7 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 <tr class="even">
 <td>OETF</td>
-<td><code>RRT.TF * general.PODT(P3DCI_PRI,Ymax=48,observer=P3D60_PRI['W',]) * power.OETF(2.6)</code></td>
+<td><code>RRT.TF * general.PODT(P3DCI_PRI,Ymax=48,observer=P3D60_PRI[&#39;W&#39;,]) * power.OETF(2.6)</code></td>
 </tr>
 <tr class="odd">
 <td>EOTF</td>
@@ -583,10 +837,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -601,7 +855,7 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 <tr class="even">
 <td>OETF</td>
-<td><code>RRT.TF * general.PODT(P3DCI_PRI,Ymax=48,observer=P3D65_PRI['W',]) * power.OETF(2.6)</code></td>
+<td><code>RRT.TF * general.PODT(P3DCI_PRI,Ymax=48,observer=P3D65_PRI[&#39;W&#39;,]) * power.OETF(2.6)</code></td>
 </tr>
 <tr class="odd">
 <td>EOTF</td>
@@ -631,10 +885,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -657,10 +911,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -683,10 +937,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -701,7 +955,7 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 <tr class="even">
 <td>OETF</td>
-<td><code>RRT.TF * general.PODT(REC709_PRI,Ymax=100,surround='dim')  * BT.1886.EOTF()^-1</code></td>
+<td><code>RRT.TF * general.PODT(REC709_PRI,Ymax=100,surround=&#39;dim&#39;)  * BT.1886.EOTF()^-1</code></td>
 </tr>
 <tr class="odd">
 <td>EOTF</td>
@@ -709,10 +963,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -727,7 +981,7 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 <tr class="even">
 <td>OETF</td>
-<td><code>RRT.TF * general.PODT(REC709_PRI,Ymax=100,observer=P3D60_PRI['W',],surround='dim') * BT.1886.EOTF()^-1</code></td>
+<td><code>RRT.TF * general.PODT(REC709_PRI,Ymax=100,observer=P3D60_PRI[&#39;W&#39;,],surround=&#39;dim&#39;) * BT.1886.EOTF()^-1</code></td>
 </tr>
 <tr class="odd">
 <td>EOTF</td>
@@ -735,10 +989,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -753,7 +1007,7 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 <tr class="even">
 <td>OETF</td>
-<td><code>RRT.TF * general.PODT(REC2020_PRI,Ymax=100,surround='dim') * BT.1886.EOTF()^-1</code></td>
+<td><code>RRT.TF * general.PODT(REC2020_PRI,Ymax=100,surround=&#39;dim&#39;) * BT.1886.EOTF()^-1</code></td>
 </tr>
 <tr class="odd">
 <td>EOTF</td>
@@ -761,10 +1015,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -779,7 +1033,7 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 <tr class="even">
 <td>OETF</td>
-<td><code>RRT.TF * general.PODT(REC2020_PRI,Ymax=100,limit=P3D65_PRI,surround='dim') * BT.1886.EOTF()^-1</code></td>
+<td><code>RRT.TF * general.PODT(REC2020_PRI,Ymax=100,limit=P3D65_PRI,surround=&#39;dim&#39;) * BT.1886.EOTF()^-1</code></td>
 </tr>
 <tr class="odd">
 <td>EOTF</td>
@@ -787,10 +1041,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:39%;">
+<table>
 <colgroup>
-<col width="18%"></col>
-<col width="20%"></col>
+<col width="46%" />
+<col width="53%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -805,7 +1059,7 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 <tr class="even">
 <td>OETF</td>
-<td><code>RRT.TF * general.PODT(REC2020_PRI,limit=REC709_PRI,surround='dim') * BT.1886.EOTF()^-1</code></td>
+<td><code>RRT.TF * general.PODT(REC2020_PRI,limit=REC709_PRI,surround=&#39;dim&#39;) * BT.1886.EOTF()^-1</code></td>
 </tr>
 <tr class="odd">
 <td>EOTF</td>
@@ -813,10 +1067,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:56%;">
+<table>
 <colgroup>
-<col width="19%"></col>
-<col width="36%"></col>
+<col width="34%" />
+<col width="65%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -831,7 +1085,7 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 <tr class="even">
 <td>OETF</td>
-<td><code>RRT.TF * general.PODT(REC709_PRI,Ymax=100,surround='dim') * sRGB.EOTF^-1</code></td>
+<td><code>RRT.TF * general.PODT(REC709_PRI,Ymax=100,surround=&#39;dim&#39;) * sRGB.EOTF^-1</code></td>
 </tr>
 <tr class="odd">
 <td>EOTF</td>
@@ -839,10 +1093,10 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 </tbody>
 </table>
-<table style="width:56%;">
+<table>
 <colgroup>
-<col width="19%"></col>
-<col width="36%"></col>
+<col width="34%" />
+<col width="65%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -857,7 +1111,7 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tr>
 <tr class="even">
 <td>OETF</td>
-<td><code>RRT.TF * general.PODT(REC709_PRI,Ymax=100,observer=P3D60_PRI['W',],surround='dim') * sRGB.EOTF^-1</code></td>
+<td><code>RRT.TF * general.PODT(REC709_PRI,Ymax=100,observer=P3D60_PRI[&#39;W&#39;,],surround=&#39;dim&#39;) * sRGB.EOTF^-1</code></td>
 </tr>
 <tr class="odd">
 <td>EOTF</td>
@@ -866,12 +1120,12 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tbody>
 </table>
 <p>None of these are pre-installed in the package. The resulting RGB space for last one - <strong>sRGB (D60 Simulation)</strong> - can be installed like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">OETF =<span class="st"> </span>RRT.TF <span class="op">*</span><span class="st"> </span><span class="kw">general.PODT</span>(REC709_PRI,<span class="dt">observer=</span>P3D60_PRI[<span class="st">'W'</span>,],<span class="dt">surround=</span><span class="st">'dim'</span>) <span class="op">*</span><span class="st"> </span>sRGB.EOTF<span class="op">^-</span><span class="dv">1</span> 
-<span class="kw">installRGB</span>( <span class="st">'sRGB_D60sim'</span>, <span class="dt">scene=</span>AP0_PRI, <span class="dt">EOTF=</span>sRGB.EOTF, <span class="dt">OETF=</span>OETF )</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>OETF <span class="ot">=</span> RRT.TF <span class="sc">*</span> <span class="fu">general.PODT</span>(REC709_PRI,<span class="at">observer=</span>P3D60_PRI[<span class="st">&#39;W&#39;</span>,],<span class="at">surround=</span><span class="st">&#39;dim&#39;</span>) <span class="sc">*</span> sRGB.EOTF<span class="sc">^-</span><span class="dv">1</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">installRGB</span>( <span class="st">&#39;sRGB_D60sim&#39;</span>, <span class="at">scene=</span>AP0_PRI, <span class="at">EOTF=</span>sRGB.EOTF, <span class="at">OETF=</span>OETF )</span></code></pre></div>
 <p>And the other 15 spaces can be installed in a similar way. Note that the display primaries <code>REC709_PRI</code> do not have to be passed to <code>installRGB()</code>, since they are automatically picked from the metadata of the OETF. See the man page for <code>installRGB()</code>.</p>
 <p><br><br></p>
 </div>
-<div id="output-transforms-with-given-ootf-and-eotf" class="section level2">
+<div id="output-transforms-with-given-ootf-and-eotf" class="section level2" number="7.2">
 <h2><span class="header-section-number">7.2</span> Output Transforms with given OOTF and EOTF</h2>
 <p>In <span class="citation">[17]</span> Sections 8.1 to 9.4 are 5 Output Transforms whose transfer functions are defined by their OOTF and EOTF, and then <span class="math inline">\(\text{OETF} := \text{OOTF} \otimes \text{EOTF}^{-1}\)</span>. These tables present the OOTF and EOTF using the S3 <code>TransferFunction</code> objects available in <strong>spacesRGB</strong>. The display primaries and whitepoints are easily extracted from the expressions for the OOTF.</p>
 <table>
@@ -985,37 +1239,43 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </tbody>
 </table>
 <p>In the final one, <code>HLG.OETF()</code> is univariate and <code>HLG.OOTF(Lw=1)</code> is multivariate with dimension 3. Thus the EOTF also has dimension 3. This is the only one of the 21 preset transforms that has a multivariate EOTF. The resulting RGB space can be installed like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">installRGB</span>( <span class="st">'Rec.2020_HLG'</span>, <span class="dt">scene=</span>AP0_PRI, <span class="dt">OOTF=</span><span class="kw">general.OOTF</span>(REC2020_PRI,<span class="dt">Ymid=</span><span class="dv">15</span>,<span class="dt">Ymax=</span><span class="dv">1000</span>),
-                        <span class="dt">EOTF=</span><span class="kw">HLG.OETF</span>()<span class="op">^-</span><span class="dv">1</span> <span class="op">*</span><span class="st"> </span><span class="kw">HLG.OOTF</span>(<span class="dt">Lw=</span><span class="dv">1</span>) )</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">installRGB</span>( <span class="st">&#39;Rec.2020_HLG&#39;</span>, <span class="at">scene=</span>AP0_PRI, <span class="at">OOTF=</span><span class="fu">general.OOTF</span>(REC2020_PRI,<span class="at">Ymid=</span><span class="dv">15</span>,<span class="at">Ymax=</span><span class="dv">1000</span>),</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">EOTF=</span><span class="fu">HLG.OETF</span>()<span class="sc">^-</span><span class="dv">1</span> <span class="sc">*</span> <span class="fu">HLG.OOTF</span>(<span class="at">Lw=</span><span class="dv">1</span>) )</span></code></pre></div>
 <p>And the other 4 spaces can be installed in a similar way. Note that the display primaries <code>REC2020_PRI</code> do not have to be passed to <code>installRGB()</code>, since they are automatically picked from the metadata of the OOTF. See the man page for <code>installRGB()</code>.</p>
 <p><br><br></p>
 </div>
 </div>
-<div id="session-information" class="section level1">
+<div id="session-information" class="section level1" number="8">
 <h1><span class="header-section-number">8</span> Session Information</h1>
 <pre>
-R version 4.1.2 (2021-11-01)
+R version 4.3.2 (2023-10-31 ucrt)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 7 x64 (build 7601) Service Pack 1
+Running under: Windows 10 x64 (build 19045)
 
 Matrix products: default
 
+
 locale:
-[1] LC_COLLATE=C                           LC_CTYPE=English_United States.1252   
-[3] LC_MONETARY=English_United States.1252 LC_NUMERIC=C                          
-[5] LC_TIME=English_United States.1252    
+[1] LC_COLLATE=C                           LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8 LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/New_York
+tzcode source: internal
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] spacesRGB_1.4-0
+[1] spacesRGB_1.5-0
 
 loaded via a namespace (and not attached):
- [1] microbenchmark_1.4.9 compiler_4.1.2       magrittr_1.5         htmltools_0.5.0     
- [5] tools_4.1.2          yaml_2.2.1           spacesXYZ_1.1-1      stringi_1.5.3       
- [9] rmarkdown_2.11       highr_0.8            knitr_1.30           stringr_1.4.0       
-[13] digest_0.6.25        xfun_0.28            rlang_0.4.8          evaluate_0.14       
+ [1] digest_0.6.31         R6_2.5.1              microbenchmark_1.4.10 spacesXYZ_1.2-1      
+ [5] fastmap_1.1.1         xfun_0.39             cachem_1.0.8          knitr_1.42           
+ [9] htmltools_0.5.5       rmarkdown_2.21        cli_3.6.1             sass_0.4.6           
+[13] jquerylib_0.1.4       compiler_4.3.2        highr_0.10            tools_4.3.2          
+[17] evaluate_0.21         bslib_0.4.2           yaml_2.3.7            rlang_1.1.1          
+[21] jsonlite_1.8.4       
 </pre>
 </div>
 

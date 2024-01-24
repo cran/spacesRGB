@@ -64,7 +64,7 @@ general.PODT <- function(   display_pri, Ymax=1,
         #   TODO: Needs to expand from just supporting D60 sim to allow for any observer-adapted white point.
         if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )
             {    
-            log.string( ERROR, "Cannot adapt from ACES whitepoint to display (assumed observer adapted) whitepoint, because 'spacesXYZ' cannot be loaded." )
+            log_string( ERROR, "Cannot adapt from ACES whitepoint to display (assumed observer adapted) whitepoint, because 'spacesXYZ' cannot be loaded." )
             return( NULL )
             }
 
@@ -88,7 +88,7 @@ general.PODT <- function(   display_pri, Ymax=1,
     idx = pmatch( tolower(surround), surround.full )
     if( is.na(idx) )
         {        
-        log.string( ERROR, "surround='%s' is invalid.", surround )
+        log_string( ERROR, "surround='%s' is invalid.", surround )
         return(NULL)
         }
     surround    = surround.full[idx]        

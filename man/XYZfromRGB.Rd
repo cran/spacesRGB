@@ -20,8 +20,10 @@ These should be in the appropriate cube \code{[0,maxSignal]}\eqn{^3}.
 \item{space}{the name of an installed RGB space.
 The name matching is partial and case-insensitive.}
 
-\item{which}{the output XYZ or linear RGB - either \code{'scene'} or \code{'display'}.
-Usually the OOTF for the space is the identity and so these two are the same.
+\item{which}{either \code{'scene'} or \code{'display'}.
+For \code{XYZfromRGB()} \code{which} describes the output XYZ.
+For \code{LinearRGBfromSignalRGB()} \code{which} describes the output RGB.
+Usually the OOTF for the space is the identity and so \code{'scene'} and \code{'display'} are the same.
 }
 
 \item{TF}{if not \code{NULL}, \code{TF} is a \code{TransferFunction}
@@ -40,6 +42,15 @@ If \code{TF} is not \code{NULL} in \code{LinearRGBfromSignalRGB()}, then \code{s
 Other common values are 100, 255, 1023, 4095, and 65535.
 Even when 1, they are still taken to be non-linear signal values.}
 }
+
+\details{
+In \code{XYZfromRGB()}, the conversion is done in 2 steps:
+\itemize{
+\item signal RGB  \rarrow  linear RGB using \code{LinearRGBfromSignalRGB()} and all other the given arguments
+\item linear RGB  \rarrow  XYZ using the appropriate 3x3 matrix for the given \code{space} and \code{which}
+}
+}
+
 
 \value{
 \code{XYZfromRGB()} returns a \code{data.frame} with N rows and these columns:

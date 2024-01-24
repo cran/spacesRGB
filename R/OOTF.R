@@ -26,7 +26,7 @@ general.OOTF    <- function(
     
     if( is.null(display_pri) )
         {
-        log.string( ERROR, "display_pri cannot be NULL." )
+        log_string( ERROR, "display_pri cannot be NULL." )
         return(NULL)
         }
     
@@ -46,7 +46,7 @@ general.OOTF    <- function(
         {
         if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )
             {    
-            log.string( ERROR, "Cannot adapt from ACES whitepoint to display (assumed observer adapted) whitepoint, because 'spacesXYZ' cannot be loaded." )
+            log_string( ERROR, "Cannot adapt from ACES whitepoint to display (assumed observer adapted) whitepoint, because 'spacesXYZ' cannot be loaded." )
             return( NULL )
             }
 
@@ -62,7 +62,7 @@ general.OOTF    <- function(
     idx = pmatch( tolower(surround), surround.full )
     if( is.na(idx) )
         {
-        log.string( ERROR, "surround='%s' is invalid.", surround )
+        log_string( ERROR, "surround='%s' is invalid.", surround )
         return(NULL)
         }
     surround    = surround.full[idx]
@@ -71,7 +71,7 @@ general.OOTF    <- function(
     idx = pmatch( toupper(dynrange), dynrange.full )
     if( is.na(idx) )
         {
-        log.string( ERROR, "dynrange='%s' is invalid.", dynrange )
+        log_string( ERROR, "dynrange='%s' is invalid.", dynrange )
         return(NULL)
         }
     dynrange    = dynrange.full[idx]
@@ -111,7 +111,7 @@ general.OOTF    <- function(
         glowmodifier = TRUE         #   only one version is known
     else
         {
-        log.string( ERROR, "glowmod='%s' is invalid.", as.character(glowmod)[1] )
+        log_string( ERROR, "glowmod='%s' is invalid.", as.character(glowmod)[1] )
         return(NULL)
         }        
     
@@ -129,7 +129,7 @@ general.OOTF    <- function(
         }
     else
         {
-        log.string( ERROR, "redmod='%s' is invalid.", as.character(redmod)[1] )
+        log_string( ERROR, "redmod='%s' is invalid.", as.character(redmod)[1] )
         return(NULL)
         }
         

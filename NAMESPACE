@@ -1,6 +1,6 @@
 
 
-exportClasses(TransferFunction)
+# exportClasses(TransferFunction)   only applies to S4 classes, removed Jan 2024
 
 ## methods for class TransferFunction
 S3method(is.identity,TransferFunction)
@@ -21,6 +21,17 @@ S3method("%X%",TransferFunction)
 S3method("%O%",TransferFunction)
 S3method(plot,TransferFunction)
 S3method(print,TransferFunction)
+
+
+## methods for class elemTransferFunction   NOT exported
+S3method(dimension,elemTransferFunction )
+S3method(inverse,elemTransferFunction )
+S3method(is.invertible,elemTransferFunction )
+S3method(orientation,elemTransferFunction )
+S3method(print,elemTransferFunction )
+S3method(transfer,elemTransferFunction )
+S3method(validate,elemTransferFunction )
+
 
 export( is.identity,
         is.invertible,

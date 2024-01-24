@@ -23,7 +23,7 @@ TransferFunction  <-  function( fun, funinv, domain, range, id=NULL )
     ok  = is.null(id) || (is.character(id)  &&  length(id)==1)  
     if( ! ok )
         {
-        log.string( ERROR, "Argument id='%s' is not a valid character string, or NULL.", as.character(id)[1] )
+        log_string( ERROR, "Argument id='%s' is not a valid character string, or NULL.", as.character(id)[1] )
         return(NULL)
         }
         
@@ -49,7 +49,7 @@ is.TransferFunction  <- function( x )
     
 as.TransferFunction.default <- function( ... )
     {
-    log.string( WARN, "This function is designed to be called from other packages." )
+    log_string( WARN, "This function is designed to be called from other packages." )
     return(NULL)
     }    
 
@@ -167,7 +167,7 @@ transfer.TransferFunction  <-  function( TF, x, domaincheck=TRUE )
     
     if( ! is.numeric(x) )
         {
-        log.string( ERROR, "argument x is not numeric.")
+        log_string( ERROR, "argument x is not numeric.")
         return(NULL)
         }   
         
@@ -232,7 +232,7 @@ composition.TransferFunction  <-  function( TF1, TF2 )
     
     if( ! is.TransferFunction(TF2) )
         {
-        log.string( ERROR, "'%s' and '%s' cannot be composed, because '%s' is not a TransferFunction object.",
+        log_string( ERROR, "'%s' and '%s' cannot be composed, because '%s' is not a TransferFunction object.",
                             deparse(substitute(TF1)), deparse(substitute(TF2)), deparse(substitute(TF2)) )
         return(NULL)
         }   
@@ -308,7 +308,7 @@ composition.TransferFunction  <-  function( TF1, TF2 )
 
     if( ! ok )
         {
-        log.string( ERROR, "TF1 and TF2 cannot be composed, because dimension(TF1)=%d != %d=dimension(TF2).", n1, n2 )
+        log_string( ERROR, "TF1 and TF2 cannot be composed, because dimension(TF1)=%d != %d=dimension(TF2).", n1, n2 )
         return(NULL)
         }   
 
@@ -323,7 +323,7 @@ composition.TransferFunction  <-  function( TF1, TF2 )
         name1   = gsub( ' ', '', names(TF1$element)[elements1] )
         name2   = gsub( ' ', '', names(TF2$element)[1] )
         
-        log.string( ERROR, "%s and %s cannot be composed, because the range of %s is not inside the domain of %s, in %d of %d dimensions.",
+        log_string( ERROR, "%s and %s cannot be composed, because the range of %s is not inside the domain of %s, in %d of %d dimensions.",
                             name1, name2, name1, name2, length(inside)-sum(inside), length(inside) )
         return(NULL)
         }   
@@ -345,7 +345,7 @@ composition.TransferFunction  <-  function( TF1, TF2 )
         {
         dup = duplicated( names(met) )
         if( any(dup) )
-            log.string( WARN, "The metadata has %d duplicates (e.g. '%s'); latter items are removed.", 
+            log_string( WARN, "The metadata has %d duplicates (e.g. '%s'); latter items are removed.", 
                                                     sum(dup), names(met)[ which(dup)[1] ] )            
         metadata(out)   = met[ ! dup ]
         }
@@ -389,7 +389,7 @@ validate.TransferFunction  <-  function( TF, points=1300, tol=5.e-7, domain=NULL
     ok  = is.numeric(points)  &&  length(points)==1  &&  8<=points
     if( ! ok )
         {
-        log.string( ERROR, "points='%s' is invalid.", as.character(points)[1] )
+        log_string( ERROR, "points='%s' is invalid.", as.character(points)[1] )
         return(NULL)
         }    
     
@@ -412,11 +412,11 @@ validate.TransferFunction  <-  function( TF, points=1300, tol=5.e-7, domain=NULL
             
         if( ! all( dim(domain) == c(2,m) ) )
             {
-            log.string( ERROR, "User-supplied domain is invalid." )
+            log_string( ERROR, "User-supplied domain is invalid." )
             return(NULL)
             }
             
-        log.string( INFO, "Using user-supplied domain for validation." )
+        log_string( INFO, "Using user-supplied domain for validation." )
         }
     
     elements    = length( TF$element )  
@@ -494,7 +494,7 @@ plot.TransferFunction  <-  function( x, color='red', main=TRUE, add=FALSE, ... )
     m   = dimension(TF)
     if( 4 <= m )
         {
-        log.string( WARN, "'%s' has dimension %d >= 4, and cannot be plotted.", theName, m )
+        log_string( WARN, "'%s' has dimension %d >= 4, and cannot be plotted.", theName, m )
         return(FALSE)
         }
             
@@ -574,7 +574,7 @@ plot.TransferFunction  <-  function( x, color='red', main=TRUE, add=FALSE, ... )
         {
         if( ! requireNamespace( 'rgl', quietly=TRUE ) )
             {    
-            log.string( ERROR, "Cannot plot %s, because '%s' cannot be loaded.", theName, 'spacesXYZ' )
+            log_string( ERROR, "Cannot plot %s, because '%s' cannot be loaded.", theName, 'rgl' )
             return( NULL )
             }
 
@@ -679,13 +679,13 @@ gammaBestFit.TransferFunction <- function( TF )
         
     res = try( stats::optimize( myfun, lower=0.5*gamma, upper=2*gamma ),  silent=FALSE )   #; print( str(res) )
         
-    if( class(res) == "try-error" )    
+    if( inherits(res,"try-error") )    # class(res) == "try-error"    
         {
         cat( 'stats::optimize()  res = ', utils::str(res), '\n', file=stderr() )
         return( NA_real_ )
         }
 
-    #   log.string( INFO, "LM polished gamma=%g to %g in %d iterations.", gamma, res$par, res$niter )
+    #   log_string( INFO, "LM polished gamma=%g to %g in %d iterations.", gamma, res$par, res$niter )
 
     return( res$minimum )    
     }
@@ -726,13 +726,13 @@ metadata.TransferFunction <- function( x, ... )
     if( ! any(mask) )
         {
         print(value)
-        log.string( ERROR, "none of the items in the list have names." )
+        log_string( ERROR, "none of the items in the list have names." )
         return(x)
         }
 
     if( ! all (mask) )
         {
-        log.string( WARN, "options without name are discarded: %d", which(!mask) )
+        log_string( WARN, "options without name are discarded: %d", which(!mask) )
         value   = value[mask]
         }
         

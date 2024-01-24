@@ -26,7 +26,7 @@ calculateDataXYZ <- function( primaries, white )
     primaries   = prepareNxM( primaries, 2 )
     if( is.null(primaries) )
         {
-        log.string( ERROR, "primaries is not a 3x2 or 4x2 numeric matrix." )
+        log_string( ERROR, "primaries is not a 3x2 or 4x2 numeric matrix." )
         return(NULL)
         }
         
@@ -36,7 +36,7 @@ calculateDataXYZ <- function( primaries, white )
         valid   = is.numeric(white)  &&  length(white) %in% (2:3)
         if( ! valid )
             {
-            log.string( ERROR, "white is not a numeric 2-vector or 3-vector." )
+            log_string( ERROR, "white is not a numeric 2-vector or 3-vector." )
             return(NULL)
             }
             
@@ -59,7 +59,7 @@ calculateDataXYZ <- function( primaries, white )
         valid   = is.numeric(white)  &&  length(white)==1  &&  0<white
         if( ! valid )
             {
-            log.string( ERROR, "white is not a positive number." )
+            log_string( ERROR, "white is not a positive number." )
             return(NULL)
             }
             
@@ -67,7 +67,7 @@ calculateDataXYZ <- function( primaries, white )
         }
     else
         {
-        log.string( ERROR, "primaries is not a 3x2 or 4x2 numeric matrix." )
+        log_string( ERROR, "primaries is not a 3x2 or 4x2 numeric matrix." )
         return(NULL)
         }
         
@@ -77,7 +77,7 @@ calculateDataXYZ <- function( primaries, white )
     #valid   = all( 0 <= prim )
     #if( ! valid )
     #    {
-    #    log.string( ERROR, "primaries does not contain 4 valid chromaticies." )
+    #    log_string( ERROR, "primaries does not contain 4 valid chromaticies." )
     #    print(prim)
     #    return(NULL)
     #    }
@@ -98,7 +98,7 @@ calculateDataXYZ <- function( primaries, white )
     
     if( is.null(out$RGB2XYZ) )
         {
-        log.string( ERROR, "The 4 chromaticies are degenerate. Please check for non-degenerate triangle with white point in interior." )
+        log_string( ERROR, "The 4 chromaticies are degenerate. Please check for non-degenerate triangle with white point in interior." )
         return(NULL)
         }
         
@@ -199,8 +199,8 @@ prepareNxM  <-  function( A, M=3 )
         
         Aname = deparse(substitute(A))        
         
-        #   notice hack to make log.string() print name of parent function        
-        log.string( c(ERROR,2L), "Argument '%s' must be a non-empty numeric Nx%d matrix (with N>0). %s='%s...'", 
+        #   notice hack to make log_string() print name of parent function        
+        log_string( c(ERROR,2L), "Argument '%s' must be a non-empty numeric Nx%d matrix (with N>0). %s='%s...'", 
                                     Aname, M, Aname, mess )
         return(NULL)
         }

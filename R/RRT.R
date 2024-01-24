@@ -92,7 +92,7 @@ general.RRT  <-  function( glowmod="1.1", redmod="1.1" )      # "1.1+pinv"
         glowmodifier = TRUE         #   only one version is known
     else
         {
-        log.string( ERROR, "glowmod='%s' is invalid.", as.character(glowmod)[1] )
+        log_string( ERROR, "glowmod='%s' is invalid.", as.character(glowmod)[1] )
         return(NULL)
         }
 
@@ -111,7 +111,7 @@ general.RRT  <-  function( glowmod="1.1", redmod="1.1" )      # "1.1+pinv"
         }
     else
         {
-        log.string( ERROR, "redmod='%s' is invalid.", as.character(redmod)[1] )
+        log_string( ERROR, "redmod='%s' is invalid.", as.character(redmod)[1] )
         return(NULL)
         }
 
@@ -382,13 +382,13 @@ redmodinv_precise <- function( aces )
     if( 0 < f1 * f2 )    
         {
         #   same sign
-        log.string( WARN, "root-finding interval [%g,%g] invalid.  redmod cannot be inverted.", interval[1], interval[2] )
+        log_string( WARN, "root-finding interval [%g,%g] invalid.  redmod cannot be inverted.", interval[1], interval[2] )
         return( NA_real_ )
         }
     
     res = try( stats::uniroot( myfun, interval=interval, rgb=aces, tol=.Machine$double.eps^0.5 ),  silent=FALSE )
     
-    if( class(res) == "try-error" )    
+    if( inherits(res,"try-error" ) )        #class(res) == "try-error" 
         {
         cat( 'stats::uniroot()  res = ', utils::str(res), '\n', file=stderr() )
         return( NA_real_ )

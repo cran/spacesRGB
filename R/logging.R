@@ -12,13 +12,15 @@ names(DEBUG) <- "DEBUG"
 TRACE <- 9L
 names(TRACE) <- "TRACE"
 
-log.string <- function( level, msg, ... )
+
+
+log_string <- function( level, msg, ... )
     {    
     conn    = stderr()
     
     if( ! is.integer(level) )
         {
-        cat( "log.string(). level is not an integer.\n", file=conn )
+        cat( "log_string(). level is not an integer.\n", file=conn )
         return( invisible(FALSE) )
         }
         
@@ -33,7 +35,7 @@ log.string <- function( level, msg, ... )
     msg = sprintf( msg[1], ... )    # should this really be msg[1] ?
 
     #   find the name of the calling function
-    #print( "log.string" )
+    #print( "log_string" )
     # print( sys.status() )
         
     where   = sys.parent(generation)  # ; print(where)

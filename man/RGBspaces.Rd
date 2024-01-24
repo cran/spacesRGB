@@ -9,6 +9,9 @@
 \description{
 Query and summarize the installed RGB spaces.
 The RGB spaces are stored in a dictionary, which comes with 8 RGB spaces pre-installed.
+These spaces are:
+\bold{sRGB},        \bold{AdobeRGB},    \bold{ProPhotoRGB}, \bold{AppleRGB},    \bold{BT.709},
+\bold{BT.2020},     \bold{240M}, and        \bold{HD+2.4}.
 }
 
 \usage{

@@ -23,7 +23,9 @@ The RGB may be outside the corresponding domain box (either scene or display), s
 \item{space}{the name of an installed RGB space.
 The name matching is partial and case-insensitive.}
 
-\item{which}{the input linear RGB - either \code{'scene'} or \code{'display'}.
+\item{which}{either \code{'scene'} or \code{'display'}.
+For \code{RGBfromXYZ()} \code{which} describes the input XYZ.
+For \code{SignalRGBfromLinearRGB()} \code{which} describes the input RGB.
 % Usually the OOTF for the space is the identity and so these two are the same.
 }
 
@@ -55,6 +57,13 @@ Values are not rounded.}
 In case of error, the functions return NULL.
 }
 
+\details{
+In \code{RGBfromXYZ()}, the conversion is done in 2 steps:
+\itemize{
+\item XYZ  \rarrow  linear RGB using the appropriate 3x3 matrix for the given \code{space} and \code{which}
+\item linear RGB  \rarrow  signal RGB using \code{SignalRGBfromLinearRGB()} and all other the given arguments
+}
+}
 
 \references{
 Wikipedia. \bold{RGB color space}.

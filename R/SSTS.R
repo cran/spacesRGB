@@ -28,7 +28,7 @@ init_TsParams   <- function( minLum, maxLum, expShift=0 )
     ok  = minLum < maxLum
     if( ! ok )
         {
-        log.string( ERROR, "minLum=%g and maxLum=%g are invalid.", minLum, maxLum )
+        log_string( ERROR, "minLum=%g and maxLum=%g are invalid.", minLum, maxLum )
         return(NULL)
         }
     
@@ -55,7 +55,7 @@ init_TsParams3  <- function( minLum, midLum, maxLum )
     ok  = minLum < midLum  &&  midLum < maxLum
     if( ! ok )
         {
-        log.string( ERROR, "minLum=%g and midLum=%g and maxLum=%g are invalid.", minLum, midLum, maxLum )
+        log_string( ERROR, "minLum=%g and midLum=%g and maxLum=%g are invalid.", minLum, midLum, maxLum )
         return(NULL)
         }
     
@@ -307,7 +307,7 @@ SSTS.TF <- function( TsParams )
     ok  = is.list(TsParams)  &&  !is.null(TsParams$Min)  &&  !is.null(TsParams$Mid)  &&  !is.null(TsParams$Max)
     if( ! ok )
         {
-        log.string( ERROR, "TsParams='%s' is invalid.", as.character(TsParams)[1] )
+        log_string( ERROR, "TsParams='%s' is invalid.", as.character(TsParams)[1] )
         return(NULL)        
         }
     
