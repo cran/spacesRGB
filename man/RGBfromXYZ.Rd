@@ -1,24 +1,28 @@
 \name{Signal RGB Calculation}
 \alias{RGBfromXYZ}
+\alias{RGBfromLab}
 \alias{SignalRGBfromLinearRGB}
-\title{Convert XYZ or Linear RGB to Signal RGB}
+\title{Calculate Signal RGB from Linear RGB, XYZ, or Lab}
 
-\description{Convert XYZ or Linear RGB to Signal RGB, multiple RGB spaces are available}
+\description{Calculate signal RGB from linear RGB, XYZ, or Lab}
 
 \usage{
+SignalRGBfromLinearRGB( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
+
 RGBfromXYZ( XYZ, space='sRGB', which='scene', TF=NULL, maxSignal=1 ) 
 
-SignalRGBfromLinearRGB( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
+RGBfromLab( Lab, space='sRGB', which='scene', TF=NULL, maxSignal=1 ) 
 }
 
 \arguments{
+\item{RGB}{a numeric Nx3 matrix with linear RGB coordinates in the rows,
+or a vector that can be converted to such a matrix, by row.
+The RGB may be outside the corresponding domain box (either scene or display), see \bold{Details}.}
+
 \item{XYZ}{a numeric Nx3 matrix with CIE XYZ coordinates in the rows, or a vector that can be converted to such a matrix, by row.
 The XYZ are assumed to be viewed under the white-point of the given RGB \code{space}.}
 
-\item{RGB}{a numeric Nx3 matrix with linear RGB coordinates in the rows,
-or a vector that can be converted to such a matrix, by row.
-The RGB may be outside the corresponding domain box (either scene or display), see \bold{Details}.
-}
+\item{Lab}{a numeric Nx3 matrix with CIE Lab coordinates in the rows, or a vector that can be converted to such a matrix, by row.}
 
 \item{space}{the name of an installed RGB space.
 The name matching is partial and case-insensitive.}
@@ -48,21 +52,31 @@ Even when 1, they are still taken to be non-linear Signal values.}
 \value{
 a \code{data.frame} with N rows and these columns
 \item{RGB}{signal RGB.
-If \code{TF} is not the identity, all input linear RGB values are clamped to the appropriate domain box,
-which implies that the signal RGBs are inside the cube \code{[0,maxSignal]}^\eqn{3}.
+If \code{TF} is not the identity, the computed linear RGBs are clamped to [0,1]\eqn{^3} if necessary,
+which implies that the output signal RGBs are inside the cube [0,\code{maxSignal}]\eqn{^3}.
 Values are not rounded.}
 
-\item{OutOfGamut}{logical vector, TRUE means the input linear RGB was outside the domain box before clamping it.}
+\item{OutOfGamut}{a logical, TRUE means one or more of the computed linear RGBs were actually clamped to [0,1].}
+
+In \code{RGBfromLab()}, if a=b=0 exactly, the R=G=B exactly.
 
 In case of error, the functions return NULL.
 }
 
 \details{
-In \code{RGBfromXYZ()}, the conversion is done in 2 steps:
+In \code{RGBfromXYZ()}, the conversion is done in these steps:
 \itemize{
-\item XYZ  \rarrow  linear RGB using the appropriate 3x3 matrix for the given \code{space} and \code{which}
+\item XYZ  \rarrow  linear RGB using the 3x3 matrix for the given \code{space} and \code{which}
+\item if \code{TF} is not the identity, the linear RGBs are clamped to [0,1]\eqn{^3} if necessary
 \item linear RGB  \rarrow  signal RGB using \code{SignalRGBfromLinearRGB()} and all other the given arguments
 }
+
+In \code{RGBfromLab()}, Lab \rarrow XYZ
+is calculated using
+\code{\link[spacesXYZ:toXYZ]{spacesXYZ::XYZfromLab}()},
+with the white point
+(either \code{'scene'} or \code{'display'}) of the given RGB space.
+
 }
 
 \references{
@@ -75,7 +89,8 @@ Wikipedia. \bold{RGB color space}.
 \code{\link{XYZfromRGB}()},
 \code{\link{LinearRGBfromSignalRGB}()},
 \code{\link{installRGB}()},
-\code{\link{identity.TF}}
+\code{\link{identity.TF}},
+\code{\link[spacesXYZ:toXYZ]{spacesXYZ::XYZfromLab}()}
 }
 
 \examples{

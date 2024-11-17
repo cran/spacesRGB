@@ -1,28 +1,33 @@
-\name{Linear RGB and XYZ Calculation}
+\name{Linear RGB, XYZ, and Lab Calculation}
 \alias{XYZfromRGB}
+\alias{LabfromRGB}
 \alias{LinearRGBfromSignalRGB}
-\title{Convert Signal RGB coordinates to XYZ, or Linear RGB}
+\title{Convert Signal RGB coordinates to Linear RGB, XYZ, or Lab}
 
-\description{Convert signal RGB coordinates to XYZ, or to linear RGB}
+\description{Convert signal RGB coordinates to linear RGB, XYZ, or Lab}
 
 \usage{
+LinearRGBfromSignalRGB( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 ) 
+
 XYZfromRGB( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 ) 
 
-LinearRGBfromSignalRGB( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 ) 
+LabfromRGB( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 ) 
 }
 
 
 \arguments{
 \item{RGB}{ a numeric Nx3 matrix with non-linear signal RGB coordinates in the rows, or a vector that can be converted to such a matrix, by row.
-These should be in the appropriate cube \code{[0,maxSignal]}\eqn{^3}.
+These should be in the appropriate cube \code{[0,maxSignal]}\eqn{^3};
+but see \code{OutOfGamut} in \bold{Value} below.
 }
 
 \item{space}{the name of an installed RGB space.
 The name matching is partial and case-insensitive.}
 
 \item{which}{either \code{'scene'} or \code{'display'}.
-For \code{XYZfromRGB()} \code{which} describes the output XYZ.
-For \code{LinearRGBfromSignalRGB()} \code{which} describes the output RGB.
+For \code{LinearRGBfromSignalRGB()}, \code{which} describes the output RGB.
+For \code{XYZfromRGB()}, \code{which} describes the output XYZ.
+For \code{LabfromRGB()}, \code{which} describes the output Lab.
 Usually the OOTF for the space is the identity and so \code{'scene'} and \code{'display'} are the same.
 }
 
@@ -39,36 +44,58 @@ If \code{TF} is not \code{NULL} in \code{LinearRGBfromSignalRGB()}, then \code{s
 
 
 \item{maxSignal}{maximum value of the input signal \code{RGB}.
-Other common values are 100, 255, 1023, 4095, and 65535.
-Even when 1, they are still taken to be non-linear signal values.}
+It is just a simple scaling factor;
+other common values are 100, 255, 1023, 4095, and 65535.
+Even when \code{maxSignal}=1, the RGBs are still taken to be non-linear signal values.}
 }
 
 \details{
 In \code{XYZfromRGB()}, the conversion is done in 2 steps:
 \itemize{
 \item signal RGB  \rarrow  linear RGB using \code{LinearRGBfromSignalRGB()} and all other the given arguments
-\item linear RGB  \rarrow  XYZ using the appropriate 3x3 matrix for the given \code{space} and \code{which}
+\item linear RGB  \rarrow  XYZ using the 3x3 matrix for the given \code{space} and \code{which}
 }
 }
 
 
 \value{
 \code{XYZfromRGB()} returns a \code{data.frame} with N rows and these columns:
-\item{XYZ}{the calculated XYZ vectors.
-These are for viewing under the white point of the given RGB space.}
 
 \item{OutOfGamut}{a logical vector. TRUE means the input signal RGB is outside the cube \code{[0,maxSignal]}\eqn{^3}.
 If \code{TF} is not \code{identity.TF}, 
 then the input signal RGBs are clamped to this cube before further calculations.}
 
+\item{XYZ}{the calculated XYZ vectors, using the appropriate 3x3 matrix for the RGB space.
+These are for viewing under the white point (either \code{'scene'} or \code{'display'})
+of the given RGB space.}
+
+
+
+\code{LabfromRGB()} returns a \code{data.frame} with N rows and these columns:
+
+\item{OutOfGamut}{a logical vector. TRUE means the input signal RGB is outside the cube \code{[0,maxSignal]}\eqn{^3}.
+If \code{TF} is not \code{identity.TF}, 
+then the input signal RGBs are clamped to this cube before further calculations.}
+
+\item{Lab}{the calculated Lab vectors.
+First XYZ is calculated using \code{XYZfromRGB()}.
+Then XYZ \rarrow Lab
+is calculated using
+\code{\link[spacesXYZ:fromXYZ]{spacesXYZ::LabfromXYZ}()},
+with the white point
+(either \code{'scene'} or \code{'display'}) of the given RGB space.
+If R=G=B exactly, then a=b=0 exactly.}
+
+
 
 \code{LinearRGBfromSignalRGB()} returns a \code{data.frame} with N rows and these columns:
-\item{RGB}{the calculated linear RGB vectors, either scene linear or display linear.}
 
 \item{OutOfGamut}{a logical vector. TRUE means the input signal RGB is outside the cube \code{[0,maxSignal]}\eqn{^3}.
 If \code{TF} is not \code{identity.TF}, then the signal RGBs are clamped to this cube before linearizing.}
 
-In case of error, both functions return NULL.
+\item{RGB}{the calculated linear RGB vectors, either scene linear or display linear, as specified by \code{which}.}
+
+In case of error, all functions return NULL.
 }
 
 \references{
@@ -80,7 +107,8 @@ Wikipedia. \bold{RGB color space}.
 \seealso{
 \code{\link{RGBfromXYZ}()},
 \code{\link{SignalRGBfromLinearRGB}()},
-\code{\link{installRGB}()}
+\code{\link{installRGB}()},
+\code{\link[spacesXYZ:fromXYZ]{spacesXYZ::LabfromXYZ}()}
 }
 
 \examples{

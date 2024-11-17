@@ -40,6 +40,8 @@ This is the case for `grDevices::rgb()`,
 `grDevices::convertColor()`, etc.
 In this package, and in the functions `RGBfromXYZ()` and `XYZfromRGB()`,
 _signal RGB_ is meant.
+Signal RGB is also called _non-linear RGB_ and _encoded RGB_.
+
 <!-- Sometimes we call "_signal RGB_"  _"display signal RGB"_ for emphasis. -->
 
 

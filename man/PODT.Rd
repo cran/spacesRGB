@@ -90,7 +90,7 @@ The transfer is complicated; here is a summary of the steps:
 
 \source{
 This function was based on source code at:
-\url{https://github.com/ampas/aces-dev};
+\url{https://github.com/ampas/aces-core};
 especially the files under the folder \code{aces-dev-master/transforms/ctl/odt/}.
 }
 

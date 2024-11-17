@@ -112,7 +112,7 @@ The transfer is complicated; here is a summary of the steps:
 
 \source{
 This function was based on source code at:
-\url{https://github.com/ampas/aces-dev};
+\url{https://github.com/ampas/aces-core};
 especially the file \code{ACESlib.OutputTransforms.ctl}.
 This transform is a sub-transform of the function \code{outputTransform()};
 it omits the final EOTF\eqn{^{-1}} and optional Full-to-SMPTE range.

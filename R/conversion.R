@@ -75,6 +75,81 @@ RGBfromXYZ <- function( XYZ, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
     }
 
 
+#   converts RGB -> XYZ  and then  XYZ -> Lab
+#   special attention is given to the case when R==G==B, and then a=b=0
+
+LabfromRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
+    {
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )
+        {    
+        log_string( ERROR, "'spacesXYZ' cannot be loaded." )
+        return( NULL )
+        }
+        
+    # verify RGB
+    RGB = prepareNxM(RGB)
+    if( is.null(RGB) )  return(NULL)        
+            
+    out = XYZfromRGB( RGB, space=space, which=which, TF=TF, maxSignal=maxSignal )
+    if( is.null(out) )  return(NULL)
+    
+    white   = getWhiteXYZ( space, which=which )
+    
+    Lab = spacesXYZ::LabfromXYZ( out$XYZ, white )
+    
+    #   for exact neutrals, set a=b=0 exactly
+    neutral = RGB[ ,1]==RGB[ ,2]  &  RGB[ ,2]==RGB[ ,3]
+    if( any(neutral) )
+        Lab[neutral,2:3]  = 0
+        
+    #   change the name of the 'XYZ' column to 'Lab', and overwrite it with Lab
+    colnames(out)['XYZ'==colnames(out)] = 'Lab'
+    out$Lab = Lab
+
+    return( out )
+    }
+
+
+RGBfromLab <- function( Lab, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
+    {
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )
+        {    
+        log_string( ERROR, "'spacesXYZ' cannot be loaded." )
+        return( NULL )
+        }
+        
+    # verify Lab
+    Lab = prepareNxM(Lab)
+    if( is.null(Lab) )  return(NULL)
+
+    # verify space 
+    idx = spaceIndex( space )
+    if( is.na(idx) )    return(NULL)
+    
+    # verify which
+    w   = endIndex(which)
+    if( is.na(w) )      return(NULL)
+    
+    white   = getWhiteXYZ( space, which=which )
+        
+    XYZ = spacesXYZ::XYZfromLab( Lab, white=white )
+    
+    if( w == 1 )
+        XYZ2RGB = p.ListRGB[[idx]]$scene$XYZ2RGB
+    else
+        XYZ2RGB = p.ListRGB[[idx]]$display$XYZ2RGB    
+
+    RGB = tcrossprod( XYZ, XYZ2RGB )   # t(M %*% t(XYZ))    # print( RGB[1, ] - 1 )
+    
+    #   for exact neutrals, set R=G=B = the average of R,G,B 
+    neutral = Lab[ ,2]==0  &  Lab[ ,3]==0
+    if( any(neutral) )
+        RGB[neutral, ] = rowMeans( RGB[neutral, ,drop=FALSE] )
+
+    return( SignalRGBfromLinearRGB( RGB, space=space, which=which, TF=TF, maxSignal=maxSignal ) )
+    }
+
+
 
 #   RGB         linear RGB any sort of array
 #               it is OK if val is a matrix, and then the return value is a matrix of the same shape
@@ -140,11 +215,6 @@ SignalRGBfromLinearRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
         #   rnames is no good !  Use trivial names instead.
         rnames = 1:nrow(RGB)
 
-        
-        
-        
-        
-        
     #   get the domain of TF and set lo and hi from that domain        
     if( is.identity(TF) )
         {

@@ -1,5 +1,5 @@
 
-#   the *special* OETFs are:
+#   the *built-in* OETFs, called "The Gang of 5" are:
 #       sRGB
 #       BT.709
 #       BT.2020
@@ -45,18 +45,47 @@ makeGangOf5   <- function()
 #   it is OK if input is a matrix, and then the return value is a matrix of the same shape
 OETF_sRGB <- function( lin )
     {
-    k0  = 0.040448236277108     #   see rootK0() below
-    out = ifelse( lin <= k0/12.92,    12.92 * lin,  (1055 * lin^(1/2.4) - 55 ) / 1000 )
+    # k0  = 0.040448236277108     #   see rootK0() below
+    
+    #   these constants are computed in breaksandslopes_sRGB()  
+    yb  =  0.0030399346397784327
+    rs  = 12.923210180787853
+
+    out = ifelse( lin <= yb,  rs * lin,  (1055 * lin^(1/2.4) - 55 ) / 1000 )
+    
     return( out )
     }
 
 OETFinv_sRGB <- function( sig )
     {
-    k0  = 0.040448236277108     #   see rootK0() below    
-    out = ifelse( sig <= k0,   sig / 12.92,   ( (1000*sig + 55)/(1055) ) ^ 2.4  )
+    # k0  = 0.040448236277108     #   see rootK0() below   
+
+    #   these constants are computed in breaksandslopes_sRGB()  
+    xb  = 0.039285714285714292
+    fs  = 0.077380154467087361
+       
+    out = ifelse( sig <= xb,  fs * sig, ( (1000*sig + 55)/(1055) ) ^ 2.4  )
+    
     return( out )
     }    
     
+breaksandslopes_sRGB  <- function( g=2.4, k=0.055 )
+    {
+    out = list()
+    
+    #   forward
+    out$xb = k/(g-1)    
+    out$fs = ((g-1)/k) * ( k*g / ((g-1)*(1+k)) ) ^ g
+    
+    #   reverse
+    out$yb = out$fs * out$xb
+    out$rs = 1/out$fs
+    
+    return( out )
+    }
+        
+    
+#   rootK0() is now obsolete in and after v 1.6-0, and replaced by breaksandslopes_sRGB()    
 rootK0  <-  function()
     {
     myfun   <- function(x) { 12.92 * ( (1000*x + 55)/1055 )^2.4  -  x }
@@ -65,7 +94,7 @@ rootK0  <-  function()
     }
     
     
-    
+
 
     
 #############     BT.709  OETF and OETFinv [0,1]  <-->  [0,1]   ###############    

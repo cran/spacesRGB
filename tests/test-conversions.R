@@ -47,11 +47,12 @@ testRGB <- function()
         return(FALSE)
         }
         
-    
+    ########   test  RGB  ->   XYZ   ->   RGB    ##############
+    printf( "---  RGB  ->   XYZ   ->   RGB   ------" )            
     for( k in 1:nrow(data.space) )
         {
         space   = rownames(data.space)[k]
-        
+
         for( which in c('scene','display') )
             {
             time_start      = gettime()
@@ -102,6 +103,9 @@ testRGB <- function()
                 }
             }
             
+            
+
+            
         #   test pure black
         black   = c(0,0,0)
         if( ! identical( black, as.numeric(RGBfromXYZ( XYZfromRGB(black,space=space)$XYZ, space=space )$RGB ) ) )
@@ -129,7 +133,42 @@ testRGB <- function()
             return(FALSE)
             }
         }
+        
+        
+        
+        
+    ##############   test  RGB  ->   Lab   ->   RGB    #############
+    printf( "\n---  RGB  ->   Lab   ->   RGB   ------" )                                
+        
+    for( k in 1:nrow(data.space) )
+        {
+        space   = rownames(data.space)[k]
+        
+        for( which in c('scene','display') )
+            {
+            time_start      = gettime()
 
+            df              = LabfromRGB( RGB, space=space, which=which, max=255 )
+            if( any(df$OutOfGamut) )
+                {
+                printf(  "For space %s, in LabfromRGB(), %d of %d RGBs were flagged as out-of-gamut.",
+                                space, sum(df$OutOfGamut), length(df$OutOfGamut) )
+                return(FALSE)
+                }        
+
+            Lab             = df$Lab    
+            RGB.back        = RGBfromLab( Lab, space=space, which=which, max=255 )$RGB      #; print( 'RGB OK' )
+            
+            time_elapsed    = gettime() - time_start
+            
+            delta   = rowSums( abs(RGB - RGB.back) )  
+            
+            printf( "%-11s  RGB ->  %7s Lab -> RGB    max(delta)=%g   %d samples at %g sec/sample", 
+                                space, which, max(delta), count, time_elapsed/count )                
+            }
+        }
+        
+        
         
     return( TRUE )
     }

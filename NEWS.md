@@ -1,5 +1,13 @@
 # NEWS for **spacesRGB** package
 
+
+### Version 1.6-1  [2024-11-16]
+
+* added functions RGBfromLab() and LabfromRGB()
+* better accuracy for the breakpoint and slope of the linear part of the sRGB transfer function, and its inverse
+* improved some man pages
+
+
 ### Version 1.5-0  [2024-01-24]
 
 * improved clarity of the User Guide

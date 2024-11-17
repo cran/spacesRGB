@@ -40,6 +40,6 @@ installRGB( 'sRGB_D60sim', scene=AP0_PRI, EOTF=sRGB.EOTF, OETF=OETF )
 installRGB( 'Rec.2020_HLG', scene=AP0_PRI, OOTF=general.OOTF(REC2020_PRI,Ymid=15,Ymax=1000),
 						EOTF=HLG.OETF()^-1 * HLG.OOTF(Lw=1) )
 
-## ---- echo=FALSE, results='asis'------------------------------------------------------------------
+## ----echo=FALSE, results='asis'-------------------------------------------------------------------
 sessionInfo()
 

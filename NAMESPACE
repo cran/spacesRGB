@@ -104,7 +104,9 @@ export( installRGB,
         XYZfromRGB,
         RGBfromXYZ,
         SignalRGBfromLinearRGB,
-        LinearRGBfromSignalRGB
+        LinearRGBfromSignalRGB,
+        LabfromRGB,
+        RGBfromLab
         )
         
 export( plotPatchesRGB
