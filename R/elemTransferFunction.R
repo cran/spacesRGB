@@ -15,14 +15,14 @@ elemTransferFunction  <-  function( fun, funinv, domain, range )
     {
     if( ! is.function(fun) )
         {
-        log_string( ERROR, "Argument fun is not a valid function." )
+        log_level( ERROR, "Argument fun is not a valid function." )
         return(NULL)
         }
 
     ok  = is.null(funinv) || is.function(funinv)
     if( ! ok )
         {
-        log_string( ERROR, "Argument fun is not a valid function, or NULL." )
+        log_level( ERROR, "Argument fun is not a valid function, or NULL." )
         return(NULL)
         }
 
@@ -37,7 +37,7 @@ elemTransferFunction  <-  function( fun, funinv, domain, range )
     n   = ncol(domain)
     if( n != ncol(range))
         {
-        log_string( ERROR, "dimension of domain = %d  !=  %d = dimension of range.", n, ncol(range) )
+        log_level( ERROR, "dimension of domain = %d  !=  %d = dimension of range.", n, ncol(range) )
         return(NULL)
         }
 
@@ -50,7 +50,7 @@ elemTransferFunction  <-  function( fun, funinv, domain, range )
         if( ! all(is.finite(y) ) )
             {
             idx = which( ! is.finite(y) )[1]
-            log_string( ERROR, "x=%g  maps to y=%g, which is not finite.", x[idx], y[idx] )
+            log_level( ERROR, "x=%g  maps to y=%g, which is not finite.", x[idx], y[idx] )
             return(NULL)
             }
 
@@ -58,7 +58,7 @@ elemTransferFunction  <-  function( fun, funinv, domain, range )
         ok  = all(delta<0)  ||  all(0<delta)
         if( ! ok )
             {
-            log_string( ERROR, "The univariate function is not monotone."  )
+            log_level( ERROR, "The univariate function is not monotone."  )
             return(NULL)
             }
 
@@ -66,7 +66,7 @@ elemTransferFunction  <-  function( fun, funinv, domain, range )
             {
             #   make an approximate inverse
             funinv  = makeInverseTF( fun, domain )
-            log_string( INFO, "Created an approximate inverse for '%s', using stats::splinefun().", deparse(substitute(fun)) )
+            log_level( INFO, "Created an approximate inverse for '%s', using stats::splinefun().", deparse(substitute(fun)) )
             }
         }
 
@@ -109,14 +109,15 @@ prepareBox <- function( box )
     {
     if( ! is.numeric(box) )
         {
-        #   notice hack to make log_string() print name of parent function
-        log_string( c(ERROR,2L), "box '%s' is invalid, because it is not numeric.", deparse(substitute(box)) )
+        #   in the next call, note the assignment to .topcall,
+        #   which makes log_level() print the name of the calling function, and *not*  "prepareBox()".
+        log_level( ERROR, "box '%s' is invalid, because it is not numeric.", deparse(substitute(box)),  .topcall=sys.call(-2L) )
         return(NULL)
         }
 
     if( ! all( is.finite(box) ) )
         {
-        log_string( ERROR, "The box is invalid, because some values are not finite."  )
+        log_level( ERROR, "The box is invalid, because some values are not finite."  )
         return(NULL)
         }
 
@@ -132,8 +133,9 @@ prepareBox <- function( box )
         }
     else
         {
-        #   notice hack to make log_string() print name of parent function
-        log_string( c(ERROR,2L), "box '%s' is not valid.  It must be a 2xM matrix, or a 2-vector.", deparse(substitute(box)) )
+        #   in the next call, note the assignment to .topcall,
+        #   which makes log_level() print the name of the calling function, and *not*  "prepareBox()".
+        log_level( ERROR, "box '%s' is not valid.  It must be a 2xM matrix, or a 2-vector.", deparse(substitute(box)), .topcall=sys.call(-2L) )
         return(NULL)
         }
 
@@ -143,9 +145,10 @@ prepareBox <- function( box )
     valid   = 0 < len
     if( ! all(valid) )
         {
-        #   notice hack to make log_string() print name of parent function
-        log_string( c(ERROR,2L), "box '%s' is not valid. %d of %d intervals have incorrect order.",
-                        deparse(substitute(box)), length(valid)-sum(valid), length(valid) )
+        #   in the next call, note the assignment to .topcall,
+        #   which makes log_level() print the name of the calling function, and *not*  "prepareBox()".
+        log_level( ERROR, "box '%s' is not valid. %d of %d intervals have incorrect order.",
+                        deparse(substitute(box)), length(valid)-sum(valid), length(valid),  .topcall=sys.call(-2L)  )
         return(NULL)
         }
 
@@ -192,7 +195,7 @@ transfer.elemTransferFunction  <-  function( TF, x, domaincheck=c(TRUE,TRUE) )
 
     if( ! is.numeric(x) )
         {
-        log_string( ERROR, "argument x is not numeric.")
+        log_level( ERROR, "argument x is not numeric.")
         return(NULL)
         }
 
@@ -225,7 +228,7 @@ transfer.elemTransferFunction  <-  function( TF, x, domaincheck=c(TRUE,TRUE) )
     ok  = is.matrix(x)  &&  ncol(x) == m
     if( ! ok )
         {
-        log_string( ERROR, "argument x is not an Nx%d matrix.", m )
+        log_level( ERROR, "argument x is not an Nx%d matrix.", m )
         return(NULL)
         }
 
@@ -279,7 +282,7 @@ validate.elemTransferFunction  <-  function( TF, points=1300, tol=5.e-7, domain=
     ok  = is.numeric(points)  &&  length(points)==1  &&  8<=points
     if( ! ok )
         {
-        log_string( ERROR, "points='%s' is invalid.", as.character(points)[1] )
+        log_level( ERROR, "points='%s' is invalid.", as.character(points)[1] )
         return(NULL)
         }
 
@@ -307,11 +310,11 @@ validate.elemTransferFunction  <-  function( TF, points=1300, tol=5.e-7, domain=
 
         if( ! all( dim(domain) == c(2,m) ) )
             {
-            log_string( ERROR, "User-supplied domain is invalid." )
+            log_level( ERROR, "User-supplied domain is invalid." )
             return(NULL)
             }
 
-        log_string( INFO, "Using user-supplied domain for validation." )
+        log_level( INFO, "Using user-supplied domain for validation." )
         }
 
 

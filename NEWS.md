@@ -1,10 +1,16 @@
 # NEWS for **spacesRGB** package
 
 
+### Version 1.7-0  [2025-01-16]
+
+* logging is now done with the **logger** package, which is imported
+* the initial dictionary of 8 color spaces is now computed during `.onLoad()`, and `sysdata.rda` has been removed
+
+
 ### Version 1.6-1  [2024-11-16]
 
-* added functions RGBfromLab() and LabfromRGB()
-* better accuracy for the breakpoint and slope of the linear part of the sRGB transfer function, and its inverse
+* added functions `RGBfromLab()` and `LabfromRGB()`
+* improved accuracy for the breakpoint and slope of the linear part of the sRGB transfer function, and its inverse
 * improved some man pages
 
 

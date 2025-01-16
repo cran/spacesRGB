@@ -82,7 +82,7 @@ LabfromRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
     {
     if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )
         {    
-        log_string( ERROR, "'spacesXYZ' cannot be loaded." )
+        log_level( ERROR, "'spacesXYZ' cannot be loaded." )
         return( NULL )
         }
         
@@ -114,7 +114,7 @@ RGBfromLab <- function( Lab, space='sRGB', which='scene', TF=NULL, maxSignal=1 )
     {
     if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )
         {    
-        log_string( ERROR, "'spacesXYZ' cannot be loaded." )
+        log_level( ERROR, "'spacesXYZ' cannot be loaded." )
         return( NULL )
         }
         
@@ -190,7 +190,7 @@ SignalRGBfromLinearRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
             TF  = (theSpace$EOTF)^-1    # backwards from display to signal
         else 
             {
-            log_string( ERROR, "For RGB space='%s', the EOTF is not invertible.", space )
+            log_level( ERROR, "For RGB space='%s', the EOTF is not invertible.", space )
             return(NULL)
             }    
         }
@@ -206,7 +206,7 @@ SignalRGBfromLinearRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
         
     if( ! is.TransferFunction(TF) )        
         {
-        log_string( ERROR, "argument TF is invalid."  )
+        log_level( ERROR, "argument TF is invalid."  )
         return(NULL)
         }        
         
@@ -304,7 +304,7 @@ LinearRGBfromSignalRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
     ok  = is.numeric(maxSignal)  &&  length(maxSignal)==1  &&  0<maxSignal
     if( ! ok )
         {
-        log_string( ERROR, "maxSignal='%s' is not a positive number.", as.character(maxSignal) )
+        log_level( ERROR, "maxSignal='%s' is not a positive number.", as.character(maxSignal) )
         return(NULL)
         }    
         
@@ -330,7 +330,7 @@ LinearRGBfromSignalRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
             TF  = (theSpace$OETF)^-1    # backwards to scene
         else 
             {
-            log_string( ERROR, "For RGB space='%s', the OETF is not invertible.", space )
+            log_level( ERROR, "For RGB space='%s', the OETF is not invertible.", space )
             return(NULL)
             }    
         }
@@ -346,7 +346,7 @@ LinearRGBfromSignalRGB <- function( RGB, space='sRGB', which='scene', TF=NULL, m
 
     if( ! is.TransferFunction( TF ) )
         {
-        log_string( ERROR, "argument TF is invalid."  )
+        log_level( ERROR, "argument TF is invalid."  )
         return(NULL)
         }        
 
@@ -385,7 +385,7 @@ endIndex <- function( which )
     w   = pmatch( tolower(which), c('scene','display') )
     if( is.na(w) )
         {
-        log_string( ERROR, "which='%s' is invalid.", which )
+        log_level( ERROR, "which='%s' is invalid.", which )
         return(NA_integer_)
         }
 

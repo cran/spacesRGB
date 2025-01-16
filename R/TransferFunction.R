@@ -8,7 +8,9 @@
 
 
 #   special TransferFunction, a universal identity element for all dimensions
-identity.TF             <- list( element=list(), dimension=NA_integer_, invertible=TRUE )
+#   it is exported, and used in 2 other files
+identity.TF           <- list( element=list(), dimension=NA_integer_, invertible=TRUE )
+
 class( identity.TF )    = c( "TransferFunction", class(identity.TF) )
 
 
@@ -23,7 +25,7 @@ TransferFunction  <-  function( fun, funinv, domain, range, id=NULL )
     ok  = is.null(id) || (is.character(id)  &&  length(id)==1)  
     if( ! ok )
         {
-        log_string( ERROR, "Argument id='%s' is not a valid character string, or NULL.", as.character(id)[1] )
+        log_level( ERROR, "Argument id='%s' is not a valid character string, or NULL.", as.character(id)[1] )
         return(NULL)
         }
         
@@ -49,7 +51,7 @@ is.TransferFunction  <- function( x )
     
 as.TransferFunction.default <- function( ... )
     {
-    log_string( WARN, "This function is designed to be called from other packages." )
+    log_level( WARN, "This function is designed to be called from other packages." )
     return(NULL)
     }    
 
@@ -167,7 +169,7 @@ transfer.TransferFunction  <-  function( TF, x, domaincheck=TRUE )
     
     if( ! is.numeric(x) )
         {
-        log_string( ERROR, "argument x is not numeric.")
+        log_level( ERROR, "argument x is not numeric.")
         return(NULL)
         }   
         
@@ -232,7 +234,7 @@ composition.TransferFunction  <-  function( TF1, TF2 )
     
     if( ! is.TransferFunction(TF2) )
         {
-        log_string( ERROR, "'%s' and '%s' cannot be composed, because '%s' is not a TransferFunction object.",
+        log_level( ERROR, "'%s' and '%s' cannot be composed, because '%s' is not a TransferFunction object.",
                             deparse(substitute(TF1)), deparse(substitute(TF2)), deparse(substitute(TF2)) )
         return(NULL)
         }   
@@ -308,7 +310,7 @@ composition.TransferFunction  <-  function( TF1, TF2 )
 
     if( ! ok )
         {
-        log_string( ERROR, "TF1 and TF2 cannot be composed, because dimension(TF1)=%d != %d=dimension(TF2).", n1, n2 )
+        log_level( ERROR, "TF1 and TF2 cannot be composed, because dimension(TF1)=%d != %d=dimension(TF2).", n1, n2 )
         return(NULL)
         }   
 
@@ -323,7 +325,7 @@ composition.TransferFunction  <-  function( TF1, TF2 )
         name1   = gsub( ' ', '', names(TF1$element)[elements1] )
         name2   = gsub( ' ', '', names(TF2$element)[1] )
         
-        log_string( ERROR, "%s and %s cannot be composed, because the range of %s is not inside the domain of %s, in %d of %d dimensions.",
+        log_level( ERROR, "%s and %s cannot be composed, because the range of %s is not inside the domain of %s, in %d of %d dimensions.",
                             name1, name2, name1, name2, length(inside)-sum(inside), length(inside) )
         return(NULL)
         }   
@@ -345,7 +347,7 @@ composition.TransferFunction  <-  function( TF1, TF2 )
         {
         dup = duplicated( names(met) )
         if( any(dup) )
-            log_string( WARN, "The metadata has %d duplicates (e.g. '%s'); latter items are removed.", 
+            log_level( WARN, "The metadata has %d duplicates (e.g. '%s'); latter items are removed.", 
                                                     sum(dup), names(met)[ which(dup)[1] ] )            
         metadata(out)   = met[ ! dup ]
         }
@@ -389,7 +391,7 @@ validate.TransferFunction  <-  function( TF, points=1300, tol=5.e-7, domain=NULL
     ok  = is.numeric(points)  &&  length(points)==1  &&  8<=points
     if( ! ok )
         {
-        log_string( ERROR, "points='%s' is invalid.", as.character(points)[1] )
+        log_level( ERROR, "points='%s' is invalid.", as.character(points)[1] )
         return(NULL)
         }    
     
@@ -412,11 +414,11 @@ validate.TransferFunction  <-  function( TF, points=1300, tol=5.e-7, domain=NULL
             
         if( ! all( dim(domain) == c(2,m) ) )
             {
-            log_string( ERROR, "User-supplied domain is invalid." )
+            log_level( ERROR, "User-supplied domain is invalid." )
             return(NULL)
             }
             
-        log_string( INFO, "Using user-supplied domain for validation." )
+        log_level( INFO, "Using user-supplied domain for validation." )
         }
     
     elements    = length( TF$element )  
@@ -494,7 +496,7 @@ plot.TransferFunction  <-  function( x, color='red', main=TRUE, add=FALSE, ... )
     m   = dimension(TF)
     if( 4 <= m )
         {
-        log_string( WARN, "'%s' has dimension %d >= 4, and cannot be plotted.", theName, m )
+        log_level( WARN, "'%s' has dimension %d >= 4, and cannot be plotted.", theName, m )
         return(FALSE)
         }
             
@@ -574,7 +576,7 @@ plot.TransferFunction  <-  function( x, color='red', main=TRUE, add=FALSE, ... )
         {
         if( ! requireNamespace( 'rgl', quietly=TRUE ) )
             {    
-            log_string( ERROR, "Cannot plot %s, because '%s' cannot be loaded.", theName, 'rgl' )
+            log_level( ERROR, "Cannot plot %s, because '%s' cannot be loaded.", theName, 'rgl' )
             return( NULL )
             }
 
@@ -685,7 +687,7 @@ gammaBestFit.TransferFunction <- function( TF )
         return( NA_real_ )
         }
 
-    #   log_string( INFO, "LM polished gamma=%g to %g in %d iterations.", gamma, res$par, res$niter )
+    #   log_level( INFO, "LM polished gamma=%g to %g in %d iterations.", gamma, res$par, res$niter )
 
     return( res$minimum )    
     }
@@ -726,13 +728,13 @@ metadata.TransferFunction <- function( x, ... )
     if( ! any(mask) )
         {
         print(value)
-        log_string( ERROR, "none of the items in the list have names." )
+        log_level( ERROR, "none of the items in the list have names." )
         return(x)
         }
 
     if( ! all (mask) )
         {
-        log_string( WARN, "options without name are discarded: %d", which(!mask) )
+        log_level( WARN, "options without name are discarded: %d", which(!mask) )
         value   = value[mask]
         }
         

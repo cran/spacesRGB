@@ -1,9 +1,10 @@
 
-#   Textbook monomial to basis-function conversion matrix.
-M   = matrix(  c( 0.5,-1.0,0.5,  -1.0,1.0,0.5,   0.5,0.0,0.0), 3, 3, byrow=TRUE )
+#   Textbook monomial to basis-function conversion matrix.   Also used in SSTS.R.
+p.M_monomial_to_basis = matrix(  c( 0.5,-1.0,0.5,  -1.0,1.0,0.5,   0.5,0.0,0.0), 3, 3, byrow=TRUE )
 
 
 #   this parameter block is suitable for the former segmented_spline_c5_***()
+#   it is also used in RRT.R
 p.RRT_PARAMS = list(
     coefsLow    = c( -4.0000000000, -4.0000000000, -3.1573765773, -0.4852499958, 1.8477324706, 1.8477324706 ),    # coefsLow[6]
     coefsHigh   = c( -0.7185482425, 2.0810307172, 3.6681241237, 4.0000000000, 4.0000000000, 4.0000000000 ),       #     coefsHigh[6]
@@ -23,8 +24,8 @@ segmented_spline_fwd <- function( x, C )
     N_KNOTS_LOW     = length(C$coefsLow)  - 2  # 4
     N_KNOTS_HIGH    = length(C$coefsHigh) - 2  # 4
 
-    #   Check for negatives or zero before taking the log. If negative or zero, set to HALF_MIN.
-    logx = log10( max(x, HALF_MIN ) ) 
+    #   Check for negatives or zero before taking the log. If negative or zero, set to p.HALF_MIN.
+    logx = log10( max(x, p.HALF_MIN ) ) 
 
 
     if( logx <= log10(C$minPoint$x) )
@@ -40,7 +41,7 @@ segmented_spline_fwd <- function( x, C )
         cf  = C$coefsLow[ (j+1):(j+3) ]
 
         monomials   = c( t*t, t, 1 )
-        logy        = sum( monomials * (cf %*% M) )
+        logy        = sum( monomials * (cf %*% p.M_monomial_to_basis) )
         }
     else if (( logx >= log10(C$midPoint$x) ) && ( logx < log10(C$maxPoint$x) )) 
         {
@@ -50,7 +51,7 @@ segmented_spline_fwd <- function( x, C )
         cf  = C$coefsHigh[ (j+1):(j+3) ]
         
         monomials   = c( t*t, t, 1 )
-        logy        = sum( monomials * (cf %*% M) )
+        logy        = sum( monomials * (cf %*% p.M_monomial_to_basis) )
         } 
     else
         { #if ( logIn >= log10(C.maxPoint.x) ) { 
@@ -93,7 +94,7 @@ segmented_spline_rev <- function( y, C )
         cf  = C$coefsLow[ j:(j+2) ]     #; print(cf)
         j   = j - 1
         
-        tmp = cf %*% M
+        tmp = cf %*% p.M_monomial_to_basis
 
         a = tmp[1]
         b = tmp[2]
@@ -122,7 +123,7 @@ segmented_spline_rev <- function( y, C )
         cf  = C$coefsHigh[ j:(j+2) ]
         j   = j - 1
         
-        tmp = cf %*% M
+        tmp = cf %*% p.M_monomial_to_basis
 
         a = tmp[1]
         b = tmp[2]
@@ -205,7 +206,7 @@ segmented_spline.TF <- function( PARAMS )
     ok  = is.list(PARAMS)  &&  !is.null( PARAMS$minPoint)  &&  !is.null(PARAMS$midPoint)  &&  !is.null(PARAMS$maxPoint)
     if( ! ok )
         {
-        log_string( ERROR, "PARAMS='%s' is invalid.", as.character(PARAMS)[1] )
+        log_level( ERROR, "PARAMS='%s' is invalid.", as.character(PARAMS)[1] )
         return(NULL)        
         }
     

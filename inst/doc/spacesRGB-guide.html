@@ -12,7 +12,7 @@
 
 <meta name="author" content="Glenn Davis" />
 
-<meta name="date" content="2024-11-16" />
+<meta name="date" content="2025-01-15" />
 
 <title>spacesRGB User Guide</title>
 
@@ -362,7 +362,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">spacesRGB User Guide</h1>
 <h4 class="author">Glenn Davis</h4>
-<h4 class="date">2024-11-16</h4>
+<h4 class="date">2025-01-15</h4>
 
 
 <div id="TOC">
@@ -373,22 +373,22 @@ Television</a></li>
 Television</a></li>
 <li><a href="#the-transferfunction-s3-class" id="toc-the-transferfunction-s3-class"><span class="toc-section-number">3</span> The <code>TransferFunction</code> S3
 Class</a></li>
-<li><a href="#aces-color---the-output-side" id="toc-aces-color---the-output-side"><span class="toc-section-number">4</span> ACES Color - The Output Side</a>
-<ul>
-<li><a href="#acknowledgements" id="toc-acknowledgements"><span class="toc-section-number">4.1</span> Acknowledgements</a></li>
-</ul></li>
-<li><a href="#references" id="toc-references"><span class="toc-section-number">5</span> References</a></li>
-<li><a href="#appendix-a---built-in-rgb-spaces" id="toc-appendix-a---built-in-rgb-spaces"><span class="toc-section-number">6</span> Appendix A - Built-in RGB
+<li><a href="#aces-color---the-output-side" id="toc-aces-color---the-output-side"><span class="toc-section-number">4</span> ACES Color - The Output
+Side</a></li>
+<li><a href="#acknowledgements" id="toc-acknowledgements"><span class="toc-section-number">5</span> Acknowledgements</a></li>
+<li><a href="#references" id="toc-references"><span class="toc-section-number">6</span> References</a></li>
+<li><a href="#appendix-a---built-in-rgb-spaces" id="toc-appendix-a---built-in-rgb-spaces"><span class="toc-section-number">7</span> Appendix A - Built-in RGB
 Spaces</a></li>
-<li><a href="#appendix-b---sample-odts-and-output-transforms-for-aces" id="toc-appendix-b---sample-odts-and-output-transforms-for-aces"><span class="toc-section-number">7</span> Appendix B - Sample ODTs and Output
+<li><a href="#appendix-b---sample-odts-and-output-transforms-for-aces" id="toc-appendix-b---sample-odts-and-output-transforms-for-aces"><span class="toc-section-number">8</span> Appendix B - Sample ODTs and Output
 Transforms for ACES</a>
 <ul>
-<li><a href="#output-transforms-with-given-oetf-and-eotf" id="toc-output-transforms-with-given-oetf-and-eotf"><span class="toc-section-number">7.1</span> Output Transforms with given OETF
+<li><a href="#output-transforms-with-given-oetf-and-eotf" id="toc-output-transforms-with-given-oetf-and-eotf"><span class="toc-section-number">8.1</span> Output Transforms with given OETF
 and EOTF</a></li>
-<li><a href="#output-transforms-with-given-ootf-and-eotf" id="toc-output-transforms-with-given-ootf-and-eotf"><span class="toc-section-number">7.2</span> Output Transforms with given OOTF
+<li><a href="#output-transforms-with-given-ootf-and-eotf" id="toc-output-transforms-with-given-ootf-and-eotf"><span class="toc-section-number">8.2</span> Output Transforms with given OOTF
 and EOTF</a></li>
 </ul></li>
-<li><a href="#session-information" id="toc-session-information"><span class="toc-section-number">8</span> Session Information</a></li>
+<li><a href="#appendix-c---logging" id="toc-appendix-c---logging"><span class="toc-section-number">9</span> Appendix C - Logging</a></li>
+<li><a href="#session-information" id="toc-session-information"><span class="toc-section-number">10</span> Session Information</a></li>
 </ul>
 </div>
 
@@ -415,11 +415,10 @@ etc. In this package, and in the functions <code>RGBfromXYZ()</code> and
 <code>XYZfromRGB()</code>, <em>signal RGB</em> is meant. Signal RGB is
 also called <em>non-linear RGB</em> and <em>encoded RGB</em>.</p>
 <!-- Sometimes we call "_signal RGB_"  _"display signal RGB"_ for emphasis. -->
-<p>There are no strong package dependencies, but these packages are
-suggested:</p>
+<p>These packages are suggested:</p>
 <ul>
 <li>
-<strong>spacesXYZ</strong> <span class="citation">[2]</span> - used in
+<strong>spacesXYZ</strong> <span class="citation">[3]</span> - used in
 some of the ACES Color transfer functions
 </li>
 <li>
@@ -427,13 +426,13 @@ some of the ACES Color transfer functions
 wireframe plots of 3D transfer functions
 </li>
 <li>
-<strong>microbenchmark</strong> <span class="citation">[6]</span> - for
+<strong>microbenchmark</strong> <span class="citation">[7]</span> - for
 its high-precision timer
 </li>
 </ul>
-<p>Similar packages: Package <strong>colorspace</strong> <span class="citation">[4]</span> has similar functionality, and is much
+<p>Similar packages: Package <strong>colorspace</strong> <span class="citation">[5]</span> has similar functionality, and is much
 faster because it is written in C; but it only supports one RGB space -
-sRGB. Package <strong>farver</strong> <span class="citation">[10]</span>
+sRGB. Package <strong>farver</strong> <span class="citation">[11]</span>
 is also much faster because it is written in C++. But it only supports
 one RGB space, which is probably sRGB.</p>
 <p>And speaking of speed, this package is not fast enough to transform
@@ -446,7 +445,7 @@ other implementations.</p>
 <div id="desktop-graphics-and-basic-broadcast-television" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Desktop Graphics and
 Basic Broadcast Television</h1>
-<p>The 16 RGB working spaces for desktop graphics at Lindbloom <span class="citation">[5]</span>, and basic broadcast television standards
+<p>The 16 RGB working spaces for desktop graphics at Lindbloom <span class="citation">[6]</span>, and basic broadcast television standards
 (such as BT.709 and BT.2020), are illustrated in this diagram:</p>
 <center>
 <img role="img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAz4AAAH5CAYAAABAuev9AAA/1klEQVR42u3dC5BU1Z0/8IMaTcgKvpIyWUuNui6uqeAmKBofq0ZE0Y1YIYKJqyam5GV08UUgvhVQUVMQAU2RLBpFCKYgxicacQ0+wMeK0RUjWkqlNBWjoHmsiav893d3b/+bpmeme6anp7vn86mammZm+nbPZfr2+Z7zO+dsseF/JAAAgBa2hVMAAAAIPgAAAIIPAACA4AMAACD4AAAACD4AAACCDwAAgOADAAAIPgAAAIIPAACA4AMAACD4AAAACD4AAACCDwAAgOADAAAg+AAAAIIPAACA4AMAACD4AAAACD4AAACCDwAAgOADAAAg+AAAAAg+AACA4AMAACD4AAAACD4AAACCDwAAgOADAAAg+AAAAAg+AACt4Kyzzkpr1651Imh4O++8c5oxY4bgAwBA9aFn5syZqU+fPk4GDW/Dhg3p4IMPTiNGjOjdwSd6Kr7whS+k999/318FDa9v377p9ddfdyIA6FHRforQ8+GHHzoZNLz4W33zzTcb9vnVLfhEj8Xvf//71L9/f38VNLw33ngjzZkzJ40dO9bJAABoAXUtdYsUuH79emedhqekAABA8AEAABB8AAAABB8AAADBBwAAQPABAAAQfAAAAAQfAABA8AEAABB8AAAABB8AAADBBwAAQPABAAAQfAAAAAQfAAAAwQcAABB8AAAABB8AAADBBwAAQPABAAAQfAAAAAQfAAAAwQcAABB8AAAABB8AAADBBwAAQPABAAAQfAAAAAQfAAAAwQcAAEDwAQAABB8AAADBBwAAQPABAICK9OnTJ/s8dOjQdO+9927y9auuuiqdf/75DfM8G+X5IPgAAAAIPgAANL4NGzY4CQg+AAAAgg8AAIDgAwBAvSxYsCBde+216cknn8z+PWjQoHTOOeekUaNGtXmf9hYTiOMtWbIkLV26NK1bt65wzCOPPDKdffbZafvtt2/3eKeddlq68MILs+PE/bfddtvsvmeccUY66KCDqv793nrrrXT77benxYsXp5UrVxaeU4hFG44//vg0YsSIjZ7XK6+8knbffffs9g033JBGjx7d5rF32GGH7PZtt93W7jlD8AEAoAdEo/2oo44qBJ5c/PvEE09MDz/8cNXHHDduXJozZ84mX49jxkd8b9myZWngwIFl7//O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dtttHZ43BB+Aunj//ffTj370o7o93t13310IPTHKdO6556bddtut0DCIUBRvwN/61rcqHpm47rrrCg2UfNQmjrl8+fI0YcKEsiGrrVAQjYl4ox4yZEj2hh/P96STTsqe09SpU7PGR/584809Dz3RgLn00kvTsGHDNvpdL7744kKgi0ZGWw2Feom5PbFJ7Te/+c20evVqLwDohk6UWnf2vPPOO5s8r7juxDUrPqoNF53tsIlrX1zr4nnE99q6nt1///2F23EtRfAB6HFnnXVW9rmePf933nln9jl6DWfPnr3R9/I37mhgxBtr9C7mIaO9N/AIJHnoKe5ljV7QeNMu15BpS2njI4LMHXfckQ4++ODs3xFe8seI23nDIRofpc817jtgwIBCD2kcu6eDT954iXMLbCz2uyruRImOjmj0V9uJUuvOnvwaN3ny5ELnS/6c8lDWr1+/jTpe2gt3XemwieeZf6+ta3SMbIWYT9gIJb6CDwBp0aJFqW/fvnV9zLfffrvwOd6AS98UI/xU03P5k5/8JPscIzXl5v3E8eON/ZhjjunwWPEmXa7Hta0ykmgMdBRkihsF69evb5jAG40t4P+LIBEdGKG0jKsznSi17uxpq2Nn8ODB2XzEM888s6Lg09UOm+IRnBjZKb0GxnU9P4/Dhw/3hyX4dL/O1JEW33fevHnZEGf+Qj399NMLvR7tXTBiqdTiCcGVPGZXJxV39fGhN/vd736XTXavp3gjjDfFuDbFG/Z5552X9t9//4rn85R66qmnss/xWm9LJY2B8PnPf77Lv1+86b/wwgvpN7/5TTYnKG8ANJLodc5Lb+q9qAU0qnyPq+hEKdehUU0nSq07e6It1lbHzhVXXJEFp2j7xAh4R9fSrnbYxPeibZaXwpUeS5mb4FNXna0jjRfj17/+9ULgycULaeLEiVnPcFsTc7/73e8WhmHbesxbbrml3cZHZyYV1/LxoTf64IMPsgm89RRv8Pmk4bi+jBkzpvDGHuHl2GOPreq1ml+zOgoteV16Vz344IObNECi4+X666/fqLOp0cU8nxkzZgg+8H/i9VurTpRad/a095yKw0VcDzvTiVRth010SMdjlRulyt9T4tqi01nw6VZdqSONlULyBkRxXeuNN96YNUzijzt+pnSYNvb+yENHlIlMmjSp8KIrrhONHpJnnnmmzRdktZOKa/34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/nX25kPvEUtP1zoExR4+7733npNL5otf/KKTgBAEgg80ltiT6JlnnnEiepHVq1fX7FgRgEIEn1giG0AIAsEHGtK//uu/moTcy8RITay02BWl5W5K3gixz1k47LDDnIxerhYdaqUhqBHLtEDwAWhB7c3t6du3b3rnnXecpF7uzTffzD5ffPHFTkYvN2HChJqEn9gL6JRTTsmuO3vuuacTC4IPQP3DTrHYw+f3v/99wz3/o446qs1NiEvFpsqxolC1S1XHXmUPP/xweuKJJ7L9J4qPt++++6Zjjz22wxWKKnme8dzimI28j1gefKJ3nt6tK6PAxWFn1113dTJB8AHo2bBTbKeddkovvfRSU//eEVriY+HChVlpTUdLWcf8uJNOOilbgrW9482ZMycLLT/96U+7tNpZ7CUUH/H8Img14lLb99xzT9p88829iBB2ukCHDYIPQIOFnWJjxoxJv/jFLxr29xs6dGi699572/x+7Bwem+iNGzcuCzIRViKkjB49uuzPx8/Fz4TYfyKC0tFHH71Rw2P58uVp/vz52c9FYIl5L8uWLWs3/LT3PFetWpV+8pOfpKlTp2bHjMedMmVKQ53n1157LW211VZeUAg7daLDBsEHoA5hp9iIESOyz48++mhTLmUcm5XGR2ykFwElGgXTp08vG3xuvPHGQuiJnswIKuV2GI8QFB9xjPyYX/nKV9KaNWs69Ryj8REfeTCLAHT22Wc31O7msReH1bcQdmpDhw2CD0AXTZw4MX3ve9/rlpXYolevmfdwiTf3KMfI3/TjTbv4DT8aGjG61VHoKT3mLbfcko455pjsmFFi0pWSj2jU5I2XFStWNNQO53/961/TP/3TP3mRIezUgQ4bBJ86U4cKzWfAgAHdctyY29EKm+EWN8z+8Ic/bPS9a665pnA7wmOlb95xjYprTASfX/3qV126xhQHseeee66hgk8sN9xWbzO9L+zkI8rCTvfSYYPg04DUoUJrixKGeINtdq+++mrh9tZbb73R9+LNP288VNOBE5YuXZp9jh7arohGTe6zn/1sw5y3KHMMzTziR+1ExwD1o8MGwaeO1KECe+yxRzYy28ziOpBfe+INv/h6EtecvCPmq1/9atXH7mrgyeWj13GNGjx4cMOcuyix6dOnjxcC9AAdNgg+DUQdKrS+a6+9Nh144IFNG3giUFx55ZWFr82c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0o477phtQOua5JoECD5AJ11wwQVZI2PdunVZr3I0Nioxbty4wu0zzjjDiWxiEXZiNOGEE07I5o9Y7KBxDBgwIL3//vu9qhTRNQkQfIBuEUutTp48OU2dOjXrLd1uu+3a7WV966230oUXXljYXT3ua7nW5hejCb/+9a8tdtBAjjjiiLRmzZpsJMM1yTUJEHyAGpgyZUrWuxoTqONj6dKl6bzzzktDhgzJGsIh9nuJydXTp09PL7/8cva1sWPHZvelNcRiBzHCsOWWW6a//vWvTkgPOuWUU9KDDz7Ya0fgXJMAwQfoNrNnz842tJw0aVLWiBgzZkybP7vtttumadOmpdGjR3d43Go3Mww2/es5q1evTttss032sX79eiekB5x11lnpxz/+cVq+fHlThp5avea765oEIPgAWaMh5nvEJPdY4WvlypVZr2vYfffd06BBg9Lw4cOzXlcTh1tXBB7LXPeMGN34/ve/ny040eoruLkmAYIP0KOi8RCNja72nHb35n7VHt9mg9WJZa6j5M3IT/3ESM/MmTOzkY5mXF2vu15jtbomuY4Agg8AZcU8nwg+EYBikr3V3rrPAQcckFasWJFtUGqkB0DwAaDOYrQnFjz4zGc+k83D0CivvSgp/N3vfmcpcQDBB4CeFAseHH/88dnk80suuSRddNFFTkoNrF27Nu25555p8803t4Q4gOADQCOIieWXXXZZFnzmz5+fhSE6Lz+XMcITIz0ACD4ANIgY6YlNNQ899NC0xRZbpIcffljpWydE6eCLL76YTj755GzjWAAEHwAaTASdWPQg9lc58MADNd6r8Oijj6ZDDjkkbbbZZum1114znwdA8AGg0a1atSrbW+WEE07IPt9///1Gf9oRQfHZZ59N+++/f3rsscecEADBB4BmEXvNfPjhh9mqZDH6s8suu5ivUiL25okNSWOUZ9GiRU25Pw8Agg8A/+P111/PyrgOP/zw1KdPnzR8+PBsMYTeLEbBTjrppPSXv/xFOSAAgg9Aq4gyt/fee68wwhGLH4wfPz7NmDGjV52HCIDDhg1L77zzjhEwAAQfgFYVQSc+Yk7LzJkzsxAUI0EPPPBAS//ec+bMSeeee27685//nPr3758eeeQRc54AEHwAWl0sfhBi49M77rgjK4H7+7//+5bb/ydGuGbNmpU++OCD9KlPfSq98MILVmsDQPAB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" width="90%"><br> <font size="+1">Figure 1.1 -
@@ -456,7 +455,7 @@ Desktop Graphics, and Broadcast Television</font>
 <span class="math inline">\(M^{-1}\)</span>. The matrix is uniquely
 determined by the xy chromaticities of the RGB primaries and the XYZ of
 the whitepoint (3*2 + 3 = 9 total numbers); this is a fundamental fact
-from projective geometry, see <span class="citation">[9]</span> page
+from projective geometry, see <span class="citation">[10]</span> page
 398. <em>Display RGB</em> is converted to <em>display XYZ</em> through
 multiplication by <span class="math inline">\(M\)</span>. In this
 package <span class="math inline">\(M\)</span> and <span class="math inline">\(M^{-1}\)</span> are computed with full precision;
@@ -467,7 +466,7 @@ functions of the spectral energy distrubution of light.</p>
 <p>The XYZ spaces are relative and normalized so that the maximum white
 has Y=1; there are no physical units for XYZ. Compare this with display
 XYZ in <a href="#aces-color---the-output-side">ACES Color</a>.</p>
-<p>The terminology below is mostly taken from BT.709 <span class="citation">[13]</span>, BT.1886 <span class="citation">[14]</span>, and BT.2100 <span class="citation">[15]</span>.</p>
+<p>The terminology below is mostly taken from BT.709 <span class="citation">[14]</span>, BT.1886 <span class="citation">[15]</span>, and BT.2100 <span class="citation">[16]</span>.</p>
 <p>In this package, both linear RGB vectors are normalized to the cube
 [0,1]<span class="math inline">\(^3\)</span>; they are usually thought
 of as <em>optical</em> in nature. Signal RGB can be thought of as
@@ -507,7 +506,7 @@ EOTF is always the inverse of the OETF; i.e. EOTF=OETF<span class="math inline"
 <p>The <em>Opto-optical Transfer Function</em> (OOTF) is the OETF
 followed by the EOTF. This is called their <em>composition</em> and in
 this User Guide we will write: <span class="math inline">\(\text{OOTF} =
-\text{OETF} \otimes \text{EOTF}\)</span>, following BT.2100 <span class="citation">[15]</span>. In the <strong>R</strong> code we use the
+\text{OETF} \otimes \text{EOTF}\)</span>, following BT.2100 <span class="citation">[16]</span>. In the <strong>R</strong> code we use the
 symbols <code>*</code> or <code>%X%</code>. Since EOTF=OETF<span class="math inline">\(^{-1}\)</span>, the OOTF is the identity,
 i.e. trivial. In some contexts one says that the <em>system gamma</em>
 is 1, or that the <em>end-to-end exponent</em> is 1. This implies that
@@ -545,7 +544,7 @@ XYZ.
 </li>
 </ol>
 <p>These 3 properties are enjoyed by all 16 working RGB spaces at
-Lindbloom <span class="citation">[5]</span>. This package includes three
+Lindbloom <span class="citation">[6]</span>. This package includes three
 of these working spaces: sRGB, Adobe RGB, and Apple RGB. The others can
 be easily added by the user using <code>installRGB()</code>, see
 <strong>Appendix A</strong> for how this works. The 3 properties are
@@ -568,8 +567,8 @@ system gamma is <em>not</em> 1.</p>
 Television</h1>
 <p>Due to the <em>Hunt effect</em> and the <em>Stevens effect</em>,
 color reproduction for human vision is better when the OOTF is
-<em>not</em> the identity. For an illustration see BT.2390 <span class="citation">[16]</span> Figure 8, and for further discussion see
-<span class="citation">[7]</span> and <span class="citation">[12]</span>. The recommendation in BT.1886 <span class="citation">[14]</span> is to use the OETF from BT.709 <span class="citation">[13]</span> and for the EOTF use a pure power law with
+<em>not</em> the identity. For an illustration see BT.2390 <span class="citation">[17]</span> Figure 8, and for further discussion see
+<span class="citation">[8]</span> and <span class="citation">[13]</span>. The recommendation in BT.1886 <span class="citation">[15]</span> is to use the OETF from BT.709 <span class="citation">[14]</span> and for the EOTF use a pure power law with
 <span class="math inline">\(\gamma=2.4\)</span> (with optional black
 offset). The resulting RGB space “HD+2.4” is installed like this:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>prim  <span class="ot">=</span> <span class="fu">matrix</span>( <span class="fu">c</span>(<span class="fl">0.64</span>,<span class="fl">0.33</span>,  <span class="fl">0.30</span>,<span class="fl">0.60</span>,  <span class="fl">0.15</span>,<span class="fl">0.06</span>,  <span class="fl">0.3127</span>,<span class="fl">0.3290</span>), <span class="dv">4</span>, <span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span> )</span>
@@ -627,7 +626,7 @@ matrices. Each matrix defines a (finite) box in R<span class="math inline">\(^N\
 transfer functions. The constructor creates a list of length 1, and
 longer lists are created with <code>composition()</code> or equivalent
 infix operators: <code>*</code>, <code>%X%</code>, <code>%O%</code>,
-etc. In this User Guide we use only <code>*</code> and the symbol <span class="math inline">\(\otimes\)</span> (from BT.2100 <span class="citation">[15]</span>).</p>
+etc. In this User Guide we use only <code>*</code> and the symbol <span class="math inline">\(\otimes\)</span> (from BT.2100 <span class="citation">[16]</span>).</p>
 <p>The package provides a number of built-in
 <code>TransferFunction</code> objects that are common in desktop
 publishing, broadcast television, and cinema. Some of these are
@@ -756,10 +755,10 @@ Side</h1>
 <p>The <em>Academy Color Encoding System</em> is designed to seamlessly
 integrate digital video from any source, such as CGI, digital cinema
 cameras, and scanned celluloid film. See <em>Academy Color Encoding
-System</em> <span class="citation">[11]</span> and <em>ACES Output
-Transform Details</em> <span class="citation">[17]</span>. All the
+System</em> <span class="citation">[12]</span> and <em>ACES Output
+Transform Details</em> <span class="citation">[18]</span>. All the
 <strong>R</strong> code for this section is based on that in
-<strong>aces-dev</strong> <span class="citation">[8]</span>; this is
+<strong>aces-dev</strong> <span class="citation">[9]</span>; this is
 ACES v1.1 and subject to revision in the future.</p>
 <p>The output side of ACES Color processing, is illustrated in this
 diagram:</p>
@@ -769,7 +768,7 @@ Color Output (display)</font>
 </center>
 <p><em>ACES RGB</em> (technically ACES2065-1 color space with AP0
 primaries) is linear and scene-referred, with imaginary primaries, see
-<span class="citation">[11]</span>. The complications of getting from
+<span class="citation">[12]</span>. The complications of getting from
 camera signal to <em>ACES RGB</em>, often with a preferred camera
 “look”, is the input (capture) side of ACES (with IDT, LMT, CLF, …) and
 is currently outside the scope of this package. Unlike the RGB spaces in
@@ -778,8 +777,8 @@ A perfect white diffuser in the scene is designed to be encoded with
 RGB=(1,1,1) and specular highlights can easily exceed this.</p>
 <p><strong>WARNING</strong>: What we call (non-linear) <strong>signal
 RGB</strong> is called <strong>Display RGB</strong> in <em>ACES Output
-Transform Details</em> <span class="citation">[17]</span>. And what we
-call (linear) <strong>display RGB</strong> does not appear in <span class="citation">[17]</span>.</p>
+Transform Details</em> <span class="citation">[18]</span>. And what we
+call (linear) <strong>display RGB</strong> does not appear in <span class="citation">[18]</span>.</p>
 <p>In the above figure the thin arrow for EOTF indicates that the
 transform is univariate and operates independently on each channel and
 in the same way. Exception: the EOTF in the last transform in
@@ -797,7 +796,7 @@ it is <em>fixed</em> and
 “… the RRT is intended to account for the perceptual factors required to
 convert the scene referred ACES images to an output referred encoding
 associated with an very high dynamic range, extremely wide color gamut
-device in a dark surround.” - Alex Forsythe <span class="citation">[3]</span>
+device in a dark surround.” - Alex Forsythe <span class="citation">[4]</span>
 </blockquote>
 <p>The ODT is the <em>Output Device Transform</em> for a real device. It
 includes the display primaries and whitepoint and other factors. Real
@@ -822,108 +821,114 @@ XYZ</strong> has physical units; the Y coordinate has units of <span class="math
 <p>Because of the complexity of ACES Color, calling a single instance of
 ACES an RGB “space” does not really do it justice. A more appropriate
 name might be an RGB “workflow” or “pipeline”.</p>
-<div id="acknowledgements" class="section level2" number="4.1">
-<h2><span class="header-section-number">4.1</span> Acknowledgements</h2>
+<p><br><br></p>
+</div>
+<div id="acknowledgements" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Acknowledgements</h1>
 <p>I would like to thank Scott Dyer for supplying the high-precision
 data in the file <code>test_values.txt</code> in the folder
 <code>tests</code>, and Alex Forsythe for his encouragement to “dig
 into” ACES.</p>
 <p><br><br> <br><br></p>
 </div>
-</div>
-<div id="references" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> References</h1>
+<div id="references" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> References</h1>
 <div id="refs" class="references csl-bib-body">
 <div id="ref-rgl" class="csl-entry">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">DANIEL ADLER, Duncan Murdoch and OTHERS.
 <em><span class="nocase">rgl</span>: 3D visualization using OpenGL</em>
 [online]. 2018. Available at: <a href="https://cran.r-project.org/package=rgl">https://cran.r-project.org/package=rgl</a></div>
 </div>
+<div id="ref-logger" class="csl-entry">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">DARÓCZI, Gergely. <em>Logger: A lightweight,
+modern and flexible logging utility</em> [online]. 2024. Available
+at: <a href="https://cran.r-project.org/package=logger">https://cran.r-project.org/package=logger</a></div>
+</div>
 <div id="ref-spacesXYZ" class="csl-entry">
-<div class="csl-left-margin">[2] </div><div class="csl-right-inline">DAVIS, Glenn. <em><span class="nocase">spacesXYZ</span>: CIE XYZ and some of its derived color
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">DAVIS, Glenn. <em><span class="nocase">spacesXYZ</span>: CIE XYZ and some of its derived color
 spaces</em> [online]. 2018. Available at: <a href="https://cran.r-project.org/package=spacesXYZ">https://cran.r-project.org/package=spacesXYZ</a></div>
 </div>
 <div id="ref-quoteRRT" class="csl-entry">
-<div class="csl-left-margin">[3] </div><div class="csl-right-inline">FORSYTHE, Alex. <em><span class="nocase">Color
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">FORSYTHE, Alex. <em><span class="nocase">Color
 Appearance Models, Interpretation Options, and ODTs</span></em>
 [online]. 2017. Available at: <a href="https://community.acescentral.com/t/color-appearance-models-interpretation-options-and-odts/1257/3">https://community.acescentral.com/t/color-appearance-models-interpretation-options-and-odts/1257/3</a>.
 discussion forum</div>
 </div>
 <div id="ref-colorspace" class="csl-entry">
-<div class="csl-left-margin">[4] </div><div class="csl-right-inline">IHAKA, Ross, MURRELL, Paul, HORNIK, Kurt,
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">IHAKA, Ross, MURRELL, Paul, HORNIK, Kurt,
 FISHER, Jason C. and ZEILEIS, Achim. <em><span class="nocase">colorspace</span>: Color space manipulation</em>
 [online]. 2016. Available at: <a href="https://CRAN.R-project.org/package=colorspace">https://CRAN.R-project.org/package=colorspace</a></div>
 </div>
 <div id="ref-lindbloom" class="csl-entry">
-<div class="csl-left-margin">[5] </div><div class="csl-right-inline">LINDBLOOM, Bruce. <em>RGB working space
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">LINDBLOOM, Bruce. <em>RGB working space
 information</em> [online]. no date. Available at: <a href="http://brucelindbloom.com/index.html?WorkingSpaceInfo.html">http://brucelindbloom.com/index.html?WorkingSpaceInfo.html</a></div>
 </div>
 <div id="ref-microbenchmark" class="csl-entry">
-<div class="csl-left-margin">[6] </div><div class="csl-right-inline">OLAF MERSMANN, Rainer Hurling, Claudia
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">OLAF MERSMANN, Rainer Hurling, Claudia
 Beleites. <em><span class="nocase">microbenchmark</span>: Accurate
 timing functions</em> [online]. 2018. Available at: <a href="https://cran.r-project.org/package=microbenchmark">https://cran.r-project.org/package=microbenchmark</a></div>
 </div>
 <div id="ref-poynton" class="csl-entry">
-<div class="csl-left-margin">[7] </div><div class="csl-right-inline">POYNTON, Charles A. <em><span class="nocase">Digital Video and HD: Algorithms and
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline">POYNTON, Charles A. <em><span class="nocase">Digital Video and HD: Algorithms and
 Interfaces</span></em>. B.m.: Morgan Kaufmann, 2012. Morgan kaufmann
 series in computer graphics and geometric modeling. ISBN 9780123919267.
 </div>
 </div>
 <div id="ref-aces-dev" class="csl-entry">
-<div class="csl-left-margin">[8] </div><div class="csl-right-inline">SCOTT DYER. <em>Academy color encoding system
+<div class="csl-left-margin">[9] </div><div class="csl-right-inline">SCOTT DYER. <em>Academy color encoding system
 developer resources</em>. B.m.: <a href="https://github.com/ampas/aces-core" class="uri">https://github.com/ampas/aces-core</a>; GitHub. 2018</div>
 </div>
 <div id="ref-semple1952" class="csl-entry">
-<div class="csl-left-margin">[9] </div><div class="csl-right-inline">SEMPLE, J. G. and KNEEBONE, G. T.
+<div class="csl-left-margin">[10] </div><div class="csl-right-inline">SEMPLE, J. G. and KNEEBONE, G. T.
 <em><span>Algebraic Projective Geometry</span></em>. B.m.: Clarendon
 Press, 1952. </div>
 </div>
 <div id="ref-farver" class="csl-entry">
-<div class="csl-left-margin">[10] </div><div class="csl-right-inline">THOMAS LIN PEDERSEN, Berendea Nicolae and
+<div class="csl-left-margin">[11] </div><div class="csl-right-inline">THOMAS LIN PEDERSEN, Berendea Nicolae and
 FRANÇOIS, Romain. <em><span class="nocase">farver</span>: Vectorised
 colour conversion and comparison</em> [online]. 2018. Available at: <a href="https://CRAN.R-project.org/package=farver">https://CRAN.R-project.org/package=farver</a></div>
 </div>
 <div id="ref-ACES" class="csl-entry">
-<div class="csl-left-margin">[11] </div><div class="csl-right-inline">WIKIPEDIA CONTRIBUTORS. <em>Academy color
+<div class="csl-left-margin">[12] </div><div class="csl-right-inline">WIKIPEDIA CONTRIBUTORS. <em>Academy color
 encoding system — <span>Wikipedia</span><span>,</span> the free
 encyclopedia</em> [online]. 2018. Available at: <a href="https://en.wikipedia.org/w/index.php?title=Academy_Color_Encoding_System">https://en.wikipedia.org/w/index.php?title=Academy_Color_Encoding_System</a>.
 [Online; accessed 19-January-2019]</div>
 </div>
 <div id="ref-wiki-CAM" class="csl-entry">
-<div class="csl-left-margin">[12] </div><div class="csl-right-inline">WIKIPEDIA CONTRIBUTORS. <em>Color appearance
+<div class="csl-left-margin">[13] </div><div class="csl-right-inline">WIKIPEDIA CONTRIBUTORS. <em>Color appearance
 model — <span>Wikipedia</span><span>,</span> the free encyclopedia</em>
 [online]. 2018. Available at: <a href="https://en.wikipedia.org/wiki/Color_appearance_model">https://en.wikipedia.org/wiki/Color_appearance_model</a></div>
 </div>
 <div id="ref-BT.709" class="csl-entry">
-<div class="csl-left-margin">[13] </div><div class="csl-right-inline"><em><span class="nocase">BT.709. Parameter
+<div class="csl-left-margin">[14] </div><div class="csl-right-inline"><em><span class="nocase">BT.709. Parameter
 values for the HDTV standards for production and international programme
 exchange.</span></em> Standard. 2015. </div>
 </div>
 <div id="ref-BT.1886" class="csl-entry">
-<div class="csl-left-margin">[14] </div><div class="csl-right-inline"><em><span class="nocase">BT.1886. Reference
+<div class="csl-left-margin">[15] </div><div class="csl-right-inline"><em><span class="nocase">BT.1886. Reference
 electro-optical transfer function for flat panel displays used in HDTV
 studio production.</span></em> Standard. 2011. </div>
 </div>
 <div id="ref-BT.2100" class="csl-entry">
-<div class="csl-left-margin">[15] </div><div class="csl-right-inline"><em><span class="nocase">BT.2100. Image
+<div class="csl-left-margin">[16] </div><div class="csl-right-inline"><em><span class="nocase">BT.2100. Image
 parameter values for high dynamic range television for use in production
 and international programme exchange.</span></em> Standard. 2017. </div>
 </div>
 <div id="ref-BT.2390" class="csl-entry">
-<div class="csl-left-margin">[16] </div><div class="csl-right-inline"><em><span class="nocase">BT.2390-4. High
+<div class="csl-left-margin">[17] </div><div class="csl-right-inline"><em><span class="nocase">BT.2390-4. High
 dynamic range television for production and international programme
 exchange.</span></em> Standard. 2018. </div>
 </div>
 <div id="ref-TB-2018-002" class="csl-entry">
-<div class="csl-left-margin">[17] </div><div class="csl-right-inline"><em><span>ACES Output Transform Details -
+<div class="csl-left-margin">[18] </div><div class="csl-right-inline"><em><span>ACES Output Transform Details -
 TB-2018-002</span></em> [online]. DRAFT Standard. 2018. Available at: <a href="https://community.acescentral.com/t/request-for-review-and-comments-on-v0-1-draft-of-aces-output-transform-details/1457">https://community.acescentral.com/t/request-for-review-and-comments-on-v0-1-draft-of-aces-output-transform-details/1457</a></div>
 </div>
 </div>
 <p><br><br></p>
 <p><br><br></p>
 </div>
-<div id="appendix-a---built-in-rgb-spaces" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Appendix A - Built-in
+<div id="appendix-a---built-in-rgb-spaces" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Appendix A - Built-in
 RGB Spaces</h1>
 <p>The package comes with a dictionary of 8 built-in RGB spaces; which
 are loaded from <code>sysdata.rda</code>. The code below shows how they
@@ -974,21 +979,21 @@ installRGB( &quot;HD+2.4&quot;, scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4 
 </pre>
 <p><br><br></p>
 </div>
-<div id="appendix-b---sample-odts-and-output-transforms-for-aces" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> Appendix B - Sample
+<div id="appendix-b---sample-odts-and-output-transforms-for-aces" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Appendix B - Sample
 ODTs and Output Transforms for ACES</h1>
 <p>This Appendix has <strong>spacesRGB</strong> expressions for the
 output transforms available as presets to the user in ACES v1.1, see
-<em>ACES Output Transform Details</em> <span class="citation">[17]</span>.
+<em>ACES Output Transform Details</em> <span class="citation">[18]</span>.
 <!-- These 21 transforms are divided into 2 groups depending on how the three basic transforms are defined. -->
 <!-- Each group defines two of the transforms, and the third one is determined by the other two. --></p>
 <p>For examples of these transforms “in action” see the files
 <code>test-ACES.R</code> and <code>test_values.txt</code> in the folder
 <code>tests</code>.</p>
-<div id="output-transforms-with-given-oetf-and-eotf" class="section level2" number="7.1">
-<h2><span class="header-section-number">7.1</span> Output Transforms
+<div id="output-transforms-with-given-oetf-and-eotf" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> Output Transforms
 with given OETF and EOTF</h2>
-<p>In <span class="citation">[17]</span> Sections 5.1 to 7.2 are 16
+<p>In <span class="citation">[18]</span> Sections 5.1 to 7.2 are 16
 Output Transforms whose transfer functions are defined by their OETF and
 EOTF, and then <span class="math inline">\(\text{OOTF} := \text{OETF}
 \otimes \text{EOTF}\)</span>. These tables present the OETF and EOTF
@@ -1426,10 +1431,10 @@ the metadata of the OETF. See the man page for
 <code>installRGB()</code>.</p>
 <p><br><br></p>
 </div>
-<div id="output-transforms-with-given-ootf-and-eotf" class="section level2" number="7.2">
-<h2><span class="header-section-number">7.2</span> Output Transforms
+<div id="output-transforms-with-given-ootf-and-eotf" class="section level2" number="8.2">
+<h2><span class="header-section-number">8.2</span> Output Transforms
 with given OOTF and EOTF</h2>
-<p>In <span class="citation">[17]</span> Sections 8.1 to 9.4 are 5
+<p>In <span class="citation">[18]</span> Sections 8.1 to 9.4 are 5
 Output Transforms whose transfer functions are defined by their OOTF and
 EOTF, and then <span class="math inline">\(\text{OETF} := \text{OOTF}
 \otimes \text{EOTF}^{-1}\)</span>. These tables present the OOTF and
@@ -1581,8 +1586,35 @@ the metadata of the OOTF. See the man page for
 <p><br><br></p>
 </div>
 </div>
-<div id="session-information" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> Session
+<div id="appendix-c---logging" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> Appendix C -
+Logging</h1>
+<p>Logging is performed using the package <strong>logger</strong> <span class="citation">[2]</span>. This is a powerful package that allows a
+separate configuration for logging from within
+<strong>spacesRGB</strong>, and that is what I have done. During package
+loading, the logging threshold is changed from <code>INFO</code> to
+<code>WARN</code>. To change it back again, one can execute:<br />
+<code>logger::log_threshold( logger::INFO, namespace=&quot;spacesRGB&quot; )     # preferred</code><br />
+or<br />
+<code>library( logger )                                                # not preferred</code><br />
+<code>log_threshold( INFO, namespace=&quot;spacesRGB&quot; )</code></p>
+<p>The layout callback function is customized; it adds the name of the
+calling function to the message. To change it back again, one can
+execute:<br />
+<code>log_layout( layout_simple, namespace=&quot;spacesRGB&quot; )</code><br />
+or to install ones own layout function, one can execute:<br />
+<code>log_layout( &lt;your function&gt;, namespace=&quot;spacesRGB&quot; )</code>.</p>
+<p>The appender callback functions is also customized; it comes to an
+immediate stop if the log event level is <code>FATAL</code> or
+<code>ERROR</code>. To continue execution after such a log event, one
+can execute:<br />
+<code>log_appender( appender_console, namespace=&quot;spacesRGB&quot; )</code></p>
+<p>The formatter callback function is initialized to be
+<code>formatter_sprintf()</code>; this should not be changed.</p>
+<p><br><br></p>
+</div>
+<div id="session-information" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> Session
 Information</h1>
 <pre>
 R version 4.4.2 (2024-10-31 ucrt)
@@ -1604,15 +1636,15 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] spacesRGB_1.6-1
+[1] spacesRGB_1.7-0
 
 loaded via a namespace (and not attached):
- [1] digest_0.6.37        R6_2.5.1             microbenchmark_1.5.0 spacesXYZ_1.3-0     
- [5] fastmap_1.2.0        xfun_0.49            cachem_1.1.0         knitr_1.49          
- [9] htmltools_0.5.8.1    rmarkdown_2.29       lifecycle_1.0.4      cli_3.6.3           
-[13] sass_0.4.9           jquerylib_0.1.4      compiler_4.4.2       tools_4.4.2         
-[17] evaluate_1.0.1       bslib_0.8.0          yaml_2.3.10          rlang_1.1.4         
-[21] jsonlite_1.8.9      
+ [1] digest_0.6.37        R6_2.5.1             microbenchmark_1.5.0 spacesXYZ_1.4-0     
+ [5] fastmap_1.2.0        xfun_0.49            glue_1.8.0           cachem_1.1.0        
+ [9] knitr_1.49           htmltools_0.5.8.1    logger_0.4.0         rmarkdown_2.29      
+[13] lifecycle_1.0.4      cli_3.6.3            sass_0.4.9           jquerylib_0.1.4     
+[17] compiler_4.4.2       tools_4.4.2          evaluate_1.0.1       bslib_0.8.0         
+[21] yaml_2.3.10          rlang_1.1.4          jsonlite_1.8.9      
 </pre>
 </div>
 

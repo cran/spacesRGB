@@ -7,15 +7,17 @@
 #       240M                (ANSI/SMPTE 240M)
 
 
-#   The "Gang of 5"
+#   The "Gang of 5".   All of these are exported.
 sRGB.EOTF           = NULL
 BT.709.EOTF         = NULL
 BT.2020.EOTF        = NULL
-ProPhotoRGB.EOTF    = NULL
-SMPTE.240M.EOTF     = NULL
+ProPhotoRGB.EOTF    = NULL        # only used in this file
+SMPTE.240M.EOTF     = NULL        # only used in this file
 
+#   #6 is used only in this file
 FullRangeToSMPTE.TF = NULL
 
+#   make the 5 standard EOTFs
 #   this should be called from .onLoad()
 makeGangOf5   <- function()
     {
@@ -120,14 +122,14 @@ BT.1886.EOTF <- function( gamma=2.4, Lb=0, Lw=1 )
     {
     if( length(gamma)!=1  ||  gamma <= 0 )
         {
-        log_string( ERROR, "gamma=%g is invalid.", gamma )
+        log_level( ERROR, "gamma=%g is invalid.", gamma )
         return(NULL)
         }
         
     ok  = length(Lb)==1  &&  length(Lw)==1  &&  (0 <= Lb)  &&  (Lb < Lw)
     if( ! ok )
         {
-        log_string( ERROR, "Lb=%g  and/or  Lw=%g are invalid.", Lb, Lw )
+        log_level( ERROR, "Lb=%g  and/or  Lw=%g are invalid.", Lb, Lw )
         return(NULL)
         }
             
@@ -206,7 +208,7 @@ EOTFfromString  <-  function( id )
     ok  = is.character(id)  &&  length(id)==1
     if( ! ok )
         {
-        log_string( ERROR, "id='%s' is invalid.", as.character(id)[1] )
+        log_level( ERROR, "id='%s' is invalid.", as.character(id)[1] )
         return(NULL)
         }          
     
@@ -215,7 +217,7 @@ EOTFfromString  <-  function( id )
     idx = pmatch( tolower(id), tolower(id.full) )
     if( is.na(idx) )
         {
-        log_string( ERROR, "id='%s' is invalid; it may match more than one EOTF.", id )
+        log_level( ERROR, "id='%s' is invalid; it may match more than one EOTF.", id )
         return(NULL)
         }          
 
@@ -237,7 +239,7 @@ power.OETF  <-  function( gamma )
     ok  = is.numeric(gamma)  &&  length(gamma)==1  &&  0<gamma
     if( ! ok )
         {
-        log_string( ERROR, "gamma = '%s' is invalid.", as.character(gamma) )
+        log_level( ERROR, "gamma = '%s' is invalid.", as.character(gamma) )
         return(NULL)
         }   
         
@@ -258,7 +260,7 @@ power.EOTF  <-  function( gamma )
     ok  = is.numeric(gamma)  &&  length(gamma)==1  &&  0<gamma
     if( ! ok )
         {
-        log_string( ERROR, "gamma = '%s' is invalid.", as.character(gamma) )
+        log_level( ERROR, "gamma = '%s' is invalid.", as.character(gamma) )
         return(NULL)
         }   
         
@@ -280,7 +282,7 @@ power.OOTF  <-  function( gamma )       #   end-to-end OOTF
     ok  = is.numeric(gamma)  &&  length(gamma)==1  &&  0<gamma
     if( ! ok )
         {
-        log_string( ERROR, "gamma = '%s' is invalid.", as.character(gamma) )
+        log_level( ERROR, "gamma = '%s' is invalid.", as.character(gamma) )
         return(NULL)
         }   
         
@@ -308,7 +310,7 @@ affine.TF  <-  function( y0, y1 )
     ok  = is.numeric(y0)  &&  is.numeric(y1)  &&  length(y0)==1  &&  length(y1)==1  &&  y0!=y1  # &&  Ymin<Ymax
     if( ! ok )
         {
-        log_string( ERROR, "y0='%s' or y1='%s' is invalid, or they are equal.", 
+        log_level( ERROR, "y0='%s' or y1='%s' is invalid, or they are equal.", 
                                 as.character(y0)[1], as.character(y1)[1] )
         return(NULL)
         }   
@@ -336,7 +338,7 @@ validTF  <-  function( TF )
     ok  = all( TF(endpoint) == endpoint )
     if( ! ok )
         {
-        log_string( ERROR, "Transfer Function does not map 0->0 and 1->1." )
+        log_level( ERROR, "Transfer Function does not map 0->0 and 1->1." )
         return(FALSE)
         }    
     
@@ -345,7 +347,7 @@ validTF  <-  function( TF )
     ok  = all( 0 < diff(y) )
     if( ! ok )
         {
-        log_string( ERROR, "Transfer Function is not strictly monotone." )
+        log_level( ERROR, "Transfer Function is not strictly monotone." )
         return(FALSE)
         }        
         
@@ -355,7 +357,7 @@ validTF  <-  function( TF )
     ok  = all( dim(y) == dim(x) )
     if( ! ok )
         {
-        log_string( ERROR, "Transfer Function does not preserve dimensions." )
+        log_level( ERROR, "Transfer Function does not preserve dimensions." )
         return(FALSE)
         }        
 
@@ -374,7 +376,7 @@ validTF_pair  <-  function( TF1, TF2, digits=5 )
     delta   = max( abs( x - x.back ) )  #; print(delta)
     if( tol <= delta )
         {
-        log_string( ERROR, "Transfer Function pair are not inverses, to %d digits.  TF1(TF2(x))", digits )
+        log_level( ERROR, "Transfer Function pair are not inverses, to %d digits.  TF1(TF2(x))", digits )
         return(FALSE)
         }       
     
@@ -382,7 +384,7 @@ validTF_pair  <-  function( TF1, TF2, digits=5 )
     delta   = max( abs( x - x.back ) )
     if( tol <= delta )
         {
-        log_string( ERROR, "Transfer Function pair are not inverses, to %d digits.  TF2(TF1(x))", digits )
+        log_level( ERROR, "Transfer Function pair are not inverses, to %d digits.  TF2(TF1(x))", digits )
         return(FALSE)
         }       
 
@@ -407,7 +409,7 @@ fittedGammaL1 <- function( TF )
         
     res = optimize( myfun, lower=0.5*gamma, upper=2*gamma ) #; print( str(res) )
         
-    #   log_string( INFO, "LM polished gamma=%g to %g in %d iterations.", gamma, res$par, res$niter )
+    #   log_level( INFO, "LM polished gamma=%g to %g in %d iterations.", gamma, res$par, res$niter )
 
     return( res$minimum )
     }

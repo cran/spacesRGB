@@ -7,14 +7,14 @@ HLG.OOTF  <-  function( gamma=1.2, Lb=0, Lw=1000 )
     ok  = is.numeric(gamma)  &&  length(gamma)==1  &&  1<=gamma    
     if( ! ok )
         {
-        log_string( ERROR, "gamma = '%s' is invalid.", as.character(gamma) )
+        log_level( ERROR, "gamma = '%s' is invalid.", as.character(gamma) )
         return(NULL)
         }       
     
     ok  = length(Lb)==1  &&  length(Lw)==1  &&  (0 <= Lb)  &&  (Lb < Lw)
     if( ! ok )
         {
-        log_string( ERROR, "Lb=%g  and/or  Lw=%g are invalid.", Lb, Lw )
+        log_level( ERROR, "Lb=%g  and/or  Lw=%g are invalid.", Lb, Lw )
         return(NULL)
         }    
     
@@ -140,14 +140,14 @@ HLG2D.OOTF  <-  function( gamma=1.2, weights=c(0.5,0.5) )
     ok  = is.numeric(gamma)  &&  length(gamma)==1  &&  1<=gamma    
     if( ! ok )
         {
-        log_string( ERROR, "gamma = '%s' is invalid.", as.character(gamma) )
+        log_level( ERROR, "gamma = '%s' is invalid.", as.character(gamma) )
         return(NULL)
         }       
         
     ok  = is.numeric(weights)  &&  length(weights)==2  &&  all(0 < weights)  &&  abs(sum(weights) - 1) < 1.e-12
     if( ! ok )
         {
-        log_string( ERROR, "weights = '%s' is invalid.", paste0( weights,collapse=',') )
+        log_level( ERROR, "weights = '%s' is invalid.", paste0( weights,collapse=',') )
         return(NULL)
         } 
         

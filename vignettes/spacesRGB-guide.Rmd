@@ -45,7 +45,7 @@ Signal RGB is also called _non-linear RGB_ and _encoded RGB_.
 <!-- Sometimes we call "_signal RGB_"  _"display signal RGB"_ for emphasis. -->
 
 
-There are no strong package dependencies, but these packages are suggested:
+These packages are suggested:
 
 <ul>
 <li>**spacesXYZ** @spacesXYZ - used in some of the ACES Color transfer functions</li>
@@ -401,7 +401,10 @@ Because of the complexity of ACES Color, calling a single instance of ACES an RG
 does not really do it justice.
 A more appropriate name might be an RGB "workflow" or "pipeline".
 
-## Acknowledgements
+
+<br><br>
+
+# Acknowledgements
 
 I would like to thank Scott Dyer for supplying the high-precision data
 in the file `test_values.txt` in the folder `tests`,
@@ -700,6 +703,40 @@ And the other 4 spaces can be installed in a similar way.
 Note that the display primaries `REC2020_PRI` do not have to be passed to `installRGB()`,
 since they are automatically picked from the metadata of the OOTF.
 See the man page for `installRGB()`.
+
+
+
+<br><br>
+
+# Appendix C - Logging
+
+Logging is performed using the package **logger**  @logger.
+This is a powerful package that allows a separate configuration
+for logging from within **spacesRGB**, and that is what I have done.
+During package loading, the logging threshold is changed from `INFO` to `WARN`.
+To change it back again, one can execute:  
+`logger::log_threshold( logger::INFO, namespace="spacesRGB" )     # preferred`  
+or  
+`library( logger )                                                # not preferred`  
+`log_threshold( INFO, namespace="spacesRGB" )`
+
+The layout callback function is customized;
+it adds the name of the calling function to the message.
+To change it back again, one can execute:  
+`log_layout( layout_simple, namespace="spacesRGB" )`  
+or to install ones own layout function, one can execute:  
+`log_layout( <your function>, namespace="spacesRGB" )`.
+
+The appender callback functions is also customized;
+it comes to an immediate stop if the log event level is `FATAL` or `ERROR`.
+To continue execution after such a log event, one can execute:  
+`log_appender( appender_console, namespace="spacesRGB" )`
+
+The formatter callback function is initialized to be `formatter_sprintf()`;
+this should not be changed.
+
+
+
 
 
 

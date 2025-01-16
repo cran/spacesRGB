@@ -3,23 +3,24 @@
 #   Single-Stage Tone-Scale
 #
 
-HALF_MIN        = 5.96046448e-08
-HALF_MAX        = 65504
+p.HALF_MIN      = 5.96046448e-08
+p.HALF_MAX      = 65504
 
-MIN_STOP_SDR    = -6.5
-MAX_STOP_SDR    =  6.5
+MIN_STOP_SDR    = -6.5      # only used in this file
+MAX_STOP_SDR    =  6.5      # only used in this file
 
-MIN_STOP_RRT    = -15
-MAX_STOP_RRT    =  18
+MIN_STOP_RRT    = -15       # only used in this file
+MAX_STOP_RRT    =  18       # only used in this file
 
-MIN_LUM_SDR     =  0.02
-MAX_LUM_SDR     = 48.0
+MIN_LUM_SDR     =  0.02     # only used in this file
+MAX_LUM_SDR     = 48.0      # only used in this file
 
-MIN_LUM_RRT     = 0.0001
-MAX_LUM_RRT     = 10000
+MIN_LUM_RRT     = 0.0001    # only used in this file
+MAX_LUM_RRT     = 10000     # only used in this file
+
 
 #   Textbook monomial to basis-function conversion matrix.
-M1  = matrix(  c( 0.5,-1.0,0.5,  -1.0,1.0,0.5,   0.5,0.0,0.0), 3, 3, byrow=TRUE )
+# M1  = matrix(  c( 0.5,-1.0,0.5,  -1.0,1.0,0.5,   0.5,0.0,0.0), 3, 3, byrow=TRUE )
 
 
 
@@ -28,7 +29,7 @@ init_TsParams   <- function( minLum, maxLum, expShift=0 )
     ok  = minLum < maxLum
     if( ! ok )
         {
-        log_string( ERROR, "minLum=%g and maxLum=%g are invalid.", minLum, maxLum )
+        log_level( ERROR, "minLum=%g and maxLum=%g are invalid.", minLum, maxLum )
         return(NULL)
         }
     
@@ -55,7 +56,7 @@ init_TsParams3  <- function( minLum, midLum, maxLum )
     ok  = minLum < midLum  &&  midLum < maxLum
     if( ! ok )
         {
-        log_string( ERROR, "minLum=%g and midLum=%g and maxLum=%g are invalid.", minLum, midLum, maxLum )
+        log_level( ERROR, "minLum=%g and midLum=%g and maxLum=%g are invalid.", minLum, midLum, maxLum )
         return(NULL)
         }
     
@@ -168,8 +169,8 @@ ssts    <- function( x, C )
     N_KNOTS_LOW     = 4
     N_KNOTS_HIGH    = 4
 
-    #   Check for negatives or zero before taking the log. If negative or zero, set to HALF_MIN.
-    logx = log10( max(x,HALF_MIN) ) #; print(logx) ; print( str(C) )
+    #   Check for negatives or zero before taking the log. If negative or zero, set to p.HALF_MIN.
+    logx = log10( max(x,p.HALF_MIN) ) #; print(logx) ; print( str(C) )
 
     if ( logx <= log10(C$Min$x) )
         { 
@@ -186,7 +187,7 @@ ssts    <- function( x, C )
         cf =    C$coefsLow[ j:(j+2) ]
 
         monomials   = c( t*t, t, 1 )
-        logy    = sum( monomials * (cf %*% M1) )
+        logy    = sum( monomials * (cf %*% p.M_monomial_to_basis) )
         } 
     else if( ( log10(C$Mid$x) <= logx ) && ( logx < log10(C$Max$x) ) ) 
         {
@@ -198,7 +199,7 @@ ssts    <- function( x, C )
         cf  =   C$coefsHigh[ j:(j+2) ]
 
         monomials   = c( t*t, t, 1 )
-        logy = sum( monomials * (cf %*% M1) )
+        logy = sum( monomials * (cf %*% p.M_monomial_to_basis) )
         } 
     else 
         { # if ( logIn >= log10(C.Max.x) ) { 
@@ -250,7 +251,7 @@ inv_ssts    <- function( y, C )
             cf  = C$coefsLow[3:5];  j = 2
             } 
 
-        tmp = cf %*% M1
+        tmp = cf %*% p.M_monomial_to_basis
 
         a   = tmp[1]
         b   = tmp[2]
@@ -278,7 +279,7 @@ inv_ssts    <- function( y, C )
             cf  = C$coefsHigh[3:5] ;  j = 2
             } 
 
-        tmp = cf %*% M1
+        tmp = cf %*% p.M_monomial_to_basis
 
         a   = tmp[1]
         b   = tmp[2]
@@ -307,7 +308,7 @@ SSTS.TF <- function( TsParams )
     ok  = is.list(TsParams)  &&  !is.null(TsParams$Min)  &&  !is.null(TsParams$Mid)  &&  !is.null(TsParams$Max)
     if( ! ok )
         {
-        log_string( ERROR, "TsParams='%s' is invalid.", as.character(TsParams)[1] )
+        log_level( ERROR, "TsParams='%s' is invalid.", as.character(TsParams)[1] )
         return(NULL)        
         }
     

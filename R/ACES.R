@@ -1,15 +1,15 @@
 
 ####----    Chromaticities of some common primary sets    ----####
 
-
+#   these 6 variables are exported.  They are initialized in makeAllPrimaries().
 AP0_PRI     = NULL      #   ACES Primaries from SMPTE ST2065-1
 AP1_PRI     = NULL      #   Working space and rendering primaries for ACES 1.0
 REC709_PRI  = NULL
 REC2020_PRI = NULL
 P3D65_PRI   = NULL
-P3D60_PRI   = NULL
 P3DCI_PRI   = NULL
 
+#   These matrices are used in other files.  They are initialized in .onLoad()
 p.AP0_2_XYZ_MAT = NULL
 p.XYZ_2_AP0_MAT = NULL
 p.AP1_2_XYZ_MAT = NULL
@@ -19,28 +19,31 @@ p.AP0_2_AP1_MAT = NULL
 p.AP1_2_AP0_MAT = NULL
 p.AP1_RGB2Y     = NULL
 
-TINY    = 1e-10
+
+#   this one is only used in this file
+P3D60_PRI   = NULL
 
 
 #   this should be called from .onLoad()
 makeAllPrimaries <- function()
     {
     #   ACES Primaries from SMPTE ST2065-1
-    AP0_PRI     <<- makePrimaries4x2( c(0.73470,0.26530,       0,      1, 0.0001,-0.07700, 0.32168,0.33767 ) )
+    AP0_PRI   <<- makePrimaries4x2( c(0.73470,0.26530,       0,      1, 0.0001,-0.07700, 0.32168,0.33767 ) )
 
     #   Working space and rendering primaries for ACES 1.0
-    AP1_PRI     <<- makePrimaries4x2( c( 0.71300,0.29300, 0.16500,0.83000, 0.12800,0.04400, 0.32168,0.33767 ) )
+    AP1_PRI   <<- makePrimaries4x2( c( 0.71300,0.29300, 0.16500,0.83000, 0.12800,0.04400, 0.32168,0.33767 ) )
 
-    REC709_PRI  <<- makePrimaries4x2( c( 0.64000,0.33000, 0.30000,0.60000, 0.15000,0.06000, 0.31270,0.32900 ) )
+    REC709_PRI    <<- makePrimaries4x2( c( 0.64000,0.33000, 0.30000,0.60000, 0.15000,0.06000, 0.31270,0.32900 ) )
 
-    REC2020_PRI <<- makePrimaries4x2( c( 0.70800,0.29200, 0.17000,0.79700, 0.13100,0.04600, 0.31270,0.32900 ) )
+    REC2020_PRI   <<- makePrimaries4x2( c( 0.70800,0.29200, 0.17000,0.79700, 0.13100,0.04600, 0.31270,0.32900 ) )
 
-    P3D65_PRI   <<- makePrimaries4x2( c( 0.68000,0.32000, 0.26500,0.69000, 0.15000,0.06000, 0.31270,0.32900 ) )
-
-    P3D60_PRI   <<- makePrimaries4x2( c( 0.68000,0.32000, 0.26500,0.69000, 0.15000,0.06000, 0.32168,0.33767 ) )
+    P3D65_PRI <<- makePrimaries4x2( c( 0.68000,0.32000, 0.26500,0.69000, 0.15000,0.06000, 0.31270,0.32900 ) )
 
     P3DCI_PRI   <<- makePrimaries4x2( c( 0.68000,0.32000, 0.26500,0.69000, 0.15000,0.06000, 0.31400,0.35100 ) )
         
+    # this one is not exported
+    P3D60_PRI   <<- makePrimaries4x2( c( 0.68000,0.32000, 0.26500,0.69000, 0.15000,0.06000, 0.32168,0.33767 ) )
+
     return(TRUE)
     }
 
@@ -60,6 +63,8 @@ makePrimaries4x2 <- function( xy )
 
 rgb_2_saturation    <- function( rgb )
     {
+    TINY    = 1e-10
+    
     #   note that multiplying rgb by a constant does not change saturation, except very near 0
     return( ( max(rgb,TINY) - max(min(rgb),TINY)) / max(rgb,1e-2) )
     }

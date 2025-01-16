@@ -17,7 +17,7 @@ plotPatchesRGB  <-  function( obj, space='sRGB', which='signal', maxColorValue=1
         {
         if( ncol(obj) != 3 )
             {
-            log_string( ERROR, "'%s' has %d columns, but it must have 3.", deparse(substitute(obj)), ncol(obj) )
+            log_level( ERROR, "'%s' has %d columns, but it must have 3.", deparse(substitute(obj)), ncol(obj) )
             return(FALSE)
             }    
             
@@ -33,7 +33,7 @@ plotPatchesRGB  <-  function( obj, space='sRGB', which='signal', maxColorValue=1
             #   ok  = all( toupper(colnames(obj))  ==  c('R','G','B') )
             
             if( ! ok )
-                log_string( WARN, "The column names of matrix obj are '%s', and do not look like RGB.", 
+                log_level( WARN, "The column names of matrix obj are '%s', and do not look like RGB.", 
                                     paste( colnames(obj), collapse=',' ) )
             }
                     
@@ -43,14 +43,14 @@ plotPatchesRGB  <-  function( obj, space='sRGB', which='signal', maxColorValue=1
         
     if( ! is.data.frame(obj) )
         {
-        log_string( ERROR, "obj is invalid; neither matrix nor data.frame" )
+        log_level( ERROR, "obj is invalid; neither matrix nor data.frame" )
         return(FALSE)
         }
 
     #   look for column RGB
     if( is.null(obj$RGB)  ||  is.null(dim(obj$RGB))  ||  ncol(obj$RGB) != 3 )
         {
-        log_string( ERROR, "data is invalid; there is no column RGB with 3 columns" )
+        log_level( ERROR, "data is invalid; there is no column RGB with 3 columns" )
         return(FALSE)
         }    
 
@@ -61,7 +61,7 @@ plotPatchesRGB  <-  function( obj, space='sRGB', which='signal', maxColorValue=1
     ok  = is.numeric(maxColorValue)  &&  length(maxColorValue)==1  &&  0<maxColorValue
     if( ! ok )
         {
-        log_string( ERROR, "maxColorValue='%s' is invalid.", as.character(maxColorValue[1]) )
+        log_level( ERROR, "maxColorValue='%s' is invalid.", as.character(maxColorValue[1]) )
         return(FALSE)
         }
 
@@ -69,7 +69,7 @@ plotPatchesRGB  <-  function( obj, space='sRGB', which='signal', maxColorValue=1
     idx     = pmatch( tolower(which), full )
     if( is.na(idx) )
         {
-        log_string( ERROR, "which='%s' is invalid", as.character(which) )
+        log_level( ERROR, "which='%s' is invalid", as.character(which) )
         return(FALSE)
         }    
     which   = full[idx]
@@ -144,7 +144,7 @@ plotPatchesRGB  <-  function( obj, space='sRGB', which='signal', maxColorValue=1
     ok  = rectangle  ||  (0 < triangle)  ||  hexagon
     if( ! ok )
         {
-        log_string( ERROR, "shape='%s' unknown.", shape )
+        log_level( ERROR, "shape='%s' unknown.", shape )
         return(FALSE)
         }
     
@@ -160,7 +160,7 @@ plotPatchesRGB  <-  function( obj, space='sRGB', which='signal', maxColorValue=1
             
             if( length(background) != 3 )
                 {
-                log_string( ERROR, "background is invalid, because length(background)==%d is not 1 or 3.", length(background) )
+                log_level( ERROR, "background is invalid, because length(background)==%d is not 1 or 3.", length(background) )
                 return(FALSE)
                 }
                 
@@ -178,7 +178,7 @@ plotPatchesRGB  <-  function( obj, space='sRGB', which='signal', maxColorValue=1
             
         if( ! is.character( background ) )
             {
-            log_string( ERROR, "background is invalid" )
+            log_level( ERROR, "background is invalid" )
             return(FALSE)
             }        
 

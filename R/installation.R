@@ -1,5 +1,71 @@
 
-#   p.ListRGB           = list()    
+#   this is the dictionary of RGB space
+p.ListRGB   = NULL
+
+
+makeInitialDictionary  <- function()
+    {
+    #white.D65   = c( 0.95047, 1, 1.08883 )
+    #white.D50   = c( 0.96422, 1, 0.82521 )
+        
+    #makeAllPrimaries()        
+    #makeGangOf5()
+    
+    time_start  = gettime()
+        
+    p.ListRGB <<- list()
+
+    #cat( "Installing sRGB...", '\n', file=stderr() )
+    #prim    = matrix( c(0.64,0.33,  0.30,0.60,  0.15,0.06 ), 3, 2, byrow=TRUE )
+    #white   = c( 0.3127, 0.3290 )
+    installRGB( 'sRGB', scene=REC709_PRI, EOTF=sRGB.EOTF, overwrite=TRUE )    
+    
+    #cat( "Installing AdobeRGB...", '\n', file=stderr() )    
+    prim    = c(0.64,0.33,  0.21,0.71,  0.15,0.06  )
+    white   = c( 0.3127, 0.3290 )    
+    installRGB( 'AdobeRGB', scene=list(prim,white), EOTF=563/256, overwrite=TRUE )
+
+    #cat( "Installing ProPhotoRGB...", '\n', file=stderr() )    
+    prim    = c(0.7347,0.2653,  0.1596,0.8404,  0.0366,0.0001  )
+    white   = c(0.34567, 0.35851)    # c( 0.3457,0.3585 )    # D50
+    installRGB( 'ProPhotoRGB', scene=list(prim,white), EOTF='ProPhotoRGB', overwrite=TRUE )
+
+    #cat( "Installing AppleRGB...", '\n', file=stderr() )
+    prim    = c(0.625,0.34,  0.28,0.595, 0.155,0.07)
+    white   = c( 0.3127, 0.3290 ) 
+    installRGB( 'AppleRGB', scene=list(prim,white), EOTF=1.8, overwrite=TRUE )
+
+    
+    # this one has the same primaries as sRGB
+    #cat( "Installing BT.709...", '\n', file=stderr() )
+    installRGB( 'BT.709', scene=REC709_PRI, EOTF=BT.709.EOTF, overwrite=TRUE )    
+    
+    #cat( "Installing BT.2020...", '\n', file=stderr() )
+    #prim    = c(0.708,0.292,  0.170,0.797,  0.131,0.046 ) 
+    #white   = c( 0.3127, 0.3290 )
+    installRGB( 'BT.2020', scene=REC2020_PRI, EOTF=BT.2020.EOTF, overwrite=TRUE )    
+    
+    #cat( "Installing 240M...", '\n', file=stderr() )
+    prim    = c(0.64,0.34,  0.31,0.595,  0.155,0.07 )
+    white   = c( 0.3127, 0.3290 )
+    installRGB( '240M', scene=list(prim,white), EOTF='240M', overwrite=TRUE )  
+
+    # Install an RGB space named 'HD+2.4', with encoding from BT.709 and display from BT.1886.
+    # the OOTF for this space is non-trivial
+    #cat( "Installing HD+2.4...", '\n', file=stderr() )    
+    #prim    = matrix( c(0.64,0.33,  0.30,0.60,  0.15,0.06,  0.3127,0.3290), 4, 2, byrow=TRUE )
+    installRGB( "HD+2.4", scene=REC709_PRI, OETF=BT.709.EOTF^-1, EOTF=2.4, overwrite=TRUE )    
+        
+    time_elapsed    = gettime() - time_start
+
+    #mess    = sprintf( "Initialized dictionary in %g seconds.\n", time_elapsed )
+    #packageStartupMessage(mess)
+    
+    return( invisible(TRUE) )
+    }    
+    
+
+
 
 
 #   each RGB spaces is a list with these items:
@@ -26,7 +92,7 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
     valid   = is.character(space)  &&  length(space)==1
     if( ! valid )
         {
-        log_string( ERROR, "space is not a character vector of length 1." )
+        log_level( ERROR, "space is not a character vector of length 1." )
         return(FALSE)
         }
     
@@ -34,27 +100,27 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
     
     if( is.finite(idx)  &&  ! overwrite )
         {
-        log_string( ERROR, "RGB space '%s' is already taken (at position %d), and overwrite is FALSE.", space, idx )
+        log_level( ERROR, "RGB space '%s' is already taken (at position %d), and overwrite is FALSE.", space, idx )
         return(FALSE)
         }
         
     ok  = is.null(scene)  ||  ( is.list(scene)  &&  length(scene)==2 )  || ( is.numeric(scene)  &&  length(scene)==8 )
     if( ! ok )
         {
-        log_string( ERROR, "Argument 'scene' is not a list of length 2, or a numeric of length 8." )
+        log_level( ERROR, "Argument 'scene' is not a list of length 2, or a numeric of length 8." )
         return(FALSE)
         }        
         
     ok  = is.null(display)  ||   ( is.list(display)  &&  length(display)==2 )  ||   ( is.numeric(display)  &&  length(display)==8 )
     if( ! ok )
         {
-        log_string( ERROR, "Argument 'display' is not a list of length 2, or a numeric of length 8." )
+        log_level( ERROR, "Argument 'display' is not a list of length 2, or a numeric of length 8." )
         return(FALSE)
         }
 
     if( is.null(scene)  &&  is.null(display) )
         {
-        log_string( ERROR, "Arguments 'scene' and 'display' cannot both be NULL." )
+        log_level( ERROR, "Arguments 'scene' and 'display' cannot both be NULL." )
         return(FALSE)
         }
         
@@ -91,7 +157,7 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
     
     if( ! is.null(OETF)  &&  ! is.null(EOTF)  &&  ! is.null(OOTF) )
         {
-        log_string( ERROR, "All 3 transfer functions cannot be specified." )
+        log_level( ERROR, "All 3 transfer functions cannot be specified." )
         return(FALSE)
         }
 
@@ -129,13 +195,13 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
         
         if( ! is.TransferFunction(tf)  )
             {
-            log_string( ERROR, "'%s' is not a valid TransferFunction.", names(listTF)[k] )
+            log_level( ERROR, "'%s' is not a valid TransferFunction.", names(listTF)[k] )
             return(FALSE)
             }
         
         if( ! (dimension(tf) %in% c(1,3))  )
             {
-            log_string( ERROR, "TransferFunction '%s' is invalid, because its dimension is %d.", 
+            log_level( ERROR, "TransferFunction '%s' is invalid, because its dimension is %d.", 
                             names(listTF)[k], dimension(tf) )
             return(FALSE)
             }
@@ -180,7 +246,7 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
         }
     else if( ! is.null(OOTF) )
         {
-        log_string( ERROR, "The OOTF cannot be specified alone." )
+        log_level( ERROR, "The OOTF cannot be specified alone." )
         return(FALSE)
         }
     else
@@ -240,7 +306,7 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
                 
                 if( length(white) != 3 )
                     {
-                    log_string( ERROR, "metadata white = %s is invalid.", nicevector(white) )
+                    log_level( ERROR, "metadata white = %s is invalid.", nicevector(white) )
                     return(FALSE)
                     }
                     
@@ -264,13 +330,13 @@ installRGB  <-  function( space, scene, display=NULL, OETF=NULL, EOTF=NULL, OOTF
 
     if( is.null(theSpace$scene) )
         {
-        log_string( ERROR, "Cannot assign scene primaries and white." )
+        log_level( ERROR, "Cannot assign scene primaries and white." )
         return(FALSE)        
         }
     
     if( is.null(theSpace$display) )
         {
-        log_string( ERROR, "Cannot assign display primaries and white." )
+        log_level( ERROR, "Cannot assign display primaries and white." )
         return(FALSE)        
         }
         
@@ -290,7 +356,7 @@ uninstallRGB  <-  function( space )
     valid   = is.character(space)  &&  length(space)==1
     if( ! valid )
         {
-        log_string( ERROR, "space is not a character vector of length 1." )
+        log_level( ERROR, "space is not a character vector of length 1." )
         return(FALSE)
         }
     
@@ -298,7 +364,7 @@ uninstallRGB  <-  function( space )
     
     if( is.na(idx)  )
         {
-        log_string( ERROR, "RGB space '%s' does not exist.", space )
+        log_level( ERROR, "RGB space '%s' does not exist.", space )
         return(FALSE)
         }    
     
@@ -352,7 +418,7 @@ getWhiteXYZ <- function( space, which='scene' )
 summaryRGB  <-  function( verbosity=1 )
     {
     if( length(p.ListRGB) == 0 )
-        log_string( WARN, "There are no installed RGB spaces !" )        
+        log_level( WARN, "There are no installed RGB spaces !" )        
         
     if( verbosity <= 0 )    return( names(p.ListRGB) )
     
@@ -439,21 +505,21 @@ spaceIndex <- function( space )
     ok  = is.character(space)  &&  length(space)==1
     if( ! ok )
         {
-        log_string( ERROR, "space is not a character vector of length 1." )
+        log_level( ERROR, "space is not a character vector of length 1." )
         return(NA_integer_)
         }
         
     theNames    = names(p.ListRGB)
     if( is.null(theNames)  ||  length(theNames)==0 )
         {
-        log_string( ERROR, "ERROR internal.  There are no installed RGB spaces." )
+        log_level( ERROR, "ERROR internal.  There are no installed RGB spaces." )
         return(NA_integer_)
         }
 
     idx = pmatch( toupper(space), toupper(theNames) )
     if( is.na(idx) )
         {
-        log_string( ERROR, "space='%s' matches no installed spaces, or multiple spaces.", space )
+        log_level( ERROR, "space='%s' matches no installed spaces, or multiple spaces.", space )
         return(NA_integer_)
         }
 
@@ -547,7 +613,7 @@ functionPairFromString  <-  function( space )
         }
     else
         {
-        log_string( ERROR, "space='%s' is unknown.", space )
+        log_level( ERROR, "space='%s' is unknown.", space )
         return(NULL)
         }            
 

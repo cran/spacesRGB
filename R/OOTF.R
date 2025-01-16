@@ -2,7 +2,7 @@
 
 
 
-DIM_SURROUND_GAMMA  = 0.9811
+DIM_SURROUND_GAMMA  = 0.9811    # only used in this file
 
 #   returns a TransferFunction
 
@@ -26,7 +26,7 @@ general.OOTF    <- function(
     
     if( is.null(display_pri) )
         {
-        log_string( ERROR, "display_pri cannot be NULL." )
+        log_level( ERROR, "display_pri cannot be NULL." )
         return(NULL)
         }
     
@@ -46,7 +46,7 @@ general.OOTF    <- function(
         {
         if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )
             {    
-            log_string( ERROR, "Cannot adapt from ACES whitepoint to display (assumed observer adapted) whitepoint, because 'spacesXYZ' cannot be loaded." )
+            log_level( ERROR, "Cannot adapt from ACES whitepoint to display (assumed observer adapted) whitepoint, because 'spacesXYZ' cannot be loaded." )
             return( NULL )
             }
 
@@ -62,7 +62,7 @@ general.OOTF    <- function(
     idx = pmatch( tolower(surround), surround.full )
     if( is.na(idx) )
         {
-        log_string( ERROR, "surround='%s' is invalid.", surround )
+        log_level( ERROR, "surround='%s' is invalid.", surround )
         return(NULL)
         }
     surround    = surround.full[idx]
@@ -71,7 +71,7 @@ general.OOTF    <- function(
     idx = pmatch( toupper(dynrange), dynrange.full )
     if( is.na(idx) )
         {
-        log_string( ERROR, "dynrange='%s' is invalid.", dynrange )
+        log_level( ERROR, "dynrange='%s' is invalid.", dynrange )
         return(NULL)
         }
     dynrange    = dynrange.full[idx]
@@ -111,7 +111,7 @@ general.OOTF    <- function(
         glowmodifier = TRUE         #   only one version is known
     else
         {
-        log_string( ERROR, "glowmod='%s' is invalid.", as.character(glowmod)[1] )
+        log_level( ERROR, "glowmod='%s' is invalid.", as.character(glowmod)[1] )
         return(NULL)
         }        
     
@@ -129,7 +129,7 @@ general.OOTF    <- function(
         }
     else
         {
-        log_string( ERROR, "redmod='%s' is invalid.", as.character(redmod)[1] )
+        log_level( ERROR, "redmod='%s' is invalid.", as.character(redmod)[1] )
         return(NULL)
         }
         
@@ -158,11 +158,11 @@ general.OOTF    <- function(
         rgbPost = pmax( rgbPost, 0 )        # copied from rrt_sweeteners() in CTL
         
         #--- Global desaturation ---#
-        rgbPost = tcrossprod( rgbPost, RRT_SAT_MAT )
+        rgbPost = tcrossprod( rgbPost, p.RRT_SAT_MAT )
 
         #   Apply the tonescale independently in rendering-space RGB            
         for( k in 1:3 )
-            rgbPost[k] = ssts( rgbPost[k], PARAMS )     # input values are clipped to HALF_MIN, which is 5.96046448e-08
+            rgbPost[k] = ssts( rgbPost[k], PARAMS )     # input values are clipped to p.HALF_MIN, which is 5.96046448e-08
         
 
                 
@@ -327,10 +327,10 @@ general.OOTF    <- function(
         #   print( rgbPost )
         
         #--- Global desaturation ---#
-        rgbPost = tcrossprod( rgbPost, RRT_SAT_MAT_inv )
+        rgbPost = tcrossprod( rgbPost, p.RRT_SAT_MAT_inv )
 
         #--- AP1 (ACES RGB rendering space) to AP0 ---#    
-        #   rgbPost = pmax( rgbPost, 0 )    #clamp_f3( rgbPost, 0., HALF_MAX);
+        #   rgbPost = pmax( rgbPost, 0 )    #clamp_f3( rgbPost, 0., p.HALF_MAX);
         aces    = tcrossprod( rgbPost, p.AP1_2_AP0_MAT )
         #   aces    = rgbPost
         #   aces    = pmax( aces, 0 )      #   avoids saturated negative colors from becoming positive in the matrix

@@ -21,9 +21,22 @@ p.microbenchmark    = FALSE
     
     
     p.microbenchmark    <<- requireNamespace( 'microbenchmark', quietly=TRUE )  #;  cat( "p.microbenchmark=", p.microbenchmark, '\n' )
+    
+    if( requireNamespace( 'logger', quietly=FALSE ) )
+        {
+        #   log_formatter( formatter_mine )
+        #   layout_mine and appender_mine are defined in logger.R
+        log_formatter( logger::formatter_sprintf, namespace=pkgname )   # force sprintf(), even if glue is installed
+        log_layout( layout_mine, namespace=pkgname )                    # put fn() between timestamp and the msg    
+        log_appender( appender_mine, namespace=pkgname )                # maybe stop on ERROR or FATAL
+        log_threshold( WARN, namespace=pkgname )                        # default is INFO
+        }    
+    
 
+    #   this one makes 7 standard primary matrices, all 4x2
     makeAllPrimaries()
     
+    #   make more matrices, these are all 3x3
     p.AP0_2_XYZ_MAT <<- calculateDataXYZ( AP0_PRI, 1.0)$RGB2XYZ    
     p.XYZ_2_AP0_MAT <<- calculateDataXYZ( AP0_PRI, 1.0)$XYZ2RGB
 
@@ -35,9 +48,14 @@ p.microbenchmark    = FALSE
     
     p.AP1_RGB2Y     <<- p.AP1_2_XYZ_MAT[2, ]
 
-    makeGangOf5()    
+    #   this one makes 5 standard EOTFs; they do not require the above matrices
+    makeGangOf5() 
     
+    #   this one makes more matrices, transfer functions, and one more EOTF
     makeRRTplus()
+    
+    #   finally ready to make initial dictionary of 8 color spaces - about 20 msec
+    makeInitialDictionary()    
     }
     
     

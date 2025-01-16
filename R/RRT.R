@@ -1,38 +1,37 @@
 
-
 #   based on:
 #   aces-dev-master\transforms\ctl\rrt\RRT.ctl
 
+p.RRT_SAT_MAT     = NULL  #;calc_sat_adjust_matrix( RRT_SAT_FACTOR, p.AP1_RGB2Y )
+p.RRT_SAT_MAT_inv = NULL  #;base::solve( p.RRT_SAT_MAT )
+
+p.ODT_SAT_MAT     = NULL
+p.ODT_SAT_MAT_inv = NULL
 
 
 #   "Glow" module constants
-RRT_GLOW_GAIN   = 0.05
-RRT_GLOW_MID    = 0.08
+RRT_GLOW_GAIN   = 0.05      # only used in this file
+RRT_GLOW_MID    = 0.08      # only used in this file
 
 #   Red modifier constants
-RRT_RED_SCALE   = 0.82
-RRT_RED_PIVOT   = 0.03
-RRT_RED_HUE     = 0
-RRT_RED_WIDTH   = 135
+RRT_RED_SCALE   = 0.82      # only used in this file
+RRT_RED_PIVOT   = 0.03      # only used in this file
+RRT_RED_HUE     = 0         # only used in this file
+RRT_RED_WIDTH   = 135       # only used in this file
 
 #   Desaturation contants
-RRT_SAT_FACTOR  = 0.96
-RRT_SAT_MAT     = NULL  #;calc_sat_adjust_matrix( RRT_SAT_FACTOR, p.AP1_RGB2Y )
-RRT_SAT_MAT_inv = NULL  #;base::solve( RRT_SAT_MAT )
-
-ODT_SAT_FACTOR  = 0.93
-ODT_SAT_MAT     = NULL
-ODT_SAT_MAT_inv = NULL
+RRT_SAT_FACTOR  = 0.96      # only used in this file
+ODT_SAT_FACTOR  = 0.93      # only used in this file
 
 
-RRT.TF          = NULL  # definitely exported
+RRT.TF          = NULL      # only used in this file
 
-RRTsweetener.TF = NULL  # ?
-RedModifier.TF  = NULL  # ?
-Glow.TF         = NULL  # ?
+RRTsweetener.TF = NULL      # only used in this file
+RedModifier.TF  = NULL      # only used in this file
+Glow.TF         = NULL      # only used in this file
 
 #   DCDM.OETF   = NULL
-DCDM.EOTF   = NULL
+DCDM.EOTF   = NULL          # only used in this file
     
 
 
@@ -47,16 +46,12 @@ makeRRTplus <- function()
     names(RRT.TF$element)   <<- "RRT.TF"    # change name under-the-hood. Should have a method for this one.
         
         
-    RRT_SAT_MAT     <<- calc_sat_adjust_matrix( RRT_SAT_FACTOR, p.AP1_RGB2Y )
-    RRT_SAT_MAT_inv <<- base::solve( RRT_SAT_MAT )
+    p.RRT_SAT_MAT     <<- calc_sat_adjust_matrix( RRT_SAT_FACTOR, p.AP1_RGB2Y )
+    p.RRT_SAT_MAT_inv <<- base::solve( p.RRT_SAT_MAT )
     
-    ODT_SAT_MAT     <<- calc_sat_adjust_matrix( ODT_SAT_FACTOR, p.AP1_RGB2Y )
-    ODT_SAT_MAT_inv <<- base::solve( ODT_SAT_MAT )
-    
-    
-    
-    
-    
+    p.ODT_SAT_MAT     <<- calc_sat_adjust_matrix( ODT_SAT_FACTOR, p.AP1_RGB2Y )
+    p.ODT_SAT_MAT_inv <<- base::solve( p.ODT_SAT_MAT )
+
     #   these are for mostly for developer use
     domain.sweet    = matrix( c(0,2), 2, 3, dimnames=list(NULL,c('ACES.R','ACES.G','ACES.B')) )
     range.sweet     = matrix( c(0,1), 2, 3, dimnames=list(NULL,c('ACES.R','ACES.G','ACES.B')) )    
@@ -66,7 +61,6 @@ makeRRTplus <- function()
     RedModifier.TF  <<- TransferFunction( redmod, redmodinv_precise, domain.sweet, range.sweet, id='RedModifier.TF' )
 
     Glow.TF         <<- TransferFunction( glow, glowinv, domain.sweet, range.sweet, id='Glow.TF' )
-
     
     #domain  = matrix( c(0,1), 2, 1, dimnames=list(NULL,'OCES') )
     #range   = matrix( c(0,1), 2, 1, dimnames=list(NULL,'display') )
@@ -92,7 +86,7 @@ general.RRT  <-  function( glowmod="1.1", redmod="1.1" )      # "1.1+pinv"
         glowmodifier = TRUE         #   only one version is known
     else
         {
-        log_string( ERROR, "glowmod='%s' is invalid.", as.character(glowmod)[1] )
+        log_level( ERROR, "glowmod='%s' is invalid.", as.character(glowmod)[1] )
         return(NULL)
         }
 
@@ -111,7 +105,7 @@ general.RRT  <-  function( glowmod="1.1", redmod="1.1" )      # "1.1+pinv"
         }
     else
         {
-        log_string( ERROR, "redmod='%s' is invalid.", as.character(redmod)[1] )
+        log_level( ERROR, "redmod='%s' is invalid.", as.character(redmod)[1] )
         return(NULL)
         }
 
@@ -133,7 +127,7 @@ general.RRT  <-  function( glowmod="1.1", redmod="1.1" )      # "1.1+pinv"
         rgbPost = as.numeric( p.AP0_2_AP1_MAT %*% aces  )   #; cat( 'rgbPost=', rgbPost, '\n' )
 
         #--- Global desaturation,   AP1 --- //
-        rgbPost  = as.numeric( RRT_SAT_MAT %*% rgbPost )    #; cat( 'rgbPost=', rgbPost, '\n' )
+        rgbPost  = as.numeric( p.RRT_SAT_MAT %*% rgbPost )    #; cat( 'rgbPost=', rgbPost, '\n' )
 
         #--- Apply the tonescale independently in rendering-space RGB     AP1 ---#
         rgbPost = base::sapply( rgbPost, segmented_spline_fwd, C=p.RRT_PARAMS )     #; cat( 'rgbPost=', rgbPost, '\n' )
@@ -164,7 +158,7 @@ general.RRT  <-  function( glowmod="1.1", redmod="1.1" )      # "1.1+pinv"
         #rgbPost[3] = segmented_spline_fwd( rgbPost[3] )
         
         #--- Global desaturation,   AP1 --- //
-        rgbPost = as.numeric( RRT_SAT_MAT_inv %*% rgbPost )
+        rgbPost = as.numeric( p.RRT_SAT_MAT_inv %*% rgbPost )
 
         #---   AP1 to AP0  (AP1 is RGB rendering space) both are scene-linear ---# 
         # aces    = pmax( aces, 0 )      #   avoids saturated negative colors from becoming positive in the matrix
@@ -382,7 +376,7 @@ redmodinv_precise <- function( aces )
     if( 0 < f1 * f2 )    
         {
         #   same sign
-        log_string( WARN, "root-finding interval [%g,%g] invalid.  redmod cannot be inverted.", interval[1], interval[2] )
+        log_level( WARN, "root-finding interval [%g,%g] invalid.  redmod cannot be inverted.", interval[1], interval[2] )
         return( NA_real_ )
         }
     
@@ -416,11 +410,11 @@ rrt_sweeteners <- function( aces )
     #   moved these to general.OOTF()
     #aces    = pmax( aces, 0 )   # clamp_f3( aces, 0., HALF_POS_INF);
     #rgbPre  = p.AP0_2_AP1_MAT %*% aces
-    #rgbPre  = pmax( rgbPre, 0 ) # clamp_f3( rgbPre, 0., HALF_MAX);
+    #rgbPre  = pmax( rgbPre, 0 ) # clamp_f3( rgbPre, 0., p.HALF_MAX);
     
     #--- Global desaturation ---#
     #   moved this to general.OOTF()    
-    #rgbPre  = as.numeric( RRT_SAT_MAT %*% rgbPre )
+    #rgbPre  = as.numeric( p.RRT_SAT_MAT %*% rgbPre )
     
     return( aces )
     }
@@ -431,13 +425,13 @@ inv_rrt_sweeteners <- function( aces )  # aces was named rgbPost
     {
     #--- Global desaturation ---#
     #   moved this to general.OOTF()        
-    #rgbPost = RRT_SAT_MAT_inv %*% rgbPost
+    #rgbPost = p.RRT_SAT_MAT_inv %*% rgbPost
 
     #--- AP1 (ACES RGB rendering space) to AP0 ---#    
     #   moved these to general.OOTF()            
-    #rgbPost = pmax( rgbPost, 0 )    #clamp_f3( rgbPost, 0., HALF_MAX);
+    #rgbPost = pmax( rgbPost, 0 )    #clamp_f3( rgbPost, 0., p.HALF_MAX);
     #aces    = p.AP1_2_AP0_MAT %*% rgbPost
-    #aces    = pmax( aces, 0 )       #clamp_f3( aces, 0., HALF_MAX);
+    #aces    = pmax( aces, 0 )       #clamp_f3( aces, 0., p.HALF_MAX);
 
     #--- Red modifier inverse ---#
     aces = redmodinv_precise( aces )

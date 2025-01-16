@@ -12,7 +12,7 @@ PQ.EOTF  <-  function( Lmax=10000 )
     ok  = is.numeric(Lmax)  &&  length(Lmax)==1  &&  0<Lmax
     if( ! ok )
         {
-        log_string( ERROR, "Lmax='%s' is invalid.", as.character(Lmax) )
+        log_level( ERROR, "Lmax='%s' is invalid.", as.character(Lmax) )
         return(NULL)
         }   
         
